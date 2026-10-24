@@ -11,7 +11,8 @@
 | MariaDB | **10.11.19** (paquetes core del repo oficial), unidad `mariadb-lab`, escucha `10.10.10.12:3306`, `skip-name-resolve` |
 | Datos | `wordpress` (12 tablas) y `moodle_db` (487 tablas); usuarios `wp_user`/`moodle_user` solo desde `10.10.10.11` |
 | Migración | Se reemplazó 10.6 por 10.11 conservando el datadir; respaldo en `/var/lib/mysql.bak106` |
-| Redis | **6.2.6** compilado en `/usr/local/bin`, unidad `redis`, escucha `0.0.0.0:6379` **sin requirepass** (D1 intencional) |
+| Redis | **6.2.6** compilado en `/usr/local/bin`, unidad `redis`, escucha `0.0.0.0:6379` **sin requirepass** (D1 intencional; verificado 2026-10-24: `PING`→`+PONG` y `INFO` sin clave desde M1, solo lectura) |
+| Respaldos M2→M3 | `/usr/local/bin/m2-backup-m3.sh` (root, cron `0 3 * * *`): volcado lógico `wordpress`+`moodle_db` (cliente `mysql`, sin `mysqldump` en M2) + `dump.rdb` de Redis, `rsync` con llave `ed25519` a `backup@10.10.10.13:/srv/storage/backups/` (excluye `credenciales.txt`/logs del `--delete`) |
 | SNMP | `snmpd` con `public`/`private`, escucha `10.10.10.12:161` (D4 intencional) |
 | Firewall | UFW activo: 22, 3306 solo desde M1, 6379 y 161 abiertos a la LAN (D3 intencional) |
 | Pendiente | Nada funcional; las aperturas son vulns de laboratorio |

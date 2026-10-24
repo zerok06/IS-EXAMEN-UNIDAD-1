@@ -8,11 +8,11 @@
 
 | Componente | Estado real |
 |---|---|
-| Apache | **2.4.49** compilado en `/usr/local/apache2`; servicio `apache-lab` (enabled/active); corre como `www-data`; `mod_rewrite` activo |
-| PHP | **8.4.26** (ZTS) con `gd`, `sodium`, `exif`, `intl`, `zip`, `mysqli`; configuración en `/usr/local/lib/php.ini` |
-| VirtualHosts | `conf/extra/lab-vhosts.conf`: `wp.uni.lab` → `/var/www/wp`, `moodle.uni.lab` → `/var/www/moodle` |
-| WordPress | **7.0.1** instalado con wp-cli; sitio **Universidad Sideral Carrión**; admin `usc.admin`; 6 páginas + 2 entradas + menú + CSS de marca |
-| Moodle | **5.0.11** instalado por CLI; admin `moodleadmin`; 5 cursos, 3 docentes, 6 alumnos, 35 matrículas, foros y tareas |
+| Apache | **2.4.49** compilado en `/usr/local/apache2`; servicio `apache-lab` (enabled/active); corre como `www-data`; `mod_rewrite` + `mod_status` + `mod_cgid` activos; `Include conf/extra/lab-vhosts.conf` (línea 517) |
+| PHP | **8.4.26** (ZTS) con `gd`, `sodium`, `exif`, `intl`, `zip`, `mysqli`; configuración en `/usr/local/lib/php.ini`; `session.upload_progress.enabled=On` |
+| VirtualHosts | `conf/extra/lab-vhosts.conf`: `wp.uni.lab` → `/var/www/wp`, `moodle.uni.lab` → `/var/www/moodle`; más bloques W5 (Location `/server-status`) y W7 (`+Indexes` en uploads) |
+| WordPress | **7.0.1** con wp-cli; sitio **Universidad Sideral Carrión** (tema `usc-oficial` 1.0.0, logo + 4 fotos propias); admin `usc.admin`; 6 páginas + 5 entradas + menú `Principal` con Campus Virtual |
+| Moodle | **5.0.11**; tema hijo `boost_usc` (hero + pie institucional, logo propio); idioma `es`; 5 cursos con imagen, 3 docentes, 6 alumnos; accesos en §7 |
 | BD | `wordpress` (12 tablas) y `moodle_db` (487 tablas) en M2, usuario de app desde `10.10.10.11` |
 | Storage | NFSv4 desde M3 montado en `wp-content/uploads` y `moodledata`; subida real verificada con miniaturas |
 | Pendiente | MPM `event` con mod_php (cambiar a prefork), PHP ZTS (los PoC se calibraron en NTS), TLS |
@@ -147,9 +147,49 @@ sudo ufw enable
 | W4 | `wp-admin` clave débil | `wpscan --passwords` / login manual |
 | W5 | `server-status` abierto | `curl …/server-status` muestra workers |
 | W6 | `info.php` público | Navegar `…/info.php` → versión PHP |
-| W7 | `+Indexes` en uploads | Listar `…/wp-content/uploads/` |
+| W5 | `server-status` abierto (Location + exclusión en `.htaccess` de WP) | `curl …/server-status` → 200 con workers |
+| W6 | `info.php` público | Navegar `…/info.php` → 200, versión PHP |
+| W7 | `+Indexes` en uploads (bloque Directory en `lab-vhosts.conf`) | `curl …/wp-content/uploads/` → 200 `Index of` |
+
+> W5 y W7 se implantaron el 2026-10-24 (no venían activos: `mod_status` estaba cargado pero sin `Location`, y WP secuestraba `/server-status` vía `.htaccess`; uploads devolvía 403). W3 exigió descomentar `LoadModule cgid_module` (MPM event usa `cgid`, no `cgi`) — `/cgi-bin/` pasó de 404 a 403, condición del CVE-2021-41773.
 
 ## 6. Snapshots y entrega
+
+- `estado-inicial-vulnerable` (todo lo anterior + red OK), `previo-a-<CVE>`, `estado-parcheado` (WP 7.0.2+, PHP ≥8.4.27, Apache ≥2.4.50, `server-status` restringido, `info.php` borrado, `-Indexes`).
+- Entregas al informe: captura `apache2 -v` + `php -v` + `wp core version`, evidencia por cada W1–W7 y su retest.
+
+## 7. Accesos directos (URLs y credenciales de ejemplo)
+
+> Desde tu laptop: agrega a `hosts` (o usa el DNS `.14`): `10.10.10.11 wp.uni.lab moodle.uni.lab`. Son claves de laboratorio — cambiar al cerrar la práctica.
+
+| Servicio | URL | Usuario | Clave |
+|---|---|---|---|
+| Sitio WP | `http://wp.uni.lab/` | — (público) | — |
+| WP admin | `http://wp.uni.lab/wp-admin/` | `usc.admin` | `Admin13.-` |
+| Campus Virtual | `http://moodle.uni.lab/` | ver tabla Moodle | ver tabla Moodle |
+| Moodle admin | `http://moodle.uni.lab/login/index.php` | `moodleadmin` | `Admin13.-` |
+| SSH M1 | `ssh ubuntu@10.10.10.11` | `ubuntu` | `Admin13.-` |
+
+**Moodle — docentes** (clave común `Profesor123.`):
+
+| Usuario | Nombre | Curso a cargo |
+|---|---|---|
+| `jpaye` | José Paye | ISC-1023 Seguridad de la Información |
+| `mlopez` | María López | BD-204 Base de Datos II · ADM-101 Gestión de Empresas |
+| `cramirez` | Carlos Ramírez | MAT-101 Cálculo I · ENF-101 Cuidado Integral de Enfermería |
+
+**Moodle — estudiantes** (clave común `Estudiante123.`):
+
+| Usuario | Nombre | Correo |
+|---|---|---|
+| `atorres` | Ana Torres | `atorres@est.usc.edu.pe` |
+| `lmendoza` | Luis Mendoza | `lmendoza@est.usc.edu.pe` |
+| `rquispe` | Rosa Quispe | `rquispe@est.usc.edu.pe` |
+| `jflores` | Jorge Flores | `jflores@est.usc.edu.pe` |
+| `mcastillo` | Marta Castillo | `mcastillo@est.usc.edu.pe` |
+| `dsalazar` | Diego Salazar | `dsalazar@est.usc.edu.pe` |
+
+Perfiles de curso: `http://moodle.uni.lab/course/view.php?id=N` (2=ISC-1023, 3=BD-204, 4=MAT-101, 5=ENF-101, 6=ADM-101).
 
 - `estado-inicial-vulnerable` (todo lo anterior + red OK), `previo-a-<CVE>`, `estado-parcheado` (WP 7.0.2+, PHP ≥8.4.27, Apache ≥2.4.50, `server-status` restringido, `info.php` borrado, `-Indexes`).
 - Entregas al informe: captura `apache2 -v` + `php -v` + `wp core version`, evidencia por cada W1–W7 y su retest.

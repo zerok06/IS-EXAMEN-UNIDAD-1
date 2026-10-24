@@ -10,10 +10,11 @@
 |---|---|
 | NFS | `nfs-server` activo; exporta `wp-uploads`, `moodledata` (solo M1) y `backups` (LAN, `no_root_squash`) |
 | Storage | `/srv/storage/{wp-uploads,moodledata,backups}` con dueño `www-data`, modos `2775/2770` |
-| vsftpd | **2.3.4** compilado (parche `-lpam`), unidad `vsftpd-lab`, escucha `:21`, anónimo con escritura (B2/B3) |
-| Backups | `credenciales.txt` con la clave común de M4/M5 (intencional, paso 3 de la cadena) |
-| Samba | **PENDIENTE**: el `waf` de 4.5.10 es Python 2; el porte a Python 3 quedó a medias (vuln B1 aún no disponible) |
-| Firewall | UFW: NFS solo M1, 21/139/445 abiertos (B1/B2/B3) |
+| vsftpd | **2.3.4** compilado (parche `-lpam`), unidad `vsftpd-lab`, escucha `:21`; banner `220 (vsFTPd 2.3.4)` (B2); anónimo con escritura (B3: verificado login `anonymous` + listado `/backups/credenciales.txt`, sin leer contenido) |
+| FTP (reparado 2026-10-24) | Faltaban usuario `ftp`, `secure_chroot_dir` y rango pasivo → anon fallaba. Se crearon (`useradd ftp`, `/usr/share/empty`, `pasv 40000-40100` + UFW) y el login anónimo ya responde 230 |
+| Backups | `credenciales.txt` (clave común M4/M5, intencional, excluido del `--delete`) + volcados diarios de M2 (`wordpress-*.sql.gz`, `moodle_db-*.sql.gz`, `redis-*.rdb.gz` verificados: 12 y 487 `CREATE TABLE`); cuenta `backup` (solo llave `ed25519` de root@M2, shell `/bin/sh`, sin clave) |
+| Samba | **4.5.10** compilado de fuente en `/usr/local/samba` (unidades `smbd-lab`/`nmbd-lab` activas, `:139`/`:445` escuchando); recurso `[backups]` invitado/escribible verificado con `smbclient -L` y `:445` OPEN desde M1 (B1 listo, sin explotar) |
+| Firewall | UFW: NFS (`2049`) solo M1, `21/139/445` abiertos (B1/B2/B3), pasivo FTP `40000:40100`, `22` gestión |
 
 ## 0. Imagen base e instaladores
 
@@ -56,6 +57,13 @@ sudo exportfs -ra
 ```
 
 Samba **4.5.10** (B1: SambaCry CVE-2017-7494) — fijar/compilar esa rama; recurso `[backups]` → `/srv/storage/backups`, con escritura anónima o invitado en la variante.
+
+> **Receta real usada el 2026-10-24** (Ubuntu 22.04 sin internet; el `waf` 4.5 exige Python 2):
+> 1. Compilar Python **2.7.18** en `/opt/python2.7` con `./configure --prefix=/opt/python2.7 --enable-shared` (sin `--enable-shared` el linkado `libpython2.7.a` falla por orden de `-lm`), + `ld.so.conf` y `ldconfig`.
+> 2. Fuente **pristine** 4.5.10; `export PATH=/opt/python2.7/bin:$PATH`; `./configure --prefix=/usr/local/samba --without-ad-dc --disable-avahi --without-systemd --without-ldap --without-ads --without-winbind --without-acl-support` (sin `libacl1-dev` disponible).
+> 3. glibc 22.04 eliminó sunrpc: parche en `source3/include/includes.h` → `#if 0` a los `#include <rpcsvc/yp_prot.h>`/`ypclnt.h` + stubs `static inline` de `yp_get_default_domain`/`yp_match`/`yperr_string` + `#define YPERR_KEY 5` (los llamadores ya manejan NULL/error), porque `libc` tampoco exporta símbolos `yp_*`.
+> 4. Desactivar `nsstest` en `nsswitch/wscript_build` (su `nss_setpwent` choca con los `typedef` de `<nss.h>` moderno; es solo herramienta de prueba de winbind).
+> 5. `make -j2 && make install`; `smb.conf` con `server min protocol = NT1` + `[backups]` (`guest ok = yes`, `read only = no`); unidades `smbd-lab`/`nmbd-lab` (`--foreground --no-process-group`).
 
 vsftpd **2.3.4** (B2: CVE-2011-2523, puerta `:)` → shell :6200) + `anonymous_enable=YES` (B3).
 
