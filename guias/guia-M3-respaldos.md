@@ -4,6 +4,17 @@
 
 > Versión automatizada: [`ansible/play-m3-backup.yml`](../ansible/play-m3-backup.yml).
 
+## Estado real de la implementación (validado 2026-10-24)
+
+| Componente | Estado real |
+|---|---|
+| NFS | `nfs-server` activo; exporta `wp-uploads`, `moodledata` (solo M1) y `backups` (LAN, `no_root_squash`) |
+| Storage | `/srv/storage/{wp-uploads,moodledata,backups}` con dueño `www-data`, modos `2775/2770` |
+| vsftpd | **2.3.4** compilado (parche `-lpam`), unidad `vsftpd-lab`, escucha `:21`, anónimo con escritura (B2/B3) |
+| Backups | `credenciales.txt` con la clave común de M4/M5 (intencional, paso 3 de la cadena) |
+| Samba | **PENDIENTE**: el `waf` de 4.5.10 es Python 2; el porte a Python 3 quedó a medias (vuln B1 aún no disponible) |
+| Firewall | UFW: NFS solo M1, 21/139/445 abiertos (B1/B2/B3) |
+
 ## 0. Imagen base e instaladores
 
 | Qué | Versión exacta | Origen |

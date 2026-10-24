@@ -45,10 +45,6 @@
           New-NetFirewallRule -DisplayName "VNC solo M1" -Direction Inbound `
             -Protocol TCP -LocalPort 5900 -RemoteAddress 10.10.10.11 -Action Allow
         }
-        if (-not (Get-NetFirewallRule -DisplayName "SMB resto DROP" -ErrorAction SilentlyContinue)) {
-          New-NetFirewallRule -DisplayName "SMB resto DROP" -Direction Inbound `
-            -Protocol TCP -LocalPort 445 -Action Block
-        }
       changed_when: false
 
     - name: Copiar instalador TightVNC

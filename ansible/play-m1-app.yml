@@ -1,7 +1,7 @@
 ---
 # play-m1-app.yml · Estudiante 1, desde su laptop:
 #   ansible-playbook -i inventories/m1.ini play-m1-app.yml
-# Deja: Apache 2.4.49 + PHP 8.4.26 (mod_php) + WP 7.0.1 + Moodle 5.3.0 + vulns W1-W7.
+# Deja: Apache 2.4.49 + PHP 8.4.26 (mod_php) + WP 7.0.1 + Moodle 5.0.11 + vulns W1-W7.
 - name: M1 servidor de aplicacion
   hosts: m1
   become: yes
@@ -9,7 +9,7 @@
     apache_ver: "2.4.49"
     php_ver: "8.4.26"
     wp_ver: "7.0.1"
-    moodle_tag: "v5.3.0"
+    moodle_tag: "v5.0.11"
     url_apache: "https://archive.apache.org/dist/httpd/httpd-{{ apache_ver }}.tar.gz"
     url_php: "https://www.php.net/distributions/php-{{ php_ver }}.tar.gz"
     url_wp: "https://wordpress.org/wordpress-{{ wp_ver }}.zip"
@@ -124,7 +124,7 @@
       args:
         creates: /var/www/wp/wp-login.php
 
-    - name: Desplegar Moodle 5.3.0
+    - name: Desplegar Moodle 5.0.11
       shell: |
         set -e
         cd {{ src }}

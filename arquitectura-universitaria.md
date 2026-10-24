@@ -555,7 +555,7 @@ Descargar todo **antes** de aislar la red. Verificar cada SHA256 contra el `SHA2
 | 3 | Apache httpd | **2.4.49** | https://archive.apache.org/dist/httpd/httpd-2.4.49.tar.gz | M1 |
 | 4 | PHP | **8.4.26** (mod_php) | https://www.php.net/distributions/php-8.4.26.tar.gz | M1 |
 | 5 | WordPress | **7.0.1** | https://wordpress.org/wordpress-7.0.1.zip | M1 |
-| 6 | Moodle | **v5.3.0** (soporta PHP 8.4) | https://github.com/moodle/moodle/archive/refs/tags/v5.3.0.tar.gz | M1 |
+| 6 | Moodle | **v5.0.11** (compatible MariaDB 10.11 y PHP 8.4) | https://github.com/moodle/moodle/archive/refs/tags/v5.0.11.tar.gz | M1 |
 | 7 | Redis | **6.2.6** | https://download.redis.io/releases/redis-6.2.6.tar.gz | M2 |
 | 8 | Samba | **4.5.10** | https://download.samba.org/pub/samba/stable/samba-4.5.10.tar.gz | M3 |
 | 9 | vsftpd | **2.3.4** | https://security.appspot.com/downloads/vsftpd-2.3.4.tar.gz | M3 |

@@ -4,20 +4,32 @@
 
 > Versión automatizada: [`ansible/play-m2-db.yml`](../ansible/play-m2-db.yml).
 
+## Estado real de la implementación (validado 2026-10-24)
+
+| Componente | Estado real |
+|---|---|
+| MariaDB | **10.11.19** (paquetes core del repo oficial), unidad `mariadb-lab`, escucha `10.10.10.12:3306`, `skip-name-resolve` |
+| Datos | `wordpress` (12 tablas) y `moodle_db` (487 tablas); usuarios `wp_user`/`moodle_user` solo desde `10.10.10.11` |
+| Migración | Se reemplazó 10.6 por 10.11 conservando el datadir; respaldo en `/var/lib/mysql.bak106` |
+| Redis | **6.2.6** compilado en `/usr/local/bin`, unidad `redis`, escucha `0.0.0.0:6379` **sin requirepass** (D1 intencional) |
+| SNMP | `snmpd` con `public`/`private`, escucha `10.10.10.12:161` (D4 intencional) |
+| Firewall | UFW activo: 22, 3306 solo desde M1, 6379 y 161 abiertos a la LAN (D3 intencional) |
+| Pendiente | Nada funcional; las aperturas son vulns de laboratorio |
+
 ## 0. Imagen base e instaladores
 
 | Qué | Versión exacta | Origen |
 |---|---|---|
 | Ubuntu Server | **22.04.5** (misma ISO que M1) | https://releases.ubuntu.com/22.04/ubuntu-22.04.5-live-server-amd64.iso |
-| MariaDB | **10.6.x** (la del repo 22.04: `apt install mariadb-server`, verificar con `mariadb --version`) | repo Ubuntu (sin descarga) |
+| MariaDB | **10.11.19** (repo oficial, `.deb` core) | https://archive.mariadb.org/mariadb-10.11.19/repo/ubuntu/ |
 | Redis | **6.2.6** `redis-6.2.6.tar.gz` (D1) | https://download.redis.io/releases/redis-6.2.6.tar.gz |
 | net-snmp | repo (`apt install snmpd`, D4) | repo Ubuntu |
 
 ```bash
-sudo apt update && sudo apt install -y build-essential tcl mariadb-server snmpd
+sudo apt update && sudo apt install -y build-essential tcl snmpd
 tar xzf redis-6.2.6.tar.gz && cd redis-6.2.6 && make -j$(nproc)
 sudo make install && redis-server --version   # debe decir 6.2.6
-mariadb --version   # 10.6.x de Ubuntu 22.04
+mariadb --version   # 10.11.19 (paquetes core del repo MariaDB)
 ```
 
 ## 1. VM y red

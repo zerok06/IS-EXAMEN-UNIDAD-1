@@ -48,9 +48,8 @@ New-NetFirewallRule -DisplayName "RDP solo M1" -Direction Inbound -Protocol TCP 
   -LocalPort 3389 -RemoteAddress 10.10.10.11 -Action Allow
 New-NetFirewallRule -DisplayName "DNS LAN" -Direction Inbound -Protocol UDP `
   -LocalPort 53 -RemoteAddress 10.10.10.0/24 -Action Allow
-# + regla final que BLOQUEA 445/3389 del resto (colocarla con prioridad/orden):
-New-NetFirewallRule -DisplayName "SMB resto DROP" -Direction Inbound -Protocol TCP `
-  -LocalPort 445 -Action Block
+# No crear regla "Block" para 445: en Windows Block gana sobre Allow y también
+# bloquearía a M1. La política por defecto ya deniega el resto.
 ```
 
 ```powershell
@@ -61,8 +60,7 @@ New-NetFirewallRule -DisplayName "RDP solo M1" -Direction Inbound -Protocol TCP 
   -LocalPort 3389 -RemoteAddress 10.10.10.11 -Action Allow
 New-NetFirewallRule -DisplayName "VNC solo M1" -Direction Inbound -Protocol TCP `
   -LocalPort 5900 -RemoteAddress 10.10.10.11 -Action Allow
-New-NetFirewallRule -DisplayName "SMB resto DROP" -Direction Inbound -Protocol TCP `
-  -LocalPort 445 -Action Block
+# Sin regla Block: la política por defecto deniega el resto.
 ```
 
 > M1 **no** se restringe (debe servir 80/443 a M5 y M6). M6 no filtra nada (atacante).

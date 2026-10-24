@@ -4,6 +4,11 @@
 
 > Versión automatizada: [`ansible/play-m4-windows.yml`](../ansible/play-m4-windows.yml) (requiere WinRM según `ansible/README-AUTO.md` §1).
 
+## Estado real de la implementación (2026-10-24)
+
+- M4 responde en `10.10.10.14` (ping), pero **aún no se ejecutó** el playbook: no hay DNS/SMBv1/Spooler configurados ni credenciales WinRM verificadas.
+- **Pendiente**: ejecutar `play-m4-windows.yml` con su dueño, validar `nmap --script smb-vuln-ms17-010` y tomar snapshot.
+
 ## 0. Imagen base (descargar ANTES de aislar)
 
 | Qué | Versión exacta | Dónde (verificado 2026-10-24) |
@@ -72,8 +77,7 @@ New-NetFirewallRule -DisplayName "RDP solo M1" -Direction Inbound -Protocol TCP 
   -LocalPort 3389 -RemoteAddress 10.10.10.11 -Action Allow
 New-NetFirewallRule -DisplayName "DNS LAN" -Direction Inbound -Protocol UDP `
   -LocalPort 53 -RemoteAddress 10.10.10.0/24 -Action Allow
-New-NetFirewallRule -DisplayName "SMB resto DROP" -Direction Inbound -Protocol TCP `
-  -LocalPort 445 -Action Block
+# Sin regla Block para SMB: la política por defecto deniega el resto.
 ```
 
 ## 3. Tus vulnerabilidades

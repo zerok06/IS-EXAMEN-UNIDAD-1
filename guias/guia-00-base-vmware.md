@@ -45,6 +45,8 @@ ping <gateway>
 Test-NetConnection <vecino> -Port <puerto>
 ```
 
+> OJO Windows: `Invoke-WebRequest` usa el proxy del sistema y da timeouts falsos contra el lab. Para HTTP usa `curl.exe -sI http://10.10.10.11/`.
+
 ## 4. Reglas de convivencia
 
 - No escanear/atacar fuera de tu alcance (M6: solo `10.10.10.11:80` + pivote autorizado; el resto le responde filtrado por FW).

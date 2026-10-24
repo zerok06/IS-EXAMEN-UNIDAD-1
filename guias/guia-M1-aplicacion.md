@@ -4,6 +4,19 @@
 
 > Versión automatizada: [`ansible/play-m1-app.yml`](../ansible/play-m1-app.yml) (ver [`ansible/README-AUTO.md`](../ansible/README-AUTO.md)). Esta guía es la referencia manual de lo mismo.
 
+## Estado real de la implementación (validado 2026-10-24)
+
+| Componente | Estado real |
+|---|---|
+| Apache | **2.4.49** compilado en `/usr/local/apache2`; servicio `apache-lab` (enabled/active); corre como `www-data`; `mod_rewrite` activo |
+| PHP | **8.4.26** (ZTS) con `gd`, `sodium`, `exif`, `intl`, `zip`, `mysqli`; configuración en `/usr/local/lib/php.ini` |
+| VirtualHosts | `conf/extra/lab-vhosts.conf`: `wp.uni.lab` → `/var/www/wp`, `moodle.uni.lab` → `/var/www/moodle` |
+| WordPress | **7.0.1** instalado con wp-cli; sitio **Universidad Sideral Carrión**; admin `usc.admin`; 6 páginas + 2 entradas + menú + CSS de marca |
+| Moodle | **5.0.11** instalado por CLI; admin `moodleadmin`; 5 cursos, 3 docentes, 6 alumnos, 35 matrículas, foros y tareas |
+| BD | `wordpress` (12 tablas) y `moodle_db` (487 tablas) en M2, usuario de app desde `10.10.10.11` |
+| Storage | NFSv4 desde M3 montado en `wp-content/uploads` y `moodledata`; subida real verificada con miniaturas |
+| Pendiente | MPM `event` con mod_php (cambiar a prefork), PHP ZTS (los PoC se calibraron en NTS), TLS |
+
 ## 0. Imagen base e instaladores (descargar ANTES de aislar)
 
 | Qué | Versión exacta | Dónde (verificado 2026-10-24) |
@@ -12,7 +25,7 @@
 | Apache httpd | **2.4.49** `httpd-2.4.49.tar.gz` (W3) | https://archive.apache.org/dist/httpd/httpd-2.4.49.tar.gz |
 | PHP | **8.4.26** `php-8.4.26.tar.gz` mod_php (W2) | https://www.php.net/distributions/php-8.4.26.tar.gz |
 | WordPress | **7.0.1** `wordpress-7.0.1.zip` (W1) | https://wordpress.org/wordpress-7.0.1.zip |
-| Moodle | **v5.3.0** (soporta PHP 8.4) | https://github.com/moodle/moodle/archive/refs/tags/v5.3.0.tar.gz |
+| Moodle | **v5.0.11** (compatible MariaDB 10.11 y PHP 8.4) | https://github.com/moodle/moodle/archive/refs/tags/v5.0.11.tar.gz |
 
 Verificar la ISO (en tu laptop, antes de instalar):
 
@@ -66,7 +79,9 @@ make -j$(nproc) && sudo make install
 cd .. && tar xzf php-8.4.26.tar.gz && cd php-8.4.26
 ./configure --with-apxs2=/usr/local/apache2/bin/apxs \
   --with-mysqli --with-pdo-mysql --with-curl --with-openssl --with-zip \
-  --enable-mbstring --enable-intl --with-gd --enable-opcache --with-zlib
+  --enable-mbstring --enable-intl --enable-gd --with-external-gd \
+  --with-jpeg --with-freetype --enable-exif --with-sodium \
+  --enable-opcache --with-zlib
 make -j$(nproc) && sudo make install
 php -v   # debe decir 8.4.26
 # /usr/local/lib/php.ini: session.upload_progress.enabled=On (defecto, vulnerable)
@@ -79,6 +94,7 @@ echo 'Include conf/extra/php.conf' | sudo tee -a /usr/local/apache2/conf/httpd.c
 sudo /usr/local/apache2/bin/apachectl start
 ```
 
+```bash
 # Errores de configuración intencionales (W5-W7):
 sudo a2enmod status info
 # /etc/apache2/mods-enabled/status.conf -> Require all granted (W5: expuesto)
@@ -86,21 +102,19 @@ echo '<?php phpinfo();' | sudo tee /var/www/wp/info.php        # W6: disclosure
 # Directory /var/www/wp/wp-content/uploads -> Options +Indexes  # W7: listado
 sudo systemctl reload apache2
 ```
-```
 
 - WordPress **7.0.1** en `/var/www/wp` → `http://wp.uni.lab` (**W1: wp2shell CVE-2026-63030**; NO actualizar hasta Fase 5).
-- Moodle **v5.3.0** en `/var/www/moodle` → `http://moodle.uni.lab` (admin con clave débil = W4).
+- Moodle **v5.0.11** en `/var/www/moodle` → `http://moodle.uni.lab` (admin con clave débil = W4).
 
 ```bash
 cd /tmp
-unzip -q wordpress-7.0.1.zip
-sudo mkdir -p /var/www/wp && sudo cp -a wordpress/. /var/www/wp/
-tar xzf moodle-v5.3.0.tar.gz 2>/dev/null || tar xzf v5.3.0.tar.gz
-sudo mkdir -p /var/www/moodle && sudo cp -a moodle-5.3.0/. /var/www/moodle/ 2>/dev/null \
-  || sudo cp -a moodle-moodle-*/. /var/www/moodle/
+unzip -q -o wordpress-7.0.1.zip
+sudo rm -rf /var/www/wp && sudo cp -a wordpress /var/www/wp
+tar xzf moodle-v5.0.11.tar.gz
+sudo rm -rf /var/www/moodle && sudo mv moodle-5.0.11 /var/www/moodle
 sudo chown -R www-data:www-data /var/www/wp /var/www/moodle  # si no existe: sudo useradd -r -s /usr/sbin/nologin www-data
 # y en httpd.conf: User www-data + Group www-data (el shell del PoC será uid de www-data)
-# Instalar vía web: http://10.10.10.11/wp/wp-admin/install.php (después unir vhosts wp/moodle.uni.lab)
+# Instalación: wp-cli (WP) y admin/cli/install.php (Moodle) — ver play-m1-app.yml
 # wp core version  -> debe decir 7.0.1 ; phpMyAdmin NO se instala (superficie mínima)
 ```
 - `wp-config.php`: `DB_HOST 10.10.10.12`, `WP_HOME http://wp.uni.lab`.

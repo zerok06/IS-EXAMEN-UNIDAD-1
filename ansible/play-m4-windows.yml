@@ -92,10 +92,6 @@
           New-NetFirewallRule -DisplayName "DNS LAN" -Direction Inbound `
             -Protocol UDP -LocalPort 53 -RemoteAddress {{ lan }} -Action Allow
         }
-        if (-not (Get-NetFirewallRule -DisplayName "SMB resto DROP" -ErrorAction SilentlyContinue)) {
-          New-NetFirewallRule -DisplayName "SMB resto DROP" -Direction Inbound `
-            -Protocol TCP -LocalPort 445 -Action Block
-        }
       changed_when: false
 
     - name: Aviso reinicio pendiente SMBv1
