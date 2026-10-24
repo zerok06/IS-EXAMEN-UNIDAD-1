@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1400" viewBox="0 0 1700 1400" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="1700" height="1400" fill="#ffffff"/>
+<defs>
+<marker id="blk-6c8ebf" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#6c8ebf"/></marker>
+<marker id="opn-6c8ebf" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#6c8ebf" stroke-width="1.6"/></marker>
+<marker id="blk-82b366" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#82b366"/></marker>
+<marker id="opn-82b366" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#82b366" stroke-width="1.6"/></marker>
+<marker id="blk-9673a6" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#9673a6"/></marker>
+<marker id="opn-9673a6" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#9673a6" stroke-width="1.6"/></marker>
+<marker id="blk-9ca3af" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#9ca3af"/></marker>
+<marker id="opn-9ca3af" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#9ca3af" stroke-width="1.6"/></marker>
+<marker id="blk-b85450" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#b85450"/></marker>
+<marker id="opn-b85450" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#b85450" stroke-width="1.6"/></marker>
+<marker id="blk-d79b00" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#d79b00"/></marker>
+<marker id="opn-d79b00" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#d79b00" stroke-width="1.6"/></marker>
+<marker id="blk-5da69a" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#5da69a"/></marker>
+<marker id="opn-5da69a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#5da69a" stroke-width="1.6"/></marker>
+<marker id="blk-374151" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#374151"/></marker>
+<marker id="opn-374151" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#374151" stroke-width="1.6"/></marker>
+</defs>
+<rect x="40.0" y="210.0" width="1620.0" height="1020.0" rx="0" ry="0" fill="none" stroke="#9ca3af" stroke-width="1.3" stroke-dasharray="8 6"/>
+<text x="58.0" y="235.0" font-size="13" font-weight="600" fill="#6b7280">LAN 10.10.10.0/24 · WiFi LAB-INT · bridge VMware · roles §6 de la guía</text>
+<rect x="650.0" y="100.0" width="400.0" height="80.0" rx="8" ry="8" fill="#111827" stroke="#000000" stroke-width="1.3"/>
+<text x="666.0" y="129.0" font-size="15" font-weight="600" fill="#ffffff">R0 · MitraStar DSL-2401HN-T1C</text>
+<text x="666.0" y="146.0" font-size="12" fill="#ffffff">10.10.10.1 · DHCP OFF · sin DSL · WiFi LAB-INT</text>
+<rect x="120.0" y="380.0" width="320.0" height="215.0" rx="8" ry="8" fill="#fff2cc" stroke="#d6b656" stroke-width="1.3"/>
+<text x="136.0" y="409.0" font-size="15" font-weight="600" fill="#5c4a00">M5 · Estación (Win10)</text>
+<text x="136.0" y="424.0" font-size="11.5" fill="#5c4a00" fill-opacity="0.7">10.10.10.15 · FW: solo M1</text>
+<line x1="136.0" y1="428.0" x2="428.0" y2="428.0" stroke="#5c4a00" stroke-opacity="0.35" stroke-width="1"/>
+<text x="136.0" y="454.0" font-size="12.0" fill="#5c4a00">• Navegador + SMBv1 + clave débil</text>
+<text x="136.0" y="471.0" font-size="12.0" fill="#5c4a00">• VNC :5900 sin clave + soft viejo</text>
+<text x="136.0" y="495.0" font-size="10.5" font-style="italic" fill="#5c4a00" fill-opacity="0.75">Paso 5: reúso / EB / VNC</text>
+<rect x="1020.0" y="380.0" width="340.0" height="215.0" rx="8" ry="8" fill="#f8cecc" stroke="#b85450" stroke-width="1.3"/>
+<text x="1036.0" y="409.0" font-size="15" font-weight="600" fill="#5c1a17">M6 · Auditor (Kali)</text>
+<text x="1036.0" y="424.0" font-size="11.5" fill="#5c1a17" fill-opacity="0.7">10.10.10.20 · misma LAN</text>
+<line x1="1036.0" y1="428.0" x2="1348.0" y2="428.0" stroke="#5c1a17" stroke-opacity="0.35" stroke-width="1"/>
+<text x="1036.0" y="454.0" font-size="12.0" fill="#5c1a17">• Solo ataca M1:80 pre-pivote</text>
+<text x="1036.0" y="471.0" font-size="12.0" fill="#5c1a17">• M2–M5 le responden filtrado (FW)</text>
+<text x="1036.0" y="488.0" font-size="12.0" fill="#5c1a17">• Pivota desde M1</text>
+<text x="1036.0" y="512.0" font-size="10.5" font-style="italic" fill="#5c1a17" fill-opacity="0.75">Disciplina + bitácora</text>
+<rect x="500.0" y="370.0" width="460.0" height="260.0" rx="8" ry="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.3"/>
+<text x="516.0" y="399.0" font-size="15" font-weight="600" fill="#1e3a5f">M1 · Aplicación (guía §6) — PUERTA</text>
+<text x="516.0" y="414.0" font-size="11.5" fill="#1e3a5f" fill-opacity="0.7">10.10.10.11</text>
+<line x1="516.0" y1="418.0" x2="948.0" y2="418.0" stroke="#1e3a5f" stroke-opacity="0.35" stroke-width="1"/>
+<text x="516.0" y="444.0" font-size="12.0" fill="#1e3a5f">• Apache 2.4.49 + PHP 8.4.26 + WP 7.0.1 + Moodle</text>
+<text x="516.0" y="461.0" font-size="12.0" fill="#1e3a5f">• Vulns: wp2shell · PHP2Shell · CVE-2021-41773</text>
+<text x="516.0" y="478.0" font-size="12.0" fill="#1e3a5f">• + config: status / info.php / +Indexes</text>
+<text x="516.0" y="495.0" font-size="12.0" fill="#1e3a5f">• NFS → M3 · MySQL/Redis → M2</text>
+<text x="516.0" y="519.0" font-size="10.5" font-style="italic" fill="#1e3a5f" fill-opacity="0.75">Paso 1 aquí, luego pivote al resto</text>
+<rect x="920.0" y="770.0" width="340.0" height="250.0" rx="8" ry="8" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.3"/>
+<text x="936.0" y="799.0" font-size="15" font-weight="600" fill="#5c3a00">M4 · Windows heredado</text>
+<text x="936.0" y="816.0" font-size="12.0" fill="#5c3a00">10.10.10.14 · FW: solo M1 (+DNS LAN)</text>
+<line x1="936.0" y1="820.0" x2="1248.0" y2="820.0" stroke="#5c3a00" stroke-opacity="0.35" stroke-width="1"/>
+<text x="936.0" y="846.0" font-size="12.0" fill="#5c3a00">• DNS standalone (uni.lab) + SMBv1 + Spooler</text>
+<text x="936.0" y="863.0" font-size="12.0" fill="#5c3a00">• Vulns: EternalBlue · PrintNightmare</text>
+<text x="936.0" y="880.0" font-size="12.0" fill="#5c3a00">• Privesc a SYSTEM + clave débil +</text>
+<text x="946.0" y="897.0" font-size="12.0" fill="#5c3a00">AXFR/signing</text>
+<text x="936.0" y="921.0" font-size="10.5" font-style="italic" fill="#5c3a00" fill-opacity="0.75">Paso 4: solo vía pivote desde M1</text>
+<rect x="120.0" y="780.0" width="360.0" height="220.0" rx="8" ry="8" fill="#d5e8d4" stroke="#82b366" stroke-width="1.3"/>
+<text x="136.0" y="809.0" font-size="15" font-weight="600" fill="#1e4620">M2 · Base de datos</text>
+<text x="136.0" y="824.0" font-size="11.5" fill="#1e4620" fill-opacity="0.7">10.10.10.12 · FW: solo M1</text>
+<line x1="136.0" y1="828.0" x2="468.0" y2="828.0" stroke="#1e4620" stroke-opacity="0.35" stroke-width="1"/>
+<text x="136.0" y="854.0" font-size="12.0" fill="#1e4620">• MariaDB + Redis 6.2.6</text>
+<text x="136.0" y="871.0" font-size="12.0" fill="#1e4620">• Vulns: CVE-2022-0543 (10.0) · creds · puertos</text>
+<text x="136.0" y="888.0" font-size="12.0" fill="#1e4620">• + config: SNMP public/private</text>
+<text x="136.0" y="912.0" font-size="10.5" font-style="italic" fill="#1e4620" fill-opacity="0.75">Paso 2: wp-config + Redis RCE</text>
+<rect x="520.0" y="780.0" width="360.0" height="220.0" rx="8" ry="8" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.3"/>
+<text x="536.0" y="809.0" font-size="15" font-weight="600" fill="#3d1f4d">M3 · Respaldos / Storage</text>
+<text x="536.0" y="824.0" font-size="11.5" fill="#3d1f4d" fill-opacity="0.7">10.10.10.13 · FW: solo M1+M2</text>
+<line x1="536.0" y1="828.0" x2="868.0" y2="828.0" stroke="#3d1f4d" stroke-opacity="0.35" stroke-width="1"/>
+<text x="536.0" y="854.0" font-size="12.0" fill="#3d1f4d">• NFS + Samba 4.5.10 + vsftpd 2.3.4</text>
+<text x="536.0" y="871.0" font-size="12.0" fill="#3d1f4d">• Vulns: SambaCry · backdoor :6200 · FTP anon</text>
+<text x="536.0" y="888.0" font-size="12.0" fill="#3d1f4d">• + config: no_root_squash · anon-write</text>
+<text x="536.0" y="912.0" font-size="10.5" font-style="italic" fill="#3d1f4d" fill-opacity="0.75">Paso 3: credenciales.txt → M4/M5</text>
+<rect x="1300.0" y="770.0" width="270.0" height="250.0" rx="8" ry="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.3"/>
+<text x="1316.0" y="799.0" font-size="15" font-weight="600" fill="#374151">Cadena con pivote</text>
+<line x1="1316.0" y1="803.0" x2="1558.0" y2="803.0" stroke="#374151" stroke-opacity="0.35" stroke-width="1"/>
+<text x="1316.0" y="829.0" font-size="11.0" fill="#374151">1. M6→M1: :80 wp2shell/PHP2Shell</text>
+<text x="1316.0" y="846.0" font-size="11.0" fill="#374151">2. M1→M2: wp-config + Redis</text>
+<text x="1316.0" y="863.0" font-size="11.0" fill="#374151">3. M2→M3: backups con claves</text>
+<text x="1316.0" y="880.0" font-size="11.0" fill="#374151">4. M1→M4: EB + privesc (pivote)</text>
+<text x="1316.0" y="897.0" font-size="11.0" fill="#374151">5. M4→M5: reúso (pivote)</text>
+<text x="1316.0" y="914.0" font-size="11.0" fill="#374151">6. Parchear + verificar</text>
+<rect x="40.0" y="1250.0" width="1620.0" height="100.0" rx="8" ry="8" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.3"/>
+<text x="58.0" y="1275.0" font-size="13" font-weight="600" fill="#374151">Leyenda</text>
+<rect x="70.0" y="1292.0" width="18.0" height="18.0" rx="0" ry="0" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.3"/>
+<text x="94.0" y="1305.0" font-size="12" fill="#374151">Aplicación</text>
+<rect x="200.0" y="1292.0" width="18.0" height="18.0" rx="0" ry="0" fill="#d5e8d4" stroke="#82b366" stroke-width="1.3"/>
+<text x="224.0" y="1305.0" font-size="12" fill="#374151">Datos</text>
+<rect x="300.0" y="1292.0" width="18.0" height="18.0" rx="0" ry="0" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.3"/>
+<text x="324.0" y="1305.0" font-size="12" fill="#374151">Respaldos</text>
+<rect x="420.0" y="1292.0" width="18.0" height="18.0" rx="0" ry="0" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.3"/>
+<text x="444.0" y="1305.0" font-size="12" fill="#374151">Windows heredado</text>
+<rect x="590.0" y="1292.0" width="18.0" height="18.0" rx="0" ry="0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.3"/>
+<text x="614.0" y="1305.0" font-size="12" fill="#374151">Usuario</text>
+<rect x="700.0" y="1292.0" width="18.0" height="18.0" rx="0" ry="0" fill="#f8cecc" stroke="#b85450" stroke-width="1.3"/>
+<text x="724.0" y="1305.0" font-size="12" fill="#374151">Auditoría</text>
+<text x="880.0" y="1290.0" font-size="11" fill="#6b7280">Gris: DNS interno · Rojo: ataque + pivote · M2–M5 solo aceptan de .11 (FW de host) · M6 con disciplina.</text>
+<text x="40.0" y="45.0" font-size="24" font-weight="600" fill="#111827">Infraestructura universitaria vulnerable — v4.1 (red plana + separación lógica)</text>
+<text x="40.0" y="82.0" font-size="12" font-weight="400" fill="#6b7280">LAN 10.10.10.0/24 en WiFi LAB-INT · MitraStar .1 (transporte) · M6 en .20 con disciplina + FW · roles §6 guía</text>
+<rect x="1400.0" y="380.0" width="220.0" height="215.0" rx="8" ry="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.3"/>
+<text x="1416.0" y="409.0" font-size="15" font-weight="600" fill="#374151">Separación lógica</text>
+<line x1="1416.0" y1="413.0" x2="1608.0" y2="413.0" stroke="#374151" stroke-opacity="0.35" stroke-width="1"/>
+<text x="1416.0" y="439.0" font-size="11.0" fill="#374151">• M2–M5 solo aceptan de .11</text>
+<text x="1416.0" y="456.0" font-size="11.0" fill="#374151">• DNS 53 abierto a la LAN</text>
+<text x="1416.0" y="473.0" font-size="11.0" fill="#374151">• M6 disciplina: M1:80</text>
+<text x="1416.0" y="490.0" font-size="11.0" fill="#374151">• Ver guia-R0 §3</text>
+<polyline points="850.0,180.0 850.0,210.0" fill="none" stroke="#374151" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="440.0,487.5 500.0,500.0" fill="none" stroke="#6c8ebf" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blk-6c8ebf)"/>
+<rect x="437.4" y="484.8" width="65.1" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="470.0" y="497.8" font-size="11" fill="#374151" text-anchor="middle">HTTP · 80</text>
+<polyline points="1020.0,487.5 960.0,500.0" fill="none" stroke="#b85450" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#blk-b85450)"/>
+<rect x="889.6" y="484.8" width="200.8" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="990.0" y="497.8" font-size="11" fill="#374151" text-anchor="middle">Paso 1: :80 wp2shell / PHP2Shell</text>
+<polyline points="638.0,630.0 636.0,700.0 372.0,700.0 372.0,780.0" fill="none" stroke="#82b366" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blk-82b366)"/>
+<rect x="425.2" y="691.0" width="147.7" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="499.0" y="704.0" font-size="11" fill="#374151" text-anchor="middle">MySQL 3306 · Redis 6379</text>
+<polyline points="776.0,630.0 776.0,700.0 700.0,700.0 700.0,780.0" fill="none" stroke="#9673a6" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blk-9673a6)"/>
+<rect x="635.5" y="691.0" width="194.9" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="733.0" y="704.0" font-size="11" fill="#374151" text-anchor="middle">NFS 2049 · uploads + moodledata</text>
+<polyline points="280.0,595.0 280.0,1150.0 988.0,1150.0 988.0,1020.0" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#opn-9ca3af)"/>
+<rect x="362.4" y="1141.0" width="118.2" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="421.5" y="1154.0" font-size="11" fill="#374151" text-anchor="middle">DNS 53 · *.uni.lab</text>
+<polyline points="891.0,630.0 891.0,700.0 1090.0,700.0 1090.0,770.0" fill="none" stroke="#b85450" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#blk-b85450)"/>
+<rect x="899.0" y="691.0" width="183.1" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="990.5" y="704.0" font-size="11" fill="#374151" text-anchor="middle">Pivote: EB + privesc → SYSTEM</text>
+<polyline points="480.0,934.0 520.0,934.0" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#opn-9ca3af)"/>
+<rect x="414.4" y="925.0" width="171.3" height="18" rx="3" fill="#ffffff" fill-opacity="0.96"/>
+<text x="500.0" y="938.0" font-size="11" fill="#374151" text-anchor="middle">Backups (mysqldump + Redis)</text>
+</svg>

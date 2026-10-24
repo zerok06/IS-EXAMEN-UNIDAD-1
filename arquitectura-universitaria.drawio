@@ -1,0 +1,160 @@
+<mxfile host="app.diagrams.net" agent="OpenCode" version="24.7.17" type="device">
+  <diagram id="arch-universidad" name="Arquitectura">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="1" />
+
+        <mxCell id="title" value="Infraestructura universitaria vulnerable — v4.1 (red plana + separación lógica)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="LAN 10.10.10.0/24 en WiFi LAB-INT · MitraStar .1 (transporte) · M6 en .20 con disciplina + FW · roles §6 guía" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="40" y="52" width="1250" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="router" value="&lt;b style='font-size:14px;'&gt;R0 · MitraStar DSL-2401HN-T1C&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.1 · DHCP OFF · sin DSL · WiFi LAB-INT&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#111827;strokeColor=#000000;fontColor=#ffffff;align=center;verticalAlign=middle;arcSize=22;" vertex="1" parent="1">
+          <mxGeometry x="650" y="100" width="400" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lan" value="LAN 10.10.10.0/24 · WiFi LAB-INT · bridge VMware · roles §6 de la guía" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 6;fillColor=none;strokeColor=#9ca3af;verticalAlign=top;align=left;spacingLeft=18;spacingTop=10;fontSize=13;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="40" y="210" width="1620" height="1020" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m5" value="&lt;b style='font-size:15px;'&gt;M5 · Estación (Win10)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.15 · FW: solo M1&lt;/span&gt;&lt;hr&gt;• Navegador + SMBv1 + clave débil&lt;br&gt;• VNC :5900 sin clave + soft viejo&lt;br&gt;&lt;br&gt;&lt;i&gt;Paso 5: reúso / EB / VNC&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#5c4a00;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;spacingRight=12;fontSize=12;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="120" y="380" width="320" height="215" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m1" value="&lt;b style='font-size:15px;'&gt;M1 · Aplicación (guía §6) — PUERTA&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.11&lt;/span&gt;&lt;hr&gt;• Apache 2.4.49 + PHP 8.4.26 + WP 7.0.1 + Moodle&lt;br&gt;• Vulns: wp2shell · PHP2Shell · CVE-2021-41773&lt;br&gt;• + config: status / info.php / +Indexes&lt;br&gt;• NFS → M3 · MySQL/Redis → M2&lt;br&gt;&lt;br&gt;&lt;i&gt;Paso 1 aquí, luego pivote al resto&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#1e3a5f;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;spacingRight=12;fontSize=12;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="500" y="370" width="460" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m6" value="&lt;b style='font-size:15px;'&gt;M6 · Auditor (Kali)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.20 · misma LAN&lt;/span&gt;&lt;hr&gt;• Solo ataca M1:80 pre-pivote&lt;br&gt;• M2–M5 le responden filtrado (FW)&lt;br&gt;• Pivota desde M1&lt;br&gt;&lt;br&gt;&lt;i&gt;Disciplina + bitácora&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#5c1a17;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;spacingRight=12;fontSize=12;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="380" width="340" height="215" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fwrule" value="&lt;b style='font-size:13px;'&gt;Separación lógica&lt;/b&gt;&lt;hr&gt;&lt;span style='font-size:11px;'&gt;• M2–M5 solo aceptan de .11&lt;br&gt;• DNS 53 abierto a la LAN&lt;br&gt;• M6 disciplina: M1:80&lt;br&gt;• Ver guia-R0 §3&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9fafb;strokeColor=#d1d5db;fontColor=#374151;align=left;verticalAlign=top;spacingLeft=14;spacingTop=12;spacingRight=12;fontSize=11;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="380" width="220" height="215" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m2" value="&lt;b style='font-size:15px;'&gt;M2 · Base de datos&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.12 · FW: solo M1&lt;/span&gt;&lt;hr&gt;• MariaDB + Redis 6.2.6&lt;br&gt;• Vulns: CVE-2022-0543 (10.0) · creds · puertos&lt;br&gt;• + config: SNMP public/private&lt;br&gt;&lt;br&gt;&lt;i&gt;Paso 2: wp-config + Redis RCE&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#1e4620;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;spacingRight=12;fontSize=12;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="120" y="780" width="360" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m3" value="&lt;b style='font-size:15px;'&gt;M3 · Respaldos / Storage&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.13 · FW: solo M1+M2&lt;/span&gt;&lt;hr&gt;• NFS + Samba 4.5.10 + vsftpd 2.3.4&lt;br&gt;• Vulns: SambaCry · backdoor :6200 · FTP anon&lt;br&gt;• + config: no_root_squash · anon-write&lt;br&gt;&lt;br&gt;&lt;i&gt;Paso 3: credenciales.txt → M4/M5&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#3d1f4d;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;spacingRight=12;fontSize=12;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="520" y="780" width="360" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m4" value="&lt;b style='font-size:15px;'&gt;M4 · Windows heredado&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:12px;'&gt;10.10.10.14 · FW: solo M1 (+DNS LAN)&lt;/span&gt;&lt;hr&gt;• DNS standalone (uni.lab) + SMBv1 + Spooler&lt;br&gt;• Vulns: EternalBlue · PrintNightmare&lt;br&gt;• Privesc a SYSTEM + clave débil + AXFR/signing&lt;br&gt;&lt;br&gt;&lt;i&gt;Paso 4: solo vía pivote desde M1&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#5c3a00;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;spacingRight=12;fontSize=12;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="920" y="770" width="340" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note" value="&lt;b style='font-size:13px;'&gt;Cadena con pivote&lt;/b&gt;&lt;hr&gt;&lt;span style='font-size:11px;'&gt;1. M6→M1: :80 wp2shell/PHP2Shell&lt;br&gt;2. M1→M2: wp-config + Redis&lt;br&gt;3. M2→M3: backups con claves&lt;br&gt;4. M1→M4: EB + privesc (pivote)&lt;br&gt;5. M4→M5: reúso (pivote)&lt;br&gt;6. Parchear + verificar&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9fafb;strokeColor=#d1d5db;fontColor=#374151;align=left;verticalAlign=top;spacingLeft=14;spacingTop=12;spacingRight=12;fontSize=11;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="770" width="270" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="Leyenda" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9fafb;strokeColor=#e5e7eb;verticalAlign=top;align=left;spacingLeft=18;spacingTop=8;fontSize=13;fontStyle=1;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1250" width="1620" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sq1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1292" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lb1" value="Aplicación" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="94" y="1289" width="100" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sq2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1292" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lb2" value="Datos" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="224" y="1289" width="70" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sq3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1292" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lb3" value="Respaldos" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="324" y="1289" width="90" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sq4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1292" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lb4" value="Windows heredado" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="444" y="1289" width="140" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sq5" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="590" y="1292" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lb5" value="Usuario" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="614" y="1289" width="80" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sq6" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="700" y="1292" width="18" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lb6" value="Auditoría" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="724" y="1289" width="90" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legendtext" value="Gris: DNS interno · Rojo: ataque + pivote · M2–M5 solo aceptan de .11 (FW de host) · M6 con disciplina." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1272" width="740" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-router" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeColor=#374151;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="router" target="lan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="HTTP · 80" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="m5" target="m1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" value="Paso 1: :80 wp2shell / PHP2Shell" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;endArrow=block;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="m6" target="m1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" value="MySQL 3306 · Redis 6379" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1" target="m2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="636" y="700" />
+              <mxPoint x="372" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e3" value="NFS 2049 · uploads + moodledata" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.6;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1" target="m3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="776" y="700" />
+              <mxPoint x="700" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e4" value="DNS 53 · *.uni.lab" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9ca3af;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;endArrow=open;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="m5" target="m4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="1150" />
+              <mxPoint x="988" y="1150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e6" value="Pivote: EB + privesc → SYSTEM" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;endArrow=block;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="m1" target="m4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="891" y="700" />
+              <mxPoint x="1090" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e7" value="Backups (mysqldump + Redis)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9ca3af;dashed=1;fontSize=11;labelBackgroundColor=#ffffff;endArrow=open;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="m2" target="m3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

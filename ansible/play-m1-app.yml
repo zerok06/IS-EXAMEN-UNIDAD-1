@@ -1,0 +1,230 @@
+---
+# play-m1-app.yml · Estudiante 1, desde su laptop:
+#   ansible-playbook -i inventories/m1.ini play-m1-app.yml
+# Deja: Apache 2.4.49 + PHP 8.4.26 (mod_php) + WP 7.0.1 + Moodle 5.3.0 + vulns W1-W7.
+- name: M1 servidor de aplicacion
+  hosts: m1
+  become: yes
+  vars:
+    apache_ver: "2.4.49"
+    php_ver: "8.4.26"
+    wp_ver: "7.0.1"
+    moodle_tag: "v5.3.0"
+    url_apache: "https://archive.apache.org/dist/httpd/httpd-{{ apache_ver }}.tar.gz"
+    url_php: "https://www.php.net/distributions/php-{{ php_ver }}.tar.gz"
+    url_wp: "https://wordpress.org/wordpress-{{ wp_ver }}.zip"
+    url_moodle: "https://github.com/moodle/moodle/archive/refs/tags/{{ moodle_tag }}.tar.gz"
+    src: /usr/local/src/lab
+    db_host: 10.10.10.12
+    db_wp_pass: CAMBIAR_clave_wp
+    db_moodle_pass: CAMBIAR_clave_moodle
+
+  tasks:
+    - name: Dependencias de compilacion
+      apt:
+        update_cache: yes
+        name:
+          - build-essential
+          - pkg-config
+          - libapr1-dev
+          - libaprutil1-dev
+          - libpcre2-dev
+          - libxml2-dev
+          - libsqlite3-dev
+          - libcurl4-openssl-dev
+          - libonig-dev
+          - libzip-dev
+          - libpng-dev
+          - libjpeg-dev
+          - libfreetype6-dev
+          - libicu-dev
+          - unzip
+          - nfs-common
+          - ufw
+        state: present
+
+    - name: Usuario www-data para el worker web
+      user:
+        name: www-data
+        system: yes
+        shell: /usr/sbin/nologin
+        create_home: no
+        state: present
+
+    - name: Descargar tarballs fijados
+      get_url:
+        url: "{{ item }}"
+        dest: "{{ src }}/"
+        timeout: 120
+      loop:
+        - "{{ url_apache }}"
+        - "{{ url_php }}"
+        - "{{ url_wp }}"
+        - "{{ url_moodle }}"
+
+    - name: Compilar Apache 2.4.49 (W3)
+      shell: |
+        set -e
+        cd {{ src }}
+        rm -rf httpd-{{ apache_ver }}
+        tar xzf httpd-{{ apache_ver }}.tar.gz
+        cd httpd-{{ apache_ver }}
+        ./configure --prefix=/usr/local/apache2 --enable-so --enable-cgi \
+          --enable-rewrite --enable-status
+        make -j$(nproc)
+        make install
+      args:
+        creates: /usr/local/apache2/bin/httpd
+
+    - name: Compilar PHP 8.4.26 mod_php (W2)
+      shell: |
+        set -e
+        cd {{ src }}
+        rm -rf php-{{ php_ver }}
+        tar xzf php-{{ php_ver }}.tar.gz
+        cd php-{{ php_ver }}
+        ./configure --with-apxs2=/usr/local/apache2/bin/apxs \
+          --with-mysqli --with-pdo-mysql --with-curl --with-openssl \
+          --with-zip --enable-mbstring --enable-intl --with-gd \
+          --enable-opcache --with-zlib
+        make -j$(nproc)
+        make install
+      args:
+        creates: /usr/local/apache2/modules/libphp.so
+
+    - name: Activar PHP en Apache
+      copy:
+        dest: /usr/local/apache2/conf/extra/php.conf
+        content: |
+          LoadModule php_module modules/libphp.so
+          AddType application/x-httpd-php .php
+          DirectoryIndex index.php index.html
+    - name: Incluir php.conf en httpd.conf
+      lineinfile:
+        path: /usr/local/apache2/conf/httpd.conf
+        line: Include conf/extra/php.conf
+    - name: Apache como www-data (shell del PoC = www-data)
+      replace:
+        path: /usr/local/apache2/conf/httpd.conf
+        regexp: "{{ item.re }}"
+        replace: "{{ item.rep }}"
+      loop:
+        - {re: '^User .*', rep: 'User www-data'}
+        - {re: '^Group .*', rep: 'Group www-data'}
+
+    - name: Desplegar WordPress 7.0.1 (W1)
+      shell: |
+        set -e
+        cd {{ src }}
+        rm -rf wordpress /var/www/wp
+        unzip -q -o wordpress-{{ wp_ver }}.zip
+        mkdir -p /var/www/wp
+        cp -a wordpress/. /var/www/wp/
+        chown -R www-data:www-data /var/www/wp
+      args:
+        creates: /var/www/wp/wp-login.php
+
+    - name: Desplegar Moodle 5.3.0
+      shell: |
+        set -e
+        cd {{ src }}
+        rm -rf /var/www/moodle
+        mkdir -p /tmp/mdl && tar xzf {{ moodle_tag }}.tar.gz -C /tmp/mdl
+        mkdir -p /var/www/moodle
+        cp -a /tmp/mdl/*/ /var/www/moodle/
+        chown -R www-data:www-data /var/www/moodle
+      args:
+        creates: /var/www/moodle/config-dist.php
+
+    - name: wp-config.php apuntando a M2
+      copy:
+        dest: /var/www/wp/wp-config.php
+        owner: www-data
+        group: www-data
+        mode: "0640"
+        content: |
+          <?php
+          define('DB_NAME', 'wp_db');
+          define('DB_USER', 'wp_user');
+          define('DB_PASSWORD', '{{ db_wp_pass }}');
+          define('DB_HOST', '{{ db_host }}');
+          define('DB_CHARSET', 'utf8mb4');
+          define('WP_HOME', 'http://wp.uni.lab');
+          define('WP_SITEURL', 'http://wp.uni.lab');
+          define('FS_METHOD', 'direct');
+          define('DISALLOW_FILE_EDIT', false);   // W-variante: edicion ON (vulnerable)
+          define('WP_DEBUG', false);
+          $table_prefix = 'wp_';
+          require_once ABSPATH . 'wp-settings.php';
+
+    # --- Errores de configuracion intencionales W5-W7 ---
+    - name: W5 server-status expuesto
+      lineinfile:
+        path: /usr/local/apache2/conf/extra/httpd-info.conf
+        regexp: 'Require '
+        line: '    Require all granted'
+    - name: W6 info.php publico
+      copy:
+        dest: /var/www/wp/info.php
+        owner: www-data
+        group: www-data
+        mode: "0644"
+        content: "<?php phpinfo();\n"
+    - name: W7 listado en uploads (se aplica al crear el vhost)
+      lineinfile:
+        path: /usr/local/apache2/conf/httpd.conf
+        line: |
+          <Directory "/var/www/wp/wp-content/uploads">
+              Options +Indexes
+          </Directory>
+
+    - name: Montajes NFS hacia M3
+      mount:
+        path: "{{ item.path }}"
+        src: "{{ item.src }}"
+        fstype: nfs
+        opts: rw,hard,_netdev
+        state: mounted
+      loop:
+        - {path: /var/www/wp/wp-content/uploads, src: '10.10.10.13:/srv/storage/wp-uploads'}
+        - {path: /var/www/moodledata, src: '10.10.10.13:/srv/storage/moodledata'}
+
+    - name: UFW web + ssh
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop: ["80", "443", "22"]
+
+    - name: Apache como servicio systemd
+      copy:
+        dest: /etc/systemd/system/apache-lab.service
+        content: |
+          [Unit]
+          Description=Apache 2.4.49 laboratorio
+          After=network.target remote-fs.target
+          [Service]
+          Type=forking
+          ExecStart=/usr/local/apache2/bin/apachectl -k start
+          ExecStop=/usr/local/apache2/bin/apachectl -k stop
+          ExecReload=/usr/local/apache2/bin/apachectl -k graceful
+          RemainAfterExit=yes
+          [Install]
+          WantedBy=multi-user.target
+    - name: Habilitar y arrancar Apache
+      systemd:
+        name: apache-lab
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Verificar versiones servidas
+      shell: |
+        /usr/local/apache2/bin/httpd -v
+        php -v
+        test -f /var/www/wp/wp-login.php && echo WP_OK
+      register: verif
+      changed_when: false
+    - name: Mostrar verificacion
+      debug:
+        var: verif.stdout_lines
