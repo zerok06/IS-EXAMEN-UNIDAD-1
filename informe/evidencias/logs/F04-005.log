@@ -1,0 +1,15 @@
+== SMB shares ==
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	backups         Disk      
+	IPC$            IPC       IPC Service (Servidor de respaldos USC)
+Reconnecting with SMB1 for workgroup listing.
+
+	Server               Comment
+	---------            -------
+
+	Workgroup            Master
+	---------            -------
+	USCLAB               BKP01
+== NFS exports ==

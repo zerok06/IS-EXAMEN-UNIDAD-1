@@ -1,0 +1,9 @@
+== PING ==
+PONG
+== versión ==
+redis_version:6.2.6
+os:Linux 5.15.0-198-generic x86_64
+tcp_port:6379
+== requirepass ==
+requirepass
+

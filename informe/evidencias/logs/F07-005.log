@@ -1,0 +1,19 @@
+== D1 PING sin clave (timeout 8s) ==
+rc=124
+== D3 desde M6 ==
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 14:51 -0400
+Nmap scan report for 10.10.10.12
+Host is up.
+
+PORT     STATE    SERVICE
+161/tcp  filtered snmp
+3306/tcp filtered mysql
+6379/tcp filtered redis
+
+Nmap done: 1 IP address (1 host up) scanned in 7.02 seconds
+== D2 vieja por tunel (debe fallar) ==
+ERROR 1045 (28000): Access denied for user 'wp_user'@'10.10.10.11' (using password: YES)
+== D2 nueva (debe OK) ==
+Database
+information_schema
+wordpress

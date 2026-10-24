@@ -1,0 +1,20 @@
+== D3 puertos ==
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 14:45 -0400
+Nmap scan report for 10.10.10.12
+Host is up (0.040s latency).
+
+PORT     STATE    SERVICE
+161/tcp  filtered snmp
+3306/tcp filtered mysql
+6379/tcp open     redis
+
+Nmap done: 1 IP address (1 host up) scanned in 5.43 seconds
+== D1 Redis ==
+PONG
+redis_version:6.2.6
+requirepass
+
+== D2 MariaDB ==
+Database
+information_schema
+wordpress

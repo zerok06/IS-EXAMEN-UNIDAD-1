@@ -1,0 +1,8 @@
+== config.php Moodle ==
+$CFG->dbhost    = '10.10.10.12';
+$CFG->dbname    = 'moodle_db';
+$CFG->dbuser    = 'moodle_user';
+$CFG->dbpass    = 'wp_pass123';
+[sudo] password for ubuntu: == moodle_db ==
+tablas
+487

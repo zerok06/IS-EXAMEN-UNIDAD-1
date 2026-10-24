@@ -1,0 +1,10 @@
+== DBSIZE ==
+0
+== primeras claves ==
+
+== dir ==
+dir
+/var/lib/redis
+== intento CVE-2022-0543 ==
+ERR Error running script (call to f_226f4cb6b0a020511cfb14ab96af3a39803f95e9): @enable_strict_lua:15: user_script:1: Script attempted to access nonexistent global variable 'package'
+

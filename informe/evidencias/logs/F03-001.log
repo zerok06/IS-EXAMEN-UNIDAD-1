@@ -1,0 +1,10 @@
+== W1 ruta batch ==
+batch\/v1
+GET /batch/v1:
+404
+POST vacío:
+400
+== W4 login usc.admin ==
+HTTP/1.1 302 Found
+Set-Cookie: wordpress_logged_in_d8ea59ce7778dc658a31b53e2be68eb5=usc.admin%7C1793032923%7Cg70342lR0SLUS69LZmhzn1oYUX0fMlutvtuOIccK2IL%7C7f1298ceba2f31e3e6fa1dbd307c80b7f5a94885dc2e6fc435b2a3c31b3a084f; path=/; HttpOnly
+Location: http://wp.uni.lab/wp-admin/

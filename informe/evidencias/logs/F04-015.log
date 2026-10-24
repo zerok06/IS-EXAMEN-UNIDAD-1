@@ -1,0 +1,18 @@
+== credencial ==
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows Server 2016 Standard Evaluation 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:False) (SMBv1:True)
+SMB                      10.10.10.14     445    SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+== shares ==
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows Server 2016 Standard Evaluation 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:False) (SMBv1:True)
+SMB                      10.10.10.14     445    SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+SMB                      10.10.10.14     445    SRVOLD           [*] Enumerated shares
+SMB                      10.10.10.14     445    SRVOLD           Share           Permissions     Remark
+SMB                      10.10.10.14     445    SRVOLD           -----           -----------     ------
+SMB                      10.10.10.14     445    SRVOLD           ADMIN$          READ,WRITE      Admin remota
+SMB                      10.10.10.14     445    SRVOLD           C$              READ,WRITE      Recurso predeterminado
+SMB                      10.10.10.14     445    SRVOLD           IPC$            READ            IPC remota
+SMB                      10.10.10.14     445    SRVOLD           legacy          READ,WRITE      
+== whoami ==
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows Server 2016 Standard Evaluation 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:False) (SMBv1:True)
+SMB                      10.10.10.14     445    SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+SMB                      10.10.10.14     445    SRVOLD           [+] Executed command via wmiexec
+SMB                      10.10.10.14     445    SRVOLD           srvold\administrador

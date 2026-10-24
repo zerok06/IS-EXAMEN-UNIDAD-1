@@ -1,0 +1,20 @@
+== ping ==
+PING 10.10.10.11 (10.10.10.11) 56(84) bytes of data.
+64 bytes from 10.10.10.11: icmp_seq=1 ttl=64 time=1349 ms
+64 bytes from 10.10.10.11: icmp_seq=2 ttl=64 time=317 ms
+
+--- 10.10.10.11 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1031ms
+rtt min/avg/max/mdev = 316.794/832.711/1348.629/515.917 ms, pipe 2
+== nmap -sn ==
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 12:23 -0400
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 1.46 seconds
+== curl ==
+HTTP/1.1 301 Moved Permanently
+Date: Sat, 24 Oct 2026 16:24:03 GMT
+Server: Apache/2.4.49 (Unix) PHP/8.4.26
+X-Powered-By: PHP/8.4.26
+X-Redirect-By: WordPress
+== vecino ARP ==
+10.10.10.11 dev eth0 lladdr 14:b5:cd:2f:1b:49 DELAY 

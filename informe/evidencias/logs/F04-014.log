@@ -1,0 +1,2 @@
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows Server 2016 Standard Evaluation 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:False) (SMBv1:True)
+SMB                      10.10.10.14     445    SRVOLD           [-] SRVOLD\Administrator:Admin13.- STATUS_LOGON_FAILURE 

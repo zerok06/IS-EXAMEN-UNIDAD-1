@@ -1,0 +1,18 @@
+
+; <<>> DiG 9.20.23-1-Debian <<>> axfr uni.lab @10.10.10.14 +time=5 +tries=1
+;; global options: +cmd
+uni.lab.		3600	IN	SOA	srvold. hostmaster. 8 900 600 86400 3600
+uni.lab.		3600	IN	NS	srvold.
+app.uni.lab.		3600	IN	A	10.10.10.11
+bkp.uni.lab.		3600	IN	A	10.10.10.13
+db.uni.lab.		3600	IN	A	10.10.10.12
+moodle.uni.lab.		3600	IN	CNAME	app.uni.lab.
+pc-est01.uni.lab.	3600	IN	A	10.10.10.15
+srvold.uni.lab.		3600	IN	A	10.10.10.14
+wp.uni.lab.		3600	IN	CNAME	app.uni.lab.
+uni.lab.		3600	IN	SOA	srvold. hostmaster. 8 900 600 86400 3600
+;; Query time: 4 msec
+;; SERVER: 10.10.10.14#53(10.10.10.14) (TCP)
+;; WHEN: Sat Oct 24 13:19:23 EDT 2026
+;; XFR size: 10 records (messages 1, bytes 325)
+

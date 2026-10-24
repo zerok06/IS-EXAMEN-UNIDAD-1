@@ -1,0 +1,21 @@
+== puertos ==
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 14:41 -0400
+Nmap scan report for 10.10.10.13
+Host is up (0.10s latency).
+
+PORT     STATE    SERVICE
+21/tcp   closed   ftp
+139/tcp  closed   netbios-ssn
+445/tcp  closed   microsoft-ds
+2049/tcp filtered nfs
+
+Nmap done: 1 IP address (1 host up) scanned in 5.68 seconds
+== exports ==
+/srv/storage/wp-uploads  10.10.10.11(rw,sync,no_subtree_check)
+/srv/storage/moodledata  10.10.10.11(rw,sync,no_subtree_check)
+/srv/storage/backups     10.10.10.0/24(rw,sync,no_subtree_check,root_squash)
+== credenciales ==
+ls: cannot access '/srv/storage/backups/credenciales.txt': No such file or directory
+== NFS escribe como nobody ==
+[sudo] password for ubuntu: touch: cannot touch '/mnt/backups-test/RETEST.txt': Permission denied
+DENEGADO

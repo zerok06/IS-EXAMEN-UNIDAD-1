@@ -1,0 +1,15 @@
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 13:19 -0400
+Nmap scan report for 10.10.10.14
+Host is up (0.0028s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+
+Host script results:
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+
+Nmap done: 1 IP address (1 host up) scanned in 4.07 seconds

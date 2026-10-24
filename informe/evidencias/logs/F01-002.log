@@ -1,0 +1,26 @@
+== app.uni.lab ==
+10.10.10.11
+== wp.uni.lab ==
+app.uni.lab.
+10.10.10.11
+== moodle.uni.lab ==
+app.uni.lab.
+10.10.10.11
+== db.uni.lab ==
+10.10.10.12
+== bkp.uni.lab ==
+10.10.10.13
+== srvold.uni.lab ==
+10.10.10.14
+== pc-est01.uni.lab ==
+10.10.10.15
+== SOA ==
+;; communications error to 10.10.10.14#53: timed out
+;; communications error to 10.10.10.14#53: timed out
+;; communications error to 10.10.10.14#53: timed out
+;; no servers could be reached
+== NS ==
+;; communications error to 10.10.10.14#53: timed out
+;; communications error to 10.10.10.14#53: timed out
+;; communications error to 10.10.10.14#53: timed out
+;; no servers could be reached

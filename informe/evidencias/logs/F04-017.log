@@ -1,0 +1,14 @@
+== crear tarea SYSTEM ==
+WINRM                    10.10.10.14     5985   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) 
+WINRM                    10.10.10.14     5985   SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+WINRM                    10.10.10.14     5985   SRVOLD           [+] Executed command (shell type: cmd)
+== ejecutar ==
+WINRM                    10.10.10.14     5985   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) 
+WINRM                    10.10.10.14     5985   SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+WINRM                    10.10.10.14     5985   SRVOLD           [+] Executed command (shell type: cmd)
+WINRM                    10.10.10.14     5985   SRVOLD           CORRECTO: se ha intentado ejecutar la tarea programada "PWNED".
+== leer ==
+WINRM                    10.10.10.14     5985   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) 
+WINRM                    10.10.10.14     5985   SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+WINRM                    10.10.10.14     5985   SRVOLD           [+] Executed command (shell type: cmd)
+WINRM                    10.10.10.14     5985   SRVOLD           nt authority\system

@@ -1,0 +1,17 @@
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 13:09 -0400
+Nmap scan report for 10.10.10.15
+Host is up (0.00044s latency).
+
+PORT     STATE SERVICE
+5900/tcp open  vnc
+| vnc-info: 
+|   Protocol version: 3.8
+|   Security types: 
+|     None (1)
+|     Tight (16)
+|   Tight auth subtypes: 
+|     None
+|_  WARNING: Server does not require authentication
+MAC Address: 00:0C:29:30:77:79 (VMware)
+
+Nmap done: 1 IP address (1 host up) scanned in 4.23 seconds

@@ -1,0 +1,11 @@
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-10-24 12:32 -0400
+Nmap scan report for wp.uni.lab (10.10.10.11)
+Host is up (0.31s latency).
+
+PORT    STATE  SERVICE
+22/tcp  open   ssh
+80/tcp  open   http
+443/tcp closed https
+MAC Address: 14:B5:CD:2F:1B:49 (Liteon Technology)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.70 seconds

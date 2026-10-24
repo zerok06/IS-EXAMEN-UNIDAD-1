@@ -1,0 +1,31 @@
+== HEAD IP ==
+HTTP/1.1 301 Moved Permanently
+Date: Sat, 24 Oct 2026 16:22:31 GMT
+Server: Apache/2.4.49 (Unix) PHP/8.4.26
+X-Powered-By: PHP/8.4.26
+X-Redirect-By: WordPress
+Location: http://wp.uni.lab/
+Content-Type: text/html; charset=UTF-8
+
+
+== HEAD wp.uni.lab ==
+HTTP/1.1 200 OK
+Date: Sat, 24 Oct 2026 16:22:32 GMT
+Server: Apache/2.4.49 (Unix) PHP/8.4.26
+X-Powered-By: PHP/8.4.26
+Link: <http://wp.uni.lab/wp-json/>; rel="https://api.w.org/"
+Link: <http://wp.uni.lab/wp-json/wp/v2/pages/10>; rel="alternate"; title="JSON"; type="application/json"
+Link: <http://wp.uni.lab/>; rel=shortlink
+Content-Type: text/html; charset=UTF-8
+
+
+== robots.txt ==
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+Sitemap: http://wp.uni.lab/wp-sitemap.xml
+
+== wp-json (600 bytes) ==
+{"name":"Universidad Sideral Carri\u00f3n","description":"Formaci\u00f3n al alcance de tod@s","url":"http:\/\/wp.uni.lab","home":"http:\/\/wp.uni.lab","gmt_offset":"0","timezone_string":"","page_for_posts":18,"page_on_front":10,"show_on_front":"page","namespaces":["oembed\/1.0","wp\/v2","wp-site-health\/v1","wp-block-editor\/v1","wp-abilities\/v1"],"authentication":[],"routes":{"\/":{"namespace":"","methods":["GET"],"endpoints":[{"methods":["GET"],"args":{"context":{"default":"view","required":false}}}],"_links":{"self":[{"href":"http:\/\/wp.uni.lab\/wp-json\/"}]}},"\/batch\/v1":{"namespace":"curl: (23) Failure writing output to destination, passed 4344 returned 2424
+

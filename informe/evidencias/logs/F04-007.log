@@ -1,0 +1,8 @@
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  [*] Windows 10 / Server 2019 Build 19041 (name:DESKTOP-DT5F05N) (domain:DESKTOP-DT5F05N) (signing:False) (SMBv1:None)
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  [+] DESKTOP-DT5F05N\cliente:Admin13.- 
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  [*] Enumerated shares
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  Share           Permissions     Remark
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  -----           -----------     ------
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  ADMIN$                          Admin remota
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  C$                              Recurso predeterminado
+SMB                      127.0.0.1       1445   DESKTOP-DT5F05N  IPC$                            IPC remota

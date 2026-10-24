@@ -1,0 +1,12 @@
+W5 server-status:
+403
+W6 info.php:
+500
+W7 uploads:
+403
+W1 batch:
+403
+W3 traversal:
+500
+W2 upload_progress:
+session.upload_progress.enabled = Off

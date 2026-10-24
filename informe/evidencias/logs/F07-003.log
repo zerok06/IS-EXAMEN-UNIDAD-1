@@ -1,0 +1,31 @@
+== S3 vieja falla ==
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows 10 / Server 2016 Build 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:True) (SMBv1:None)
+SMB                      10.10.10.14     445    SRVOLD           [-] SRVOLD\Administrador:password_2026 STATUS_LOGON_FAILURE 
+== S3 nueva OK ==
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows 10 / Server 2016 Build 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:True) (SMBv1:None)
+SMB                      10.10.10.14     445    SRVOLD           [+] SRVOLD\Administrador:M4_Admin_2026! (Pwn3d!)
+== S4 AXFR ==
+
+; <<>> DiG 9.20.23-1-Debian <<>> axfr uni.lab @10.10.10.14 +time=4 +tries=1
+;; global options: +cmd
+; Transfer failed.
+== S1/S5 ==
+WINRM                    10.10.10.14     5985   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) 
+WINRM                    10.10.10.14     5985   SRVOLD           [+] SRVOLD\Administrador:M4_Admin_2026! (Pwn3d!)
+WINRM                    10.10.10.14     5985   SRVOLD           [+] Executed command (shell type: powershell)
+WINRM                    10.10.10.14     5985   SRVOLD           
+WINRM                    10.10.10.14     5985   SRVOLD           
+WINRM                    10.10.10.14     5985   SRVOLD           EnableSMB1Protocol       : False
+WINRM                    10.10.10.14     5985   SRVOLD           RequireSecuritySignature : True
+WINRM                    10.10.10.14     5985   SRVOLD           
+WINRM                    10.10.10.14     5985   SRVOLD           
+== S2 ==
+WINRM                    10.10.10.14     5985   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) 
+WINRM                    10.10.10.14     5985   SRVOLD           [+] SRVOLD\Administrador:M4_Admin_2026! (Pwn3d!)
+WINRM                    10.10.10.14     5985   SRVOLD           [+] Executed command (shell type: powershell)
+WINRM                    10.10.10.14     5985   SRVOLD           
+WINRM                    10.10.10.14     5985   SRVOLD           
+WINRM                    10.10.10.14     5985   SRVOLD           Status    : Stopped
+WINRM                    10.10.10.14     5985   SRVOLD           StartType : Disabled
+WINRM                    10.10.10.14     5985   SRVOLD           
+WINRM                    10.10.10.14     5985   SRVOLD           

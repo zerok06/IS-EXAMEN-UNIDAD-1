@@ -1,0 +1,5 @@
+define( 'DB_NAME', 'wordpress' );
+define( 'DB_USER', 'wp_user' );
+define( 'DB_PASSWORD', 'wp_pass123' );
+define( 'DB_HOST', '10.10.10.12' );
+[sudo] password for ubuntu: 

