@@ -1,5 +1,7 @@
 # 6. Hallazgos
 
+> **Revalidación 2026-10-26:** 22 demostrables, 2 no reproducibles (D1, B2) y 2 no aplicables (S1, C1). Ver [`../docs/VALIDACION-VULNERABILIDADES.md`](../docs/VALIDACION-VULNERABILIDADES.md) y el flujo por vuln en [`../specs/005-fase-4-validacion-explotacion/vulns/`](../specs/005-fase-4-validacion-explotacion/vulns/).
+
 **Estado a 2026-10-24.** Cada fila enlaza a la ficha completa en `hallazgos/` y a la evidencia en `anexos/b-indice-evidencias.md`.
 
 ---

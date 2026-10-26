@@ -1,5 +1,7 @@
 # 4. Metodología
 
+> **Actualización SDD 2026-10-26:** la numeración vigente es **0–7** (7 fases técnicas + Fase 7 informe) según [`../docs/PROCESO-7-FASES.md`](../docs/PROCESO-7-FASES.md). La tabla de abajo se conserva como histórico y se renumera en la Fase 7.
+
 **Enfoque:** ciclo de gestión de vulnerabilidades sobre un laboratorio aislado y autorizado, con evidencia fechada y comandos reproducibles.
 
 ---

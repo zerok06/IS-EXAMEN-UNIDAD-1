@@ -1,5 +1,7 @@
 # 5. Inventario de vulnerabilidades
 
+> **Revalidación 2026-10-26:** 22 demostrables, 2 no reproducibles (D1, B2) y 2 no aplicables (S1, C1). El estado vigente está en [`../docs/VALIDACION-VULNERABILIDADES.md`](../docs/VALIDACION-VULNERABILIDADES.md) y el flujo por vuln en [`../specs/005-fase-4-validacion-explotacion/vulns/`](../specs/005-fase-4-validacion-explotacion/vulns/). Las filas de abajo conservan el estado histórico.
+
 **Fecha de verificación NVD/CVE.org:** 2026-10-24
 **Métrica:** se declara CVSS v3.1 salvo que se indique v4.0.
 **Máquinas objetivo:** M1–M5. M6 es el auditor; R0 es transporte.

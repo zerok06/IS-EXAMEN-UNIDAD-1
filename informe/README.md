@@ -1,5 +1,7 @@
 # Informe · Laboratorio de servicios vulnerables
 
+> **Capa SDD (2026-10-26):** el proceso de 7 fases + informe, el plan maestro, las specs 0–7, las plantillas y los tests están en [`../AGENTS.md`](../AGENTS.md), [`../docs/PROCESO-7-FASES.md`](../docs/PROCESO-7-FASES.md), [`../docs/`](../docs/), [`../specs/`](../specs/) y [`../templates/`](../templates/). Este informe sigue siendo la Capa A; las brechas detectadas están en [`../docs/evaluacion-guia.md`](../docs/evaluacion-guia.md) y se corrigen en las specs `006`–`008`.
+
 **Curso:** IS-1023 Seguridad de la Información · Unidad I · Semana 07
 **Grupo:** _(completar)_
 **Entorno:** LAN aislada `10.10.10.0/24` · 6 VM (M1–M6) + router R0
