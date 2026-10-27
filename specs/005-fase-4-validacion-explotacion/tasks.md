@@ -2,12 +2,12 @@
 
 | ID | Tarea | Depende | Dueño | Est. | Evidencia | Estado |
 |---|---|---|---|---|---|---|
-| T-005-00 | Leer specs por vuln y completar version gate | T-004-08 | Coordinador | 20 min | `templates/version-gate.md` | ⬜ |
+| T-005-00 | Leer specs por vuln y completar version gate | T-004-08 | Coordinador | 20 min | `EV-000-11` / `version-gate-2026-10-27` | ✅ |
 | T-005-01 | Snapshot `previo-a-W1` y PoC wp2shell | T-005-00 | M1/M6 | 2 h | `EV-005-M1-01` | ⬜ |
 | T-005-02 | W4 login + plugin + `id` | T-005-01 | M1/M6 | 30 min | `EV-005-M1-02` | ⬜ |
-| T-005-03 | W3 traversal + RCE | T-003-04 | M1/M6 | 2 h | `EV-005-M1-03` | ⬜ |
-| T-005-04 | W2 PHP2Shell con time-box | T-003-03 | M1/M6 | 3–4 h | `EV-005-M1-04` | ⬜ |
-| T-005-05 | SSH root + `wp-config.php` | T-005-01 | M6 | 15 min | `EV-005-M1-05` | ⬜ |
+| T-005-03 | W3 traversal + RCE | T-003-04 | M1/M6 | 2 h | `EV-005-M1-03` | ✅ |
+| T-005-04 | W2 PHP2Shell con time-box | T-003-03 | M1/M6 | 3–4 h | `EV-W2-01`, log PoC | 🟡 limitación |
+| T-005-05 | SSH root + `wp-config.php` | T-005-01 | M6 | 15 min | `EV-W2-ROOT` | ✅ |
 | T-005-06 | Pivote SSH/ligolo + verificación | T-005-05 | M6 | 30 min | `EV-005-PIVOTE` | ⬜ |
 | T-005-07 | M2: Redis/DB/SNMP | T-005-06 | M6 | 1 h | `EV-005-M2-01` | ⬜ |
 | T-005-08 | M2: D1 Lua (si distro) | T-005-07 | M6 | 2 h | `EV-005-M2-02` | ⬜ |

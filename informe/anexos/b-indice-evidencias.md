@@ -68,6 +68,24 @@
 
 ---
 
+## Pre-0 · Artefactos y FTP (2026-10-27)
+
+| ID | Qué demuestra | Log | PNG | SHA256 log (16) | SHA256 PNG (16) |
+|---|---|---|---|---|---|
+| `LOG-000-04` | 19 artefactos con SHA256 OK y descarga local del rol m6 | 1335 B | — | `456ff2366810ea1a…` | — |
+| `LOG-000-05` | Servidor FTP en `10.10.10.20:2121` y transferencias | 17344 B | — | `712e2892351d6b83…` | — |
+| `LOG-000-06` | M1 descarga WP/PHP/Apache/Moodle + fixed; hashes OK | 1058 B | — | `f78dc29434ccea9d…` | — |
+| `LOG-000-07` | M2 descarga Redis 6.2.6/6.2.7; hashes OK | 334 B | — | `6084904a67f801f0…` | — |
+| `LOG-000-08` | M3 descarga Samba 4.5.9/4.5.10 y vsftpd; hashes OK | 503 B | — | `71a5e486ed1e6b17…` | — |
+| `EV-000-10` | Versiones instaladas M1–M5 (WP 7.0.1, PHP 8.4.26, Apache 2.4.49, Redis 6.2.6, Samba 4.5.10, M5 filtrado) | 1204 B | 78 KB | `037657df3c03d9df…` | `1ddc100f350859af…` |
+| `EV-000-11` | Auditoría de estado vulnerable: W1/W3/W4/W5/W6/W7 OK; W2 y B1 pendientes; M4 con `soporte`; M5 filtrada | 2961 B | 120 KB | `0af178c6ec02bef0…` | `132c612a45baa510…` |
+| `EV-W2-01` | W2: Apache prefork, PHP 8.4.26 NTS, php.ini, offsets y target de sesión | 1093 B | 75 KB | `535550c1e379e165…` | `1d3c075a78dcf705…` |
+| `EV-W2-ROOT` | M1: `ubuntu/Admin13.-` + `sudo` → `uid=0(root)` y `/etc/shadow` | 693 B | 43 KB | `f265b916439adaae…` | `16df7be7309a730b…` |
+
+> Los `LOG-000-0x` son logs de transferencia (sin captura de ventana). `EV-000-10` sí tiene captura y log.
+
+---
+
 ## Evidencias pendientes (VM apagadas o prueba no ejecutada)
 
 | ID previsto | Qué falta | Motivo |

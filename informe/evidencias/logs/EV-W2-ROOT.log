@@ -1,0 +1,14 @@
+=== EV-W2-ROOT · M1 ROOT con credenciales debiles y sudo ===
+Host: kali · Fecha UTC: 2026-10-27T19:44:54Z
+Comando:
+./informe/tools/m1-root.sh
+----------------------------------------------------------------------
+== M1: usuario y elevacion ==
+m1-app
+usuario: uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd)
+sudo:    uid=0(root) gid=0(root) groups=0(root)
+--- primera linea de /etc/shadow (prueba de root) ---
+root:*:19977:0:99999:7:::
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-ROOT.png
+Cierre UTC: 2026-10-27T19:44:55Z

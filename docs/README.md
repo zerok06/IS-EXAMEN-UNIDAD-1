@@ -10,6 +10,7 @@ Esta carpeta contiene la capa de **gobierno y contexto** del proyecto. Las specs
 | [`evaluacion-guia.md`](./evaluacion-guia.md) | Matriz de cumplimiento de las fases 0–7 y brechas detectadas |
 | [`version-matrix.md`](./version-matrix.md) | Versiones vulnerables, versiones corregidas, CVSS, NVD y comandos de verificación |
 | [`snapshots.md`](./snapshots.md) | Procedimiento manual de snapshots, clones, restauración y registro |
+| [`PROTOCOLO-SNAPSHOTS-EVIDENCIAS.md`](./PROTOCOLO-SNAPSHOTS-EVIDENCIAS.md) | Puntos de parada para snapshots y estándar de capturas/logs/hashes |
 | [`../templates/`](../templates/) | Plantillas de informe, hallazgo, version gate, snapshot y deck |
 | [`../artifacts/`](../artifacts/) | Versiones exactas, PoCs, SHA256 y FTP |
 

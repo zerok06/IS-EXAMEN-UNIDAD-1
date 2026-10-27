@@ -1,0 +1,36 @@
+=== EV-000-10 · Versiones instaladas M1-M5 ===
+Host: kali · Fecha UTC: 2026-10-27T00:48:48Z
+Comando:
+./informe/tools/versiones.sh
+----------------------------------------------------------------------
+== Fecha ==
+Tue Oct 27 12:48:48 AM UTC 2026
+
+== M1 (10.10.10.11) ==
+m1-app
+7.0.1
+PHP 8.4.26 (cli) (built: Oct 24 2026 11:38:27) (ZTS)
+Server version: Apache/2.4.49 (Unix)
+Server MPM:     event
+
+== M2 (10.10.10.12) ==
+m2-bd
+Redis server v=6.2.6 sha=00000000:0 malloc=jemalloc-5.1.0 bits=64 build=7868f2d5ac0d96a5
+mysql  Ver 15.1 Distrib 10.11.19-MariaDB, for debian-linux-gnu (x86_64) using  EditLine wrapper
+
+== M3 (10.10.10.13) ==
+bkp01
+Version 4.5.10
+220 (vsFTPd 2.3.4)
+
+== M4 (10.10.10.14) ==
+SMB                      10.10.10.14     445    SRVOLD           [*] Windows 10 / Server 2016 Build 14393 x64 (name:SRVOLD) (domain:SRVOLD) (signing:False) (SMBv1:True) 
+
+== M5 (10.10.10.15) ==
+Host is up (0.00035s latency).
+445/tcp  filtered microsoft-ds
+3389/tcp filtered ms-wbt-server
+5900/tcp filtered vnc
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-000-10.png
+Cierre UTC: 2026-10-27T00:49:26Z

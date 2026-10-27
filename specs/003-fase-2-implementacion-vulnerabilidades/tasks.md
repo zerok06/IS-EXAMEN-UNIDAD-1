@@ -3,9 +3,9 @@
 | ID | Tarea | Depende | Dueño | Est. | Evidencia | Estado |
 |---|---|---|---|---|---|---|
 | T-003-01 | Completar inventario por máquina con CVE/CWE/CVSS | T-002-12 | Coordinador | 30 min | `version-matrix.md` | ⬜ |
-| T-003-02 | Fijar WP 7.0.1 / PHP 8.4.26 / Apache 2.4.49 | T-002-04 | M1 | 60 min | `EV-003-M1-01` | ⬜ |
-| T-003-03 | Configurar prefork + `upload_progress` para W2 | T-003-02 | M1 | 45 min | `EV-003-M1-02` | ⬜ |
-| T-003-04 | Configurar CGI para W3 | T-003-02 | M1 | 30 min | `EV-003-M1-03` | ⬜ |
+| T-003-02 | Fijar WP 7.0.1 / PHP 8.4.26 / Apache 2.4.49 | T-002-04 | M1 | 60 min | `EV-000-11` | ✅ |
+| T-003-03 | Configurar prefork + `upload_progress` para W2 | T-003-02 | M1 | 45 min | `EV-W2-01` | ✅ |
+| T-003-04 | Configurar CGI para W3 | T-003-02 | M1 | 30 min | `EV-005-M1-03` | ✅ |
 | T-003-05 | Verificar W4–W7 | T-003-02 | M1 | 20 min | `EV-003-M1-04` | ⬜ |
 | T-003-06 | Configurar Redis/MariaDB/SNMP | T-002-02 | M2 | 45 min | `EV-003-M2-01` | ⬜ |
 | T-003-07 | Decidir Redis distro vs fuente para D1 | T-003-06 | M2 | 30 min | `EV-003-M2-02` | ⬜ |

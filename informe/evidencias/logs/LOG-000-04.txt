@@ -1,0 +1,42 @@
+== LOG-000-04 · artefactos en M6 (host y servidor FTP) ==
+Tue Oct 27 12:42:41 AM UTC 2026
+
+== raiz ==
+/home/kali/IS-EXAMEN-UNIDAD-1
+
+== SHA256 de los 19 artefactos ==
+fixed/httpd-2.4.51.tar.gz: OK
+fixed/php-8.4.27.tar.gz: OK
+fixed/redis-6.2.7.tar.gz: OK
+fixed/samba-4.5.10.tar.gz: OK
+fixed/vsftpd-3.0.5.tar.gz: OK
+fixed/wordpress-7.0.2.zip: OK
+pocs/ligolo-ng_agent_0.9.2_linux_amd64.tar.gz: OK
+pocs/ligolo-ng_proxy_0.9.2_linux_amd64.tar.gz: OK
+pocs/php2shell-poc-main.zip: OK
+pocs/wp2shell-poc-main.zip: OK
+pocs/wp2shell-vulhub-poc.py: OK
+vulnerable/httpd-2.4.49.tar.gz: OK
+vulnerable/moodle-5.0.11.tar.gz: OK
+vulnerable/php-8.4.26.tar.gz: OK
+vulnerable/redis-6.2.6.tar.gz: OK
+vulnerable/samba-4.5.9.tar.gz: OK
+vulnerable/tightvnc-2.8.90-gpl-setup-64bit.msi: OK
+vulnerable/vsftpd-2.3.4.tar.gz: OK
+vulnerable/wordpress-7.0.1.zip: OK
+
+== descarga local del rol m6 ==
+GET  pocs/wp2shell-vulhub-poc.py
+GET  pocs/wp2shell-poc-main.zip
+GET  pocs/php2shell-poc-main.zip
+GET  pocs/ligolo-ng_proxy_0.9.2_linux_amd64.tar.gz
+GET  pocs/ligolo-ng_agent_0.9.2_linux_amd64.tar.gz
+GET  checksums.sha256
+
+Descargado en: /home/kali/artifacts
+Verificando...
+pocs/ligolo-ng_agent_0.9.2_linux_amd64.tar.gz: OK
+pocs/ligolo-ng_proxy_0.9.2_linux_amd64.tar.gz: OK
+pocs/php2shell-poc-main.zip: OK
+pocs/wp2shell-poc-main.zip: OK
+pocs/wp2shell-vulhub-poc.py: OK

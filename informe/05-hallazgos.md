@@ -11,8 +11,8 @@
 | ID | Máquina | CVE / debilidad | CVSS | Estado | Evidencia |
 |---|---|---|---|---|---|
 | W1 | M1 | CVE-2026-63030 (wp2shell) | 9.8 | 🟡 Fingerprint validado; RCE no ejecutada | `F03-001` |
-| W2 | M1 | CVE-2026-109618/109619 (PHP2Shell) | 9.8 / 8.1 (v3.1) | 🟡 Versión validada; PoC no ejecutado | `F01-004`, `F02-002` |
-| W3 | M1 | CVE-2021-41773 | 9.8 | 🔴 No explotable (CGI 503) | `F03-002` |
+| W2 | M1 | CVE-2026-109618/109619 (PHP2Shell) | 9.8 / 8.1 (v3.1) | 🟡 Precondiciones NTS/prefork cumplidas; leak de heap no cerrado en time-box; ROOT por M1-SSH | `EV-W2-01`, `EV-W2-ROOT` |
+| W3 | M1 | CVE-2021-41773 | 9.8 | 🟢 Explotado: `uid=33(www-data)` vía CGI | `EV-005-M1-03` |
 | W4 | M1 | Clave débil `usc.admin` | ~8.8 | 🟢 Validado (login 302 + cookie) | `F03-001` |
 | W5 | M1 | `server-status` 200 | ~5.3 | 🟢 Validado | `F02-004` |
 | W6 | M1 | `info.php` 200 | ~5.3 | 🟢 Validado | `F02-004` |
@@ -91,8 +91,8 @@
 | ID | Limitación | Qué se reporta |
 |---|---|---|
 | W1 | No se ejecutó PoC completo | Fingerprint + CVE; no se afirma RCE |
-| W2 | PHP ZTS y PoC NTS | Versión afectada; PoC pendiente |
-| W3 | `mod_cgid` sin daemon → 503 | Vulnerabilidad de versión no explotable |
+| W2 | PHP ZTS original; rebuild NTS/prefork en 8080 | Precondiciones cumplidas; el leak de heap del PoC no cerró en el time-box |
+| W3 | CGI corregido (`ExecCGI` + `Scriptsock`) | RCE confirmado; traversal a `/etc/passwd` sigue 500 |
 | D1 | `enable_strict_lua` bloquea `package` | Acceso sin auth; RCE no |
 | B1 | Samba 4.5.10 es fix | No explotable |
 | B2 | Tarball limpio; `:6200` cerrado | No explotable |
@@ -104,6 +104,7 @@
 ## 6.4 Fichas completas
 
 - [`hallazgos/m1-w1-w7.md`](./hallazgos/m1-w1-w7.md)
+- [`hallazgos/w2-php2shell.md`](./hallazgos/w2-php2shell.md)
 - [`hallazgos/m2-d1-d4.md`](./hallazgos/m2-d1-d4.md)
 - [`hallazgos/m3-b1-b4.md`](./hallazgos/m3-b1-b4.md)
 - [`hallazgos/m4-s1-s5.md`](./hallazgos/m4-s1-s5.md)

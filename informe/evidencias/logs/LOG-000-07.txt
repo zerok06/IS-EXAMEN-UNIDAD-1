@@ -1,0 +1,15 @@
+GET  vulnerable/redis-6.2.6.tar.gz
+GET  checksums.sha256
+
+Descargado en: /home/adminm2/artifacts
+Verificando...
+vulnerable/redis-6.2.6.tar.gz: OK
+###FIXED###
+GET  fixed/redis-6.2.7.tar.gz
+GET  checksums.sha256
+
+Descargado en: /home/adminm2/artifacts
+Verificando...
+fixed/redis-6.2.7.tar.gz: OK
+vulnerable/redis-6.2.6.tar.gz: OK
+RC: 0

@@ -1,0 +1,69 @@
+=== EV-000-11 · Auditoria estado vulnerable del laboratorio ===
+Host: kali · Fecha UTC: 2026-10-27T19:00:52Z
+Comando:
+./informe/tools/audit-vulnerable.sh
+----------------------------------------------------------------------
+== Auditoría de estado vulnerable · 2026-10-27T19:00:52Z ==
+
+== M1 ==
+WP=7.0.1
+PHP=PHP 8.4.26 (cli) (built: Oct 24 2026 11:38:27) (ZTS)
+  Thread Safety => enabled
+  display_errors => Off => Off
+  memory_limit => 512M => 512M
+Apache=Server version: Apache/2.4.49 (Unix)
+  Server MPM:     event
+W1_batch_POST=400
+W4_login=302
+W5=200
+W6=200
+W7=Index of /wp-content/uploads
+W3_RCE=uid=33(www-data) gid=33(www-data) groups=33(www-data)
+posts=5
+sudo=uid=0(root) gid=0(root) groups=0(root)
+
+== M2 ==
+Redis server v=6.2.6 sha=00000000:0 malloc=jemalloc-5.1.0 bits=64 build=7868f2d5ac0d96a5
+PING=PONG
+requirepass=
+mysql  Ver 15.1 Distrib 10.11.19-MariaDB, for debian-linux-gnu (x86_64) using  EditLine wrapper
+  LISTEN 0      511          0.0.0.0:6379      0.0.0.0:*          
+  LISTEN 0      70       10.10.10.12:3306      0.0.0.0:*          
+
+== M3 ==
+Version 4.5.10
+220 (vsFTPd 2.3.4)
+/srv/storage/wp-uploads  10.10.10.11(rw,sync,no_subtree_check)
+/srv/storage/moodledata  10.10.10.11(rw,sync,no_subtree_check)
+/srv/storage/backups     10.10.10.0/24(rw,sync,no_subtree_check,no_root_squash)
+SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.18
+
+== M4 (por túnel) ==
+SMB                      127.0.0.1       1445   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) (signing:False) (SMBv1:True) 
+SMB                      127.0.0.1       1445   SRVOLD           [+] SRVOLD\Administrador:password_2026 (Pwn3d!)
+SMB                      127.0.0.1       1445   SRVOLD           [+] SRVOLD\soporte:Soporte123! 
+WINRM                    127.0.0.1       15985  SRVOLD           Administrador
+WINRM                    127.0.0.1       15985  SRVOLD           DefaultAccount
+WINRM                    127.0.0.1       15985  SRVOLD           Invitado
+WINRM                    127.0.0.1       15985  SRVOLD           soporte
+WINRM                    127.0.0.1       15985  SRVOLD           Running
+WINRM                    127.0.0.1       15985  SRVOLD           True
+WINRM                    127.0.0.1       15985  SRVOLD           False
+WINRM                    127.0.0.1       15985  SRVOLD           Nombre de alias      Administradores
+WINRM                    127.0.0.1       15985  SRVOLD           Administrador
+;; XFR size: 10 records (messages 1, bytes 325)
+
+== M5 ==
+Nmap scan report for 10.10.10.15
+MAC Address: 00:0C:29:85:82:CD (VMware)
+Host is up (0.00047s latency).
+445/tcp  filtered microsoft-ds
+3389/tcp filtered ms-wbt-server
+5900/tcp filtered vnc
+5985/tcp filtered wsman
+
+== M6 ==
+FTP 2121 no está escuchando
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-000-11.png
+Cierre UTC: 2026-10-27T19:02:08Z

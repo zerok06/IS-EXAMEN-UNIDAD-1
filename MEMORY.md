@@ -6,9 +6,11 @@
 
 | Indicador | Valor |
 |---|---|
-| Laboratorio | Apagado; ningún `10.10.10.x` responde desde el host |
+| Laboratorio | Encendido parcial: M1–M4 y M6 arriba; M5 arriba pero con 445/3389/5900 filtrados; FTP activo en `10.10.10.20:2121` |
 | Hallazgos | 24 (9 CVE + 15 configuraciones) |
-| Presencia | 5/5 máquinas objetivo (M1–M5) |
+| Presencia | 4/5 máquinas accesibles (M5 sin servicios) |
+| Pre-0 | 19/19 artefactos con SHA256 OK; descargados en M1/M2/M3/M6; M5 pendiente |
+| Estado vulnerable | M1 W1/W3/W4/W5/W6/W7 + SSH; M2 D2/D3/D4; M3 B3/B4/B5; M4 S3/S4/S5 + `soporte`; **W2 con precondiciones NTS/prefork pero leak no cerrado; B1 pendiente; M5 filtrada** |
 | RCE de CVE estrella | 0 (W1/W2/W3 solo fingerprint) |
 | Versiones parcheadas | 0 (mitigación por configuración) |
 | Privesc real M4 | 0 (SYSTEM con credenciales admin, no desde acceso limitado) |
@@ -67,7 +69,7 @@
 
 ## 5. Limitaciones conocidas
 
-- **W1/W2/W3**: no se ejecutó el PoC completo; no se afirma RCE.
+- **W1/W2/W3**: W3 sí tiene RCE (`uid=www-data`); W1 tiene ruta y login; W2 tiene NTS/prefork y offsets, pero el leak de heap del PoC no cerró en el time-box.
 - **W2**: PHP ZTS + MPM event; el PoC espera mod_php prefork y, probablemente, NTS.
 - **W3**: `mod_cgid` sin daemon → 503; no es fallo de versión, es configuración.
 - **D1**: Redis compilado de fuente; CVE-2022-0543 es un problema de empaquetado Debian/Ubuntu.
@@ -78,6 +80,8 @@
 - **M4**: `nt authority\system` se obtuvo con credenciales de admin vía tarea programada; no es privesc.
 - **M4**: PrintNightmare dio `check vulnerable`, pero el `run` no creó sesión; probablemente por `SRVHOST` en M6 y firewall de M4.
 - **Informe**: `07-retest.md` dice ejecutado; `06-remediacion.md` dice pendiente; las versiones no cambiaron.
+- **M5**: arriba a nivel ARP pero 445/3389/5900/5985 filtrados desde M6 y desde M1; no se puede validar C2/C3/C4 ni declarar 5/5.
+- **M1**: entre 2026-10-26 23:53 y 2026-10-27 00:42 UTC pasó de “BD rota + rutas bloqueadas” a “BD OK + W1/W5/W6/W7 abiertas”; el cambio no está documentado.
 
 ## 6. Snapshots
 
@@ -93,14 +97,16 @@
 
 ## 7. Próximos pasos
 
-1. Encender R0/M1–M6 y verificar red, DNS y aislamiento.
-2. Completar snapshots `00-base`, `01-rol-listo`, `estado-inicial-vulnerable` y clon full.
-3. Ejecutar Fase 4 en M1: W1 → W4 → W3 → W2 (time-box).
-4. Pivotar y cerrar M2/M3; crear `soporte` y hacer PrintNightmare LPE en M4; cerrar M5.
-5. Restaurar `estado-inicial-vulnerable`; aplicar Fase 5 con versiones; hacer Fase 6.
-6. Renumerar el informe, mover comandos al anexo interno y preparar diapositivas.
+1. **Snapshots manuales (VMware):** P0 M1/M2 `estado-inicial-vulnerable`; P1 M3 `previo-a-B1`; P2 M4 `previo-a-alta-soporte`; P11 M6 `01-rol-listo`. Seguir [`docs/PROTOCOLO-SNAPSHOTS-EVIDENCIAS.md`](./docs/PROTOCOLO-SNAPSHOTS-EVIDENCIAS.md).
+2. **M5:** diagnosticar firewall/estado; descargar su MSI por FTP cuando responda; no declarar 5/5 hasta entonces.
+3. **M3:** instalar Samba 4.5.9 desde el artefacto verificado y tomar `estado-inicial-vulnerable`.
+4. **M4:** crear `soporte` limitado y tomar `estado-inicial-vulnerable`.
+5. **Fase 4 en M1:** W1 → W4 → W3 → W2 (time-box), con `previo-a-W1/W3/W2` y capturas `EV-005-M1-*`.
+6. Pivotar y cerrar M2/M3; PrintNightmare desde `soporte` en M4; C2/C3/C4 en M5.
+7. Restaurar `estado-inicial-vulnerable`; aplicar Fase 5 con versiones; Fase 6; `estado-parcheado`.
+8. Renumerar el informe, mover comandos al anexo interno y preparar diapositivas.
 
-> Antes de avanzar de fase, completar [`templates/version-gate.md`](./templates/version-gate.md).
+> Version gate del corte: [`docs/version-gate-2026-10-27.md`](./docs/version-gate-2026-10-27.md). No se avanza de fase sin snapshot y sin evidencia.
 
 ## 8. Bitácora de cambios
 
@@ -110,3 +116,9 @@
 | 2026-10-26 | Proceso 7 fases + informe, version gate y plantillas | Agente | `docs/PROCESO-7-FASES.md`, `templates/` |
 | 2026-10-26 | 19 artefactos descargados y verificados; FTP por rol | Agente | `artifacts/`, `checksums.sha256` |
 | 2026-10-26 | Revalidación de 24 vulns + specs por vulnerabilidad | Agente | `docs/VALIDACION-VULNERABILIDADES.md`, `specs/005.../vulns/` |
+| 2026-10-27 | Pre-0 ejecutada: FTP 2121, 19/19 SHA OK, descargas M1/M2/M3/M6; M5 pendiente | Agente | `LOG-000-04`…`LOG-000-08` |
+| 2026-10-27 | Version gate real: W1 listo; W2/W3 con condiciones pendientes; B1=4.5.10 no cumple; M5 filtrado | Agente | `docs/version-gate-2026-10-27.md`, `EV-000-10` |
+| 2026-10-27 | Protocolo de snapshots/evidencias y herramientas `capture.sh`/`vm.sh` | Agente | `docs/PROTOCOLO-SNAPSHOTS-EVIDENCIAS.md`, `informe/tools/` |
+| 2026-10-27 | Validación de estado: W1/W3/W4/W5/W6/W7 + SSH listos; M2 D2/D3/D4 y M3 B3/B4/B5; M4 S3/S4/S5 + `soporte`; **W2 y B1 pendientes; M5 filtrada** | Agente | `EV-000-11`, `docs/version-gate-2026-10-27.md` |
+| 2026-10-27 | W2: rebuild Apache 2.4.49 prefork + PHP 8.4.26 NTS en 8080; offsets 0x52e6f0/0x72ffd0; PoC `HEAP_LEAK_FAILED` (limitación) | Agente | `EV-W2-01`, `informe/hallazgos/w2-php2shell.md` |
+| 2026-10-27 | M1 ROOT: `ubuntu/Admin13.-` + sudo; lectura de `/etc/shadow` | Agente | `EV-W2-ROOT` |

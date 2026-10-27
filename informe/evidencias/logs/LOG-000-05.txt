@@ -1,0 +1,191 @@
+== LOG-000-05 · servidor FTP en M6 10.10.10.20:2121 ==
+Tue Oct 27 12:42:41 AM UTC 2026
+
+== FTP artefactos ==
+Raíz:    /home/kali/IS-EXAMEN-UNIDAD-1/artifacts
+URL:     ftp://10.10.10.20:2121
+Usuario: lab
+Clave:   lab123
+Detener: Ctrl+C
+
+[I 2026-10-26 20:40:34] concurrency model: async
+[I 2026-10-26 20:40:34] masquerade (NAT) address: None
+[I 2026-10-26 20:40:34] passive ports: None
+[I 2026-10-26 20:40:34] >>> starting FTP server on 0.0.0.0:2121, pid=41481 <<<
+[I 2026-10-26 20:40:42] 10.10.10.20:47852-[] FTP session opened (connect)
+[I 2026-10-26 20:40:42] 10.10.10.20:47852-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:40:42] 10.10.10.20:47852-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.001
+[I 2026-10-26 20:40:42] 10.10.10.20:47852-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:40:42] 10.10.10.20:47866-[] FTP session opened (connect)
+[I 2026-10-26 20:40:42] 10.10.10.20:47866-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:40:42] 10.10.10.20:47866-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:40:42] 10.10.10.20:47866-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/wordpress-7.0.1.zip completed=1 bytes=31552576 seconds=0.045
+[I 2026-10-26 20:40:42] 10.10.10.20:47866-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:40:48] 10.10.10.12:34914-[] FTP session opened (connect)
+[I 2026-10-26 20:40:48] 10.10.10.12:34914-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:40:48] 10.10.10.12:34914-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.006
+[I 2026-10-26 20:40:48] 10.10.10.12:34914-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:40:49] 10.10.10.13:46010-[] FTP session opened (connect)
+[I 2026-10-26 20:40:49] 10.10.10.13:46010-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:40:49] 10.10.10.13:46010-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.008
+[I 2026-10-26 20:40:49] 10.10.10.13:46010-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:40:54] 10.10.10.11:59388-[] FTP session opened (connect)
+[I 2026-10-26 20:40:54] 10.10.10.11:59388-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:40:54] 10.10.10.11:59388-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.012
+[I 2026-10-26 20:40:54] 10.10.10.11:59388-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:01] 10.10.10.11:49868-[] FTP session opened (connect)
+[I 2026-10-26 20:41:02] 10.10.10.11:49868-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:02] 10.10.10.11:49868-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp 250
+[I 2026-10-26 20:41:02] 10.10.10.11:49868-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp/fetch-artifacts.sh completed=1 bytes=2079 seconds=0.01
+[I 2026-10-26 20:41:02] 10.10.10.11:49868-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:03] 10.10.10.11:49872-[] FTP session opened (connect)
+[I 2026-10-26 20:41:03] 10.10.10.11:49872-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:03] 10.10.10.11:49872-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:08] 10.10.10.11:49872-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/wordpress-7.0.1.zip completed=1 bytes=31552576 seconds=5.736
+[I 2026-10-26 20:41:09] 10.10.10.11:49872-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:09] 10.10.10.11:38852-[] FTP session opened (connect)
+[I 2026-10-26 20:41:09] 10.10.10.11:38852-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:09] 10.10.10.11:38852-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:12] 10.10.10.11:38852-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/php-8.4.26.tar.gz completed=1 bytes=22536897 seconds=2.52
+[I 2026-10-26 20:41:12] 10.10.10.11:38852-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:12] 10.10.10.11:38866-[] FTP session opened (connect)
+[I 2026-10-26 20:41:12] 10.10.10.11:38866-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:12] 10.10.10.11:38866-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:13] 10.10.10.11:38866-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/httpd-2.4.49.tar.gz completed=1 bytes=9421895 seconds=0.848
+[I 2026-10-26 20:41:13] 10.10.10.11:38866-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:13] 10.10.10.11:38872-[] FTP session opened (connect)
+[I 2026-10-26 20:41:13] 10.10.10.11:38872-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:13] 10.10.10.11:38872-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:24] 10.10.10.11:38872-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/moodle-5.0.11.tar.gz completed=1 bytes=74417877 seconds=10.774
+[I 2026-10-26 20:41:24] 10.10.10.11:38872-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:24] 10.10.10.11:40098-[] FTP session opened (connect)
+[I 2026-10-26 20:41:24] 10.10.10.11:40098-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:24] 10.10.10.11:40098-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:24] 10.10.10.11:40098-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/wp2shell-vulhub-poc.py completed=1 bytes=23833 seconds=0.008
+[I 2026-10-26 20:41:24] 10.10.10.11:40098-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:24] 10.10.10.11:40106-[] FTP session opened (connect)
+[I 2026-10-26 20:41:24] 10.10.10.11:40106-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:24] 10.10.10.11:40106-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:24] 10.10.10.11:40106-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/wp2shell-poc-main.zip completed=1 bytes=46258 seconds=0.008
+[I 2026-10-26 20:41:24] 10.10.10.11:40106-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:24] 10.10.10.11:40110-[] FTP session opened (connect)
+[I 2026-10-26 20:41:24] 10.10.10.11:40110-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:24] 10.10.10.11:40110-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:25] 10.10.10.11:40110-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/php2shell-poc-main.zip completed=1 bytes=212801 seconds=0.024
+[I 2026-10-26 20:41:25] 10.10.10.11:40110-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:25] 10.10.10.11:40126-[] FTP session opened (connect)
+[I 2026-10-26 20:41:25] 10.10.10.11:40126-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:25] 10.10.10.11:40126-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.008
+[I 2026-10-26 20:41:25] 10.10.10.11:40126-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:25] 10.10.10.11:40136-[] FTP session opened (connect)
+[I 2026-10-26 20:41:25] 10.10.10.11:40136-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:25] 10.10.10.11:40136-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed 250
+[I 2026-10-26 20:41:30] 10.10.10.11:40136-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed/wordpress-7.0.2.zip completed=1 bytes=31435175 seconds=4.479
+[I 2026-10-26 20:41:30] 10.10.10.11:40136-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:30] 10.10.10.11:48934-[] FTP session opened (connect)
+[I 2026-10-26 20:41:30] 10.10.10.11:48934-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:30] 10.10.10.11:48934-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed 250
+[I 2026-10-26 20:41:35] 10.10.10.11:48934-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed/php-8.4.27.tar.gz completed=1 bytes=22708176 seconds=4.261
+[I 2026-10-26 20:41:35] 10.10.10.11:48934-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:35] 10.10.10.11:48948-[] FTP session opened (connect)
+[I 2026-10-26 20:41:35] 10.10.10.11:48948-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:35] 10.10.10.11:48948-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed 250
+[I 2026-10-26 20:41:37] 10.10.10.11:48948-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed/httpd-2.4.51.tar.gz completed=1 bytes=9873874 seconds=1.583
+[I 2026-10-26 20:41:37] 10.10.10.11:48948-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:37] 10.10.10.11:35956-[] FTP session opened (connect)
+[I 2026-10-26 20:41:37] 10.10.10.11:35956-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:37] 10.10.10.11:35956-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.006
+[I 2026-10-26 20:41:37] 10.10.10.11:35956-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:43] 10.10.10.12:37208-[] FTP session opened (connect)
+[I 2026-10-26 20:41:43] 10.10.10.12:37208-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:43] 10.10.10.12:37208-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp 250
+[I 2026-10-26 20:41:43] 10.10.10.12:37208-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp/fetch-artifacts.sh completed=1 bytes=2079 seconds=0.01
+[I 2026-10-26 20:41:43] 10.10.10.12:37208-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:44] 10.10.10.12:37224-[] FTP session opened (connect)
+[I 2026-10-26 20:41:44] 10.10.10.12:37224-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:44] 10.10.10.12:37224-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:44] 10.10.10.12:37224-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/redis-6.2.6.tar.gz completed=1 bytes=2476542 seconds=0.142
+[I 2026-10-26 20:41:44] 10.10.10.12:37224-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:44] 10.10.10.12:37236-[] FTP session opened (connect)
+[I 2026-10-26 20:41:44] 10.10.10.12:37236-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:44] 10.10.10.12:37236-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.005
+[I 2026-10-26 20:41:44] 10.10.10.12:37236-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:44] 10.10.10.12:37242-[] FTP session opened (connect)
+[I 2026-10-26 20:41:44] 10.10.10.12:37242-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:44] 10.10.10.12:37242-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed 250
+[I 2026-10-26 20:41:44] 10.10.10.13:59214-[] FTP session opened (connect)
+[I 2026-10-26 20:41:44] 10.10.10.13:59214-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:44] 10.10.10.13:59214-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp 250
+[I 2026-10-26 20:41:44] 10.10.10.13:59214-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp/fetch-artifacts.sh completed=1 bytes=2079 seconds=0.034
+[I 2026-10-26 20:41:44] 10.10.10.13:59214-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:44] 10.10.10.13:59230-[] FTP session opened (connect)
+[I 2026-10-26 20:41:44] 10.10.10.12:37242-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed/redis-6.2.7.tar.gz completed=1 bytes=2487287 seconds=0.364
+[I 2026-10-26 20:41:44] 10.10.10.13:59230-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:44] 10.10.10.13:59230-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:44] 10.10.10.12:37242-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:44] 10.10.10.12:37252-[] FTP session opened (connect)
+[I 2026-10-26 20:41:44] 10.10.10.12:37252-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:44] 10.10.10.12:37252-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.005
+[I 2026-10-26 20:41:44] 10.10.10.12:37252-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:48] 10.10.10.13:59230-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/samba-4.5.9.tar.gz completed=1 bytes=20992307 seconds=3.191
+[I 2026-10-26 20:41:48] 10.10.10.13:59230-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:48] 10.10.10.13:59240-[] FTP session opened (connect)
+[I 2026-10-26 20:41:48] 10.10.10.13:59240-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:48] 10.10.10.13:59240-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable 250
+[I 2026-10-26 20:41:48] 10.10.10.13:59240-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/vulnerable/vsftpd-2.3.4.tar.gz completed=1 bytes=187043 seconds=0.015
+[I 2026-10-26 20:41:48] 10.10.10.13:59240-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:48] 10.10.10.13:59256-[] FTP session opened (connect)
+[I 2026-10-26 20:41:48] 10.10.10.13:59256-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:48] 10.10.10.13:59256-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.009
+[I 2026-10-26 20:41:48] 10.10.10.13:59256-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:48] 10.10.10.13:59268-[] FTP session opened (connect)
+[I 2026-10-26 20:41:48] 10.10.10.13:59268-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:48] 10.10.10.13:59268-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed 250
+[I 2026-10-26 20:41:51] 10.10.10.13:59268-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed/samba-4.5.10.tar.gz completed=1 bytes=20989431 seconds=2.964
+[I 2026-10-26 20:41:51] 10.10.10.13:59268-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:51] 10.10.10.13:33700-[] FTP session opened (connect)
+[I 2026-10-26 20:41:51] 10.10.10.13:33700-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:51] 10.10.10.13:33700-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed 250
+[I 2026-10-26 20:41:51] 10.10.10.13:33700-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/fixed/vsftpd-3.0.5.tar.gz completed=1 bytes=197778 seconds=0.017
+[I 2026-10-26 20:41:51] 10.10.10.13:33700-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:51] 10.10.10.13:33710-[] FTP session opened (connect)
+[I 2026-10-26 20:41:51] 10.10.10.13:33710-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:51] 10.10.10.13:33710-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.006
+[I 2026-10-26 20:41:51] 10.10.10.13:33710-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48052-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48052-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48052-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp 250
+[I 2026-10-26 20:41:59] 10.10.10.20:48052-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/ftp/fetch-artifacts.sh completed=1 bytes=2079 seconds=0.001
+[I 2026-10-26 20:41:59] 10.10.10.20:48052-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48054-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48054-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48054-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:59] 10.10.10.20:48054-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/wp2shell-vulhub-poc.py completed=1 bytes=23833 seconds=0.001
+[I 2026-10-26 20:41:59] 10.10.10.20:48054-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48056-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48056-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48056-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:59] 10.10.10.20:48056-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/wp2shell-poc-main.zip completed=1 bytes=46258 seconds=0.001
+[I 2026-10-26 20:41:59] 10.10.10.20:48056-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48060-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48060-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48060-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:59] 10.10.10.20:48060-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/php2shell-poc-main.zip completed=1 bytes=212801 seconds=0.001
+[I 2026-10-26 20:41:59] 10.10.10.20:48060-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48064-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48064-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48064-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:59] 10.10.10.20:48064-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/ligolo-ng_proxy_0.9.2_linux_amd64.tar.gz completed=1 bytes=8003730 seconds=0.013
+[I 2026-10-26 20:41:59] 10.10.10.20:48064-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48070-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48070-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48070-[lab] CWD /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs 250
+[I 2026-10-26 20:41:59] 10.10.10.20:48070-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/pocs/ligolo-ng_agent_0.9.2_linux_amd64.tar.gz completed=1 bytes=3001516 seconds=0.004
+[I 2026-10-26 20:41:59] 10.10.10.20:48070-[lab] FTP session closed (disconnect).
+[I 2026-10-26 20:41:59] 10.10.10.20:48078-[] FTP session opened (connect)
+[I 2026-10-26 20:41:59] 10.10.10.20:48078-[lab] USER 'lab' logged in.
+[I 2026-10-26 20:41:59] 10.10.10.20:48078-[lab] RETR /home/kali/IS-EXAMEN-UNIDAD-1/artifacts/checksums.sha256 completed=1 bytes=1843 seconds=0.002
+[I 2026-10-26 20:41:59] 10.10.10.20:48078-[lab] FTP session closed (disconnect).
+
+== puerto ==
+LISTEN 0      100          0.0.0.0:2121       0.0.0.0:*   

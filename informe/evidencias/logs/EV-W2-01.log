@@ -1,0 +1,34 @@
+=== EV-W2-01 · W2 precondiciones NTS y prefork ===
+Host: kali · Fecha UTC: 2026-10-27T19:44:45Z
+Comando:
+./informe/tools/w2-check.sh
+----------------------------------------------------------------------
+== Apache prefork (8080) ==
+Server MPM:     prefork
+  threaded:     no
+    forked:     yes (variable process count)
+
+== PHP NTS (CLI) ==
+PHP 8.4.26 (cli) (built: Oct 27 2026 19:25:37) (NTS)
+Copyright (c) The PHP Group
+
+== php.ini efectivo (web 8080) ==
+ Server API Apache 2 Handler 
+ Thread Safety disabled 
+ display_errors On On 
+ max_input_vars 5000 5000 
+ memory_limit 8M 8M 
+ session.upload_progress.enabled On On 
+ session.use_cookies On On 
+ session.use_strict_mode Off Off 
+ Server API (SAPI) Abstraction Layer Andi Gutmans, Shane Caraveo, Zeev Suraski 
+
+== offsets libphp.so ==
+000000000052e6f0 t zif_system
+000000000072ffd0 T zval_ptr_dtor
+
+== target de sesion ==
+session.php HTTP 200
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-01.png
+Cierre UTC: 2026-10-27T19:44:47Z

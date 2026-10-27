@@ -1,0 +1,37 @@
+GET  vulnerable/wordpress-7.0.1.zip
+GET  vulnerable/php-8.4.26.tar.gz
+GET  vulnerable/httpd-2.4.49.tar.gz
+GET  vulnerable/moodle-5.0.11.tar.gz
+GET  pocs/wp2shell-vulhub-poc.py
+GET  pocs/wp2shell-poc-main.zip
+GET  pocs/php2shell-poc-main.zip
+GET  checksums.sha256
+
+Descargado en: /home/ubuntu/artifacts
+Verificando...
+pocs/php2shell-poc-main.zip: OK
+pocs/wp2shell-poc-main.zip: OK
+pocs/wp2shell-vulhub-poc.py: OK
+vulnerable/httpd-2.4.49.tar.gz: OK
+vulnerable/moodle-5.0.11.tar.gz: OK
+vulnerable/php-8.4.26.tar.gz: OK
+vulnerable/wordpress-7.0.1.zip: OK
+###FIXED###
+GET  fixed/wordpress-7.0.2.zip
+GET  fixed/php-8.4.27.tar.gz
+GET  fixed/httpd-2.4.51.tar.gz
+GET  checksums.sha256
+
+Descargado en: /home/ubuntu/artifacts
+Verificando...
+fixed/httpd-2.4.51.tar.gz: OK
+fixed/php-8.4.27.tar.gz: OK
+fixed/wordpress-7.0.2.zip: OK
+pocs/php2shell-poc-main.zip: OK
+pocs/wp2shell-poc-main.zip: OK
+pocs/wp2shell-vulhub-poc.py: OK
+vulnerable/httpd-2.4.49.tar.gz: OK
+vulnerable/moodle-5.0.11.tar.gz: OK
+vulnerable/php-8.4.26.tar.gz: OK
+vulnerable/wordpress-7.0.1.zip: OK
+RC: 0

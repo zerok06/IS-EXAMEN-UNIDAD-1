@@ -1,0 +1,20 @@
+GET  vulnerable/samba-4.5.9.tar.gz
+GET  vulnerable/vsftpd-2.3.4.tar.gz
+GET  checksums.sha256
+
+Descargado en: /home/rony123/artifacts
+Verificando...
+vulnerable/samba-4.5.9.tar.gz: OK
+vulnerable/vsftpd-2.3.4.tar.gz: OK
+###FIXED###
+GET  fixed/samba-4.5.10.tar.gz
+GET  fixed/vsftpd-3.0.5.tar.gz
+GET  checksums.sha256
+
+Descargado en: /home/rony123/artifacts
+Verificando...
+fixed/samba-4.5.10.tar.gz: OK
+fixed/vsftpd-3.0.5.tar.gz: OK
+vulnerable/samba-4.5.9.tar.gz: OK
+vulnerable/vsftpd-2.3.4.tar.gz: OK
+RC: 0
