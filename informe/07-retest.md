@@ -1,71 +1,89 @@
-# 7. Verificación de la remediación (retest)
+# 8. Verificación de la remediación (retest Fase 6)
 
-**Estado:** 🟢 retest ejecutado el 2026-10-24 (F07-001…F07-005). M1/M2/M3/M4/M5 verificados. **Versiones sin cambiar** en ningún servicio; mitigación = configuración + endurecimiento.
-
----
-
-## 7.1 Método
-
-1. Restaurar/partir de `estado-parcheado`.
-2. Repetir los mismos comandos de validación de las fases 3–4 (no otros).
-3. Capturar antes/después lado a lado.
-4. Registrar versión/config final y hash de la evidencia.
+**Estado:** 🟢 Fase 6 completada en **M1–M4** el **2026-10-27**; **M5 pendiente** por puertos filtrados. Se usaron los **mismos comandos** de la explotación y se comparó antes/después. Evidencia única: `EV-007-RETEST`.
 
 ---
 
-## 7.2 Tabla antes/después
+## 8.1 Método
 
-| ID | Antes (evidencia) | Después real (F07) | Estado |
-|---|---|---|---|---|
-| W1 | `F03-001` (`batch\/v1`) | **403** (bloqueo Apache; WP sigue 7.0.1) | 🟡 compensado |
-| W2 | `F01-004`, `F02-002` | `upload_progress.enabled = Off` (PHP sigue 8.4.26) | 🟡 compensado |
-| W3 | `F03-002` (503) | **500**, sin `root:x:0:0` (cgi-bin denegado; Apache sigue 2.4.49) | 🟡 compensado |
-| W4 | `F03-001` (302) | ⬜ no retesteado (sin cambio de clave WP) | ⬜ |
-| W5 | `F02-004` (200) | **403** | ✅ `F07-001` |
-| W6 | `F02-004` (200) | archivo borrado; 0 menciones `phpinfo` (HTTP 500 de WP) | ✅ `F07-001` |
-| W7 | `F02-004` (Index of) | **403** | ✅ `F07-001` |
-| M1-SSH | `F04-000b` (root) | ⬜ sin rotación (requiere dueño) | ⬜ |
-| D1 | `F04-001` (PONG) | `PING` → `NOAUTH`; desde M6 → timeout (filtrado) | ✅ `F07-005` |
-| D2 | `F04-003` (12 tablas) | vieja → `Access denied`; nueva → `wordpress` + 487 tablas | ✅ `F07-005` |
-| D3 | `F02-001` (6379) | `6379`/`3306`/`161` → `filtered` desde M6 | ✅ `F07-005` |
-| D4 | `F02-001` (161) | `public`/`private` eliminadas; `161` filtrado desde M6 | ✅ `F07-005` |
-| B1 | `F04-005` | servicio detenido (Samba 4.5.10 sin cambio de versión) | ✅ `F07-002` |
-| B2 | manual (`:6200`) | **closed** (vsftpd detenido) | ✅ `F07-002` |
-| B3 | `F04-002` | `credenciales.txt` fuera del share; FTP cerrado | ✅ `F07-002` |
-| B4 | `F04-006` (root) | **Permission denied** (`root_squash`) | ✅ `F07-002` |
-| S1 | `F02-001` | **EnableSMB1Protocol: False** | ✅ `F07-003` |
-| S2 | `F04-016` | **Stopped / Disabled** | ✅ `F07-003` |
-| S3 | `F04-015` | vieja `password_2026` → LOGON_FAILURE; nueva `M4_Admin_2026!` OK | ✅ `F07-003` |
-| S4 | `F04-012` | **Transfer failed** | ✅ `F07-003` |
-| S5 | `F04-013` | **RequireSecuritySignature: True** | ✅ `F07-003` |
-| C1 | `F02-001` | **EnableSMB1Protocol: False** | ✅ `F06-005` |
-| C2 | `F04-002`/`F04-007` | clave cambiada a `ClienteM5_2026!` | 🟡 `F06-006b` |
-| C3 | `F02-001` | **UserAuthentication: 1** (NLA) | ✅ `F06-005` |
-| C4 | `F02-001` | **5900 filtered**; `tvnserver` Stopped/Disabled | ✅ `F07-004` |
-
-> **Versiones no cambiadas:** WP 7.0.1, PHP 8.4.26, Apache 2.4.49, Redis 6.2.6, Samba 4.5.10, WS2016 14393 y Win10 19045 siguen iguales. Mitigación = **configuración + endurecimiento**. El cambio de versión queda pendiente con snapshot `estado-parcheado`.
+1. Se limpió el estado comprometido (LFI, sesiones de Chain A, marcadores, plugin/admin) y se partió de la línea base vulnerable.
+2. Se aplicaron versiones corregidas y configuraciones seguras en M1–M4.
+3. Se repitieron los comandos de Fase 4/5 desde M6 (mismos paths y puertos).
+4. Se capturó log + pantalla + SHA256 (`EV-007-RETEST`).
 
 ---
 
-## 7.3 Capturas antes/después
+## 8.2 Tabla antes/después
 
-Para cada fila:
-
-```text
-ANTES:  EV-<ID>-antes.png  + LOG-<ID>-antes.log
-DESPUÉS: EV-<ID>-despues.png + LOG-<ID>-despues.log
-```
-
-Se pegan lado a lado en el anexo y se referencian desde la sección 7. Sin el par antes/después, el hallazgo no se considera cerrado.
+| ID | Antes | Después real | Estado |
+|---|---|---|---|
+| W1 | WP 7.0.1; `POST /batch/v1` = 400 | WP **7.0.2**; `POST` = **403** | 🟢 |
+| W2 | PHP 8.4.26; Chain A RCE `www-data` | PHP **8.4.27**; `upload_progress=Off`; `/lfi.php` = **404** | 🟢 |
+| W3 | Apache 2.4.49; RCE `uid=www-data` | Apache **2.4.51**; traversal/RCE = **403** | 🟢 |
+| W4 | `Admin13.-` → login 302 | `Admin13.-` = **200**; `Uni2026!Admin` = **302** | 🟢 |
+| W5 | `server-status` 200 | externo **403** | 🟢 |
+| W6 | `info.php` 200 | **404** | 🟢 |
+| W7 | `Index of` uploads | externo **403** | 🟢 |
+| M1-SSH | `ubuntu/Admin13.-` + sudo = root | `Admin13.-` falla; `M1_Ubuntu_2026!` funciona | 🟢 |
+| D1 | Redis 6.2.6, `PING` = PONG sin auth | Redis **6.2.7**; `PING` = **NOAUTH**; con clave = PONG | 🟢 |
+| D2 | `wp_pass123` conectaba | vieja = **ERR**; `Wp_Uni_2026!` = **OK** | 🟢 |
+| D3 | 3306/6379 abiertos; 161/UDP | 3306/6379 **filtered**; 161 solo localhost | 🟢 |
+| D4 | SNMP `public`/`private` | `public` deshabilitado; comunidad fuerte solo `127.0.0.1` | 🟢 |
+| B1 | Samba 4.5.10 (fix) | 4.5.10 + SMB2 mínimo | 🟢 |
+| B2 | vsftpd 2.3.4 limpio | sin backdoor; `:6200` cerrado | ⚪ |
+| B3 | FTP anónimo 230 | anónimo = **530**; `credenciales.txt` eliminado | 🟢 |
+| B4 | NFS `no_root_squash` | `root_squash` en los tres exports | 🟢 |
+| B5 | SSH `rony123/rony123` | vieja falla; `M3_Backup_2026!` funciona | 🟢 |
+| S1 | SMBv1 True | **SMBv1 False** | 🟢 |
+| S2 | Spooler Running; `soporte` | Spooler **Stopped**; `soporte` eliminado | 🟢 |
+| S3 | `password_2026` funcionaba | vieja = **LOGON_FAILURE**; `M4_Admin_2026!` = OK | 🟢 |
+| S4 | AXFR completo | **Transfer failed** | 🟢 |
+| S5 | signing off | **signing:True** | 🟢 |
+| C1 | Win10 19045 | no aplica | ⚪ |
+| C2–C4 | M5 filtrado | **pendiente de acceso** | ⬜ |
 
 ---
 
-## 7.4 Residuales
+## 8.3 Versiones antes/después
 
-| ID | Si no se puede cerrar | Mitigación compensatoria |
+| Componente | Antes | Después | Fix |
+|---|---|---|---|
+| WordPress | 7.0.1 | **7.0.2** | 7.0.2 |
+| PHP | 8.4.26 ZTS | **8.4.27 ZTS** + `upload_progress=Off` | 8.4.27 |
+| Apache | 2.4.49 | **2.4.51** | 2.4.50/2.4.51 |
+| Redis | 6.2.6 | **6.2.7** + auth | 6.2.7 |
+| Samba | 4.5.10 | **4.5.10** (fix) | 4.5.10 |
+| vsftpd | 2.3.4 limpio | 2.3.4 + anónimo off | 3.0.5 / limpio |
+| WS2016 | 14393 | SMB1 off, signing on, Spooler off | config |
+| Win10 | 19045 | pendiente | — |
+
+---
+
+## 8.4 Residuales
+
+| ID | Residual | Mitigación / decisión |
 |---|---|---|
-| W1 | Sin actualización de WP | Bloquear `/wp-json/batch/v1` en Apache/WAF |
-| W2 | Sin recompilar PHP | `session.upload_progress.enabled=0`; `pm.max_requests=1` |
-| D1 | Sin actualizar Redis | `requirepass` + `bind 127.0.0.1` + firewall |
-| B1 | Samba EOL | Aislar M3; SMB1 OFF; no exponer 445 |
-| C4 | VNC necesario | Clave fuerte + solo localhost + túnel SSH |
+| W2 | Chain A sigue siendo posible **si existe un LFI**; Chain D zero-dep no está disponible (pago) | LFI eliminado; `upload_progress=Off`; PHP 8.4.27 |
+| M5 | 445/3389/5900 filtrados; no se pudo remediar C2/C3/C4 | Documentar como pendiente; requiere consola/VMware |
+| B2 | vsftpd 2.3.4 limpio | No aplica; `:6200` cerrado |
+| D1 | Redis 6.2.7 en 0.0.0.0:6379 | UFW filtra 6379 + `requirepass`; bind residual tolerable |
+| S1 | SMB1 off | S1 no aplica en este build |
+
+---
+
+## 8.5 Evidencia
+
+| ID | Qué demuestra |
+|---|---|
+| `EV-007-RETEST` | Versiones, W1/W3/W5/W6/W7, W4, SSH M1; Redis/DB/UFW; FTP/NFS/Samba/SSH M3; SMB/Spooler/admin/AXFR M4; M5 filtrado |
+| `EV-W2-08` / `EV-W2-09` | Antes: RCE `www-data` y ROOT con marcadores (para el antes/después) |
+| `EV-ROOT-CHAIN` | Cadena B3 → M1 → sudo → root (antes) |
+
+---
+
+## 8.6 Conclusión
+
+- **M1–M4 cerrados**: W1/W2/W3/W4/W5/W6/W7/M1-SSH, D1–D4, B1–B5 y S1–S5 con evidencia.
+- **M5 pendiente**: sin acceso a servicios; no se declara remediado.
+- **W2**: la versión fija (8.4.27) y `upload_progress=Off` están aplicados; Chain A queda neutralizado al eliminar el LFI. Chain D zero-dep no fue ejecutado (no público).
+- El estado final para demo es **`estado-parcheado`**; debe tomarse snapshot tras este retest en M1–M4 (M5 cuando se acceda).

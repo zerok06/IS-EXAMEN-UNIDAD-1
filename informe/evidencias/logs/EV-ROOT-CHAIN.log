@@ -1,0 +1,16 @@
+=== EV-ROOT-CHAIN · B3 FTP a M1 root por reutilizacion ===
+Host: kali · Fecha UTC: 2026-10-27T21:02:54Z
+Comando:
+./informe/tools/root-chain.sh
+----------------------------------------------------------------------
+== B3 · FTP anónimo M3: credenciales expuestas ==
+admin M4/M5: Admin13.-
+
+== M1 · la misma clave se reutiliza en 'ubuntu' ==
+m1-app
+usuario: uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd)
+sudo:    uid=0(root) gid=0(root) groups=0(root)
+shadow:  root:*:19977:0:99999:7:::
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-ROOT-CHAIN.png
+Cierre UTC: 2026-10-27T21:02:58Z

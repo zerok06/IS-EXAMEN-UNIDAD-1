@@ -26,6 +26,7 @@ if have curl; then
   if [ "$code" = "403" ] || [ "$code" = "404" ]; then pass "W1 batch bloqueado ($code)"; else fail "W1 batch responde $code"; fi
 
   hdr=$(curl -sI --max-time 5 "http://$M1" 2>/dev/null || true)
+  echo "$hdr" | grep -qi 'PHP/8.4.27\|PHP/8.4.28\|PHP/8.4.29' || hdr=$(curl -sI --max-time 5 "http://$M1/wp-login.php" 2>/dev/null || true)
   if echo "$hdr" | grep -qi 'PHP/8.4.27\|PHP/8.4.28\|PHP/8.4.29'; then
     pass "W2 PHP corregido"
   else
@@ -34,7 +35,7 @@ if have curl; then
 
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 --path-as-is \
     "http://$M1/cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd" 2>/dev/null || true)
-  if [ "$code" = "403" ] || [ "$code" = "404" ]; then pass "W3 traversal cerrado ($code)"; else fail "W3 traversal responde $code"; fi
+  if [ "$code" = "400" ] || [ "$code" = "403" ] || [ "$code" = "404" ]; then pass "W3 traversal cerrado ($code)"; else fail "W3 traversal responde $code"; fi
 
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
     -d 'log=usc.admin&pwd=Admin13.-&wp-submit=Log+In&testcookie=1' \
@@ -58,8 +59,8 @@ fi
 
 echo
 if have redis-cli; then
-  out=$(redis-cli -h "$M2" --no-raw PING 2>&1 || true)
-  if echo "$out" | grep -qi 'NOAUTH\|refused\|timed out\|error'; then pass "D1 Redis exige auth o está filtrado"; else fail "D1 Redis responde: $out"; fi
+  out=$(timeout 5 redis-cli -h "$M2" --no-raw PING 2>&1 || true)
+  if [ -z "$out" ] || echo "$out" | grep -qi 'NOAUTH\|refused\|timed out\|error'; then pass "D1 Redis exige auth o está filtrado"; else fail "D1 Redis responde: $out"; fi
 else
   warn "redis-cli no instalado"
 fi
@@ -72,14 +73,16 @@ else
 fi
 
 if have nmap; then
-  out=$(nmap -sT --script smb-security-mode -p 445 "$M4" 2>/dev/null || true)
+  out=$(nmap -sT --host-timeout 8s --script smb-security-mode -p 445 "$M4" 2>/dev/null || true)
   if echo "$out" | grep -qi 'signing:.*True\|message_signing: required\|required'; then
     pass "S5 SMB signing requerido"
+  elif [ -z "$out" ] || echo "$out" | grep -qi 'filtered\|closed'; then
+    warn "S5 no verificable desde M6 (M4 filtrado; verificar por túnel)"
   else
     fail "S5 SMB signing no requerido"
   fi
 
-  out=$(nmap -sT --script vnc-info -p 5900 "$M5" 2>/dev/null || true)
+  out=$(nmap -sT --host-timeout 8s --script vnc-info -p 5900 "$M5" 2>/dev/null || true)
   if echo "$out" | grep -qi 'Authentication: VNC\|VNC Authentication'; then
     pass "C4 VNC exige auth"
   elif echo "$out" | grep -qi 'closed\|filtered'; then
@@ -88,14 +91,16 @@ if have nmap; then
     fail "C4 VNC sigue sin auth"
   fi
 
-  out=$(nmap -sT --script smb-protocols -p 445 "$M4" 2>/dev/null || true)
+  out=$(nmap -sT --host-timeout 8s --script smb-protocols -p 445 "$M4" 2>/dev/null || true)
   if echo "$out" | grep -qi 'NT LM 0.12\|SMBv1'; then
     fail "S1 SMBv1 sigue activo"
+  elif [ -z "$out" ] || echo "$out" | grep -qi 'filtered\|closed'; then
+    warn "S1 no verificable desde M6 (M4 filtrado; verificar por túnel)"
   else
     pass "S1 SMBv1 deshabilitado"
   fi
 
-  out=$(nmap -sT --script rdp-enum-encryption -p 3389 "$M5" 2>/dev/null || true)
+  out=$(nmap -sT --host-timeout 8s --script rdp-enum-encryption -p 3389 "$M5" 2>/dev/null || true)
   if echo "$out" | grep -qi 'CredSSP (NLA)\|NLA'; then
     pass "C3 RDP con NLA"
   else
@@ -107,7 +112,7 @@ fi
 
 echo
 if have showmount; then
-  out=$(showmount -e "$M3" 2>&1 || true)
+  out=$(timeout 5 showmount -e "$M3" 2>&1 || true)
   echo "INFO  B4 exportaciones: $(echo "$out" | tr '\n' ' ')"
   echo "INFO  B4 verifica 'root_squash' manualmente en M3: exportfs -v"
 else

@@ -81,6 +81,16 @@
 | `EV-000-11` | Auditoría de estado vulnerable: W1/W3/W4/W5/W6/W7 OK; W2 y B1 pendientes; M4 con `soporte`; M5 filtrada | 2961 B | 120 KB | `0af178c6ec02bef0…` | `132c612a45baa510…` |
 | `EV-W2-01` | W2: Apache prefork, PHP 8.4.26 NTS, php.ini, offsets y target de sesión | 1093 B | 75 KB | `535550c1e379e165…` | `1d3c075a78dcf705…` |
 | `EV-W2-ROOT` | M1: `ubuntu/Admin13.-` + `sudo` → `uid=0(root)` y `/etc/shadow` | 693 B | 43 KB | `f265b916439adaae…` | `16df7be7309a730b…` |
+| `EV-W2-02` | Intento final W2: sesión compartida, OOM, `HEAP_LEAK_FAILED`, sin `/tmp/p1` | 1057 B | 72 KB | `3cd7486b71fd69b2…` | `c59746aff05d47e5…` |
+| `EV-W2-03` | Reintento W2 con `cleanup=On`: mismo `HEAP_LEAK_FAILED`, sin `/tmp/p1` | 1052 B | 72 KB | `ef157cef472aee23…` | `a2e2e70846bbe315…` |
+| `EV-W2-04` | W2 con PHP del set oficial (sin `intl/gd/exif`) y Apache mínimo en 8081: `HEAP_LEAK_FAILED` | 1119 B | 79 KB | `714c265b107b7475…` | `b00cfdea8eb20b79…` |
+| `EV-W2-05` | W2 contra target oficial `php:8.4.26-apache` (Docker), offsets reales `0x465370/0x65eb60`: `HEAP_LEAK_FAILED` | 1218 B | 85 KB | `9427fc9342304bc8…` | `e197fb6acc249231…` |
+| `EV-ROOT-CHAIN` | B3 FTP anónimo expone `Admin13.-` → reutilizada en `ubuntu` M1 → `sudo` → `root` | 750 B | 45 KB | `6b9696235223f989…` | `9bf7486db69bc8d8…` |
+| `EV-W2-06` | CVE-2026-109618 estilo Datadog: OOM del parser a ~3.00MB, 16M, sin fuga `PHPSESSID` y sin RCE | 908 B | 53 KB | `f6fc04843c1c2fca…` | `3ab8d494bad82869…` |
+| `EV-W2-07` | **Chain A** (`ikow/php2shell-poc`) desde M1: session injection + LFI → `uid=33(www-data)` | 651 B | 42 KB | `e9916fa598a6f11f…` | `4d70ad73306cdf16…` |
+| `EV-W2-08` | Chain A completa + marcador `PWNED-M1-www-data` y verificación HTTP | 919 B | 56 KB | `2567481dc62faf0d…` | `a93f0a7c466f54d4…` |
+| `EV-W2-09` | ROOT en M1 por B3/sudo + `/root/PWNED-M1-root.txt` | 516 B | 34 KB | `30ebe1ebb93b76a9…` | `b457edc6ac57325c…` |
+| `EV-007-RETEST` | Retest Fase 6: versiones, W1/W3/W5/W6/W7, W4, SSH, Redis/DB/UFW, FTP/NFS/Samba, SMB/Spooler/admin/AXFR, M5 | 2769 B | 106 KB | `edbe0ae23cc03d69…` | `9c476d90c43f65ba…` |
 
 > Los `LOG-000-0x` son logs de transferencia (sin captura de ventana). `EV-000-10` sí tiene captura y log.
 

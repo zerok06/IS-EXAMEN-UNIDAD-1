@@ -1,94 +1,86 @@
-# 7. Remediación
+# 7. Remediación aplicada
 
-**Estado:** propuesta y registro de cambios. Las marcas 🟢/⬜ indican si ya se aplicó y verificó.
+**Estado:** 🟢 aplicada y verificada en **M1–M4** el **2026-10-27**. **M5** sigue pendiente (puertos filtrados, sin acceso). Las versiones **sí cambiaron**: WordPress 7.0.2, PHP 8.4.27, Apache 2.4.51, Redis 6.2.7.
 
-> Regla: cada cambio se aplica sobre `estado-inicial-vulnerable`, se prueba y se guarda `estado-parcheado`. No se declara “parcheado” sin retest.
+> Regla aplicada: se limpió el estado comprometido (artefactos de Chain A, LFI, marcadores y sesiones) y se parcheó desde la línea base vulnerable. Evidencia de retest: `EV-007-RETEST`.
 
 ---
 
 ## 7.1 M1 · Aplicación
 
-| ID | Medida | Comando/acción | Estado |
+| ID | Medida aplicada | Verificación | Estado |
 |---|---|---|---|
-| W1 | WordPress 7.0.2+ | `wp core update --version=7.0.2`; revisar plugins/usuarios | ⬜ |
-| W2 | PHP ≥ 8.4.27 | Recompilar/instalar 8.4.27 y reiniciar Apache; temporal `session.upload_progress.enabled=0` | ⬜ |
-| W3 | Apache ≥ 2.4.50 | Actualizar o `Require all denied` en `/cgi-bin/` | ⬜ |
-| W4 | Clave fuerte + 2FA | Cambiar `usc.admin`; límite de intentos; 2FA | ⬜ |
-| W5 | `server-status` restringido | `Require ip 127.0.0.1` o desactivar `mod_status` | ⬜ |
-| W6 | Borrar `info.php` | `sudo rm /var/www/wp/info.php` | ⬜ |
-| W7 | `Options -Indexes` | En `lab-vhosts.conf`, quitar `+Indexes` de uploads | ⬜ |
-| M1-SSH | Clave única y sudo restringido | `passwd ubuntu`; `PermitRootLogin no`; revisar `sudoers` | ⬜ |
-
-**Verificación:** `wp core version` 7.0.2; `php -v` 8.4.27; `httpd -v` 2.4.50; W5/W6/W7 → 403/404; login viejo falla.
+| W1 | WordPress **7.0.2** + bloqueo `/wp-json/batch/v1` | `wp core version` 7.0.2; `POST` = 403 | 🟢 |
+| W2 | PHP **8.4.27** + `session.upload_progress.enabled=Off` + LFI eliminado | `php -v` 8.4.27; `opcache/ini`; `/lfi.php` 404 | 🟢 |
+| W3 | Apache **2.4.51** + CGI denegado | `httpd -v` 2.4.51; traversal/RCE = 403 | 🟢 |
+| W4 | Clave de `usc.admin` rotada a `Uni2026!Admin` | login viejo 200; nuevo 302 + cookie | 🟢 |
+| W5 | `server-status` solo localhost | externo 403 | 🟢 |
+| W6 | `info.php` eliminado | 404 | 🟢 |
+| W7 | `Options -Indexes` en uploads | externo 403 | 🟢 |
+| M1-SSH | Clave `ubuntu` rotada a `M1_Ubuntu_2026!` | SSH viejo falla; nuevo entra | 🟢 |
 
 ---
 
 ## 7.2 M2 · Base de datos
 
-| ID | Medida | Comando/acción | Estado |
+| ID | Medida aplicada | Verificación | Estado |
 |---|---|---|---|
-| D1 | Redis 6.2.7+ + `requirepass` + `bind 127.0.0.1` | `requirepass <fuerte>`; `bind 127.0.0.1`; `protected-mode yes` | ⬜ |
-| D2 | Claves únicas y least privilege | `ALTER USER ... IDENTIFIED BY ...`; limitar GRANT | ⬜ |
-| D3 | Firewall solo M1 | `ufw allow from 10.10.10.11 to any port 3306`; cerrar 6379 | ⬜ |
-| D4 | SNMPv3/ACL | Communities largas o `snmpv3`; `rocommunity` con ACL | ⬜ |
-
-**Verificación:** `redis-cli PING` → `NOAUTH`; `nmap` → 3306/6379/161 filtrados desde M6.
+| D1 | Redis **6.2.7** + `requirepass` + `protected-mode` + UFW | `PING` = NOAUTH; con clave = PONG | 🟢 |
+| D2 | Claves DB rotadas (`Wp_Uni_2026!`, `Moodle_Uni_2026!`) y configs M1 actualizadas | vieja = ERR; nueva = OK; WP responde | 🟢 |
+| D3 | UFW: 3306 solo M1; 6379/161 cerrados a la LAN | `nmap` = filtered | 🟢 |
+| D4 | SNMP `public/private` deshabilitados; comunidad fuerte solo en `127.0.0.1` | `snmpd` en 127.0.0.1:161; 161 filtrado | 🟢 |
 
 ---
 
 ## 7.3 M3 · Respaldos
 
-| ID | Medida | Comando/acción | Estado |
+| ID | Medida aplicada | Verificación | Estado |
 |---|---|---|---|
-| B1 | Samba soportado/parcheado | Actualizar a rama soportada; SMB1 OFF | ⬜ |
-| B2 | Retirar vsftpd 2.3.4 | Desinstalar o reemplazar por ≥3.x sin anónimo | ⬜ |
-| B3 | Anónimo OFF + backups cifrados | `anonymous_enable=NO`; GPG/age; sacar `credenciales.txt` | ⬜ |
-| B4 | `root_squash` | `/etc/exports` con `root_squash`; `exportfs -ra` | ⬜ |
-
-**Verificación:** `:6200` cerrado; `530 Login incorrect`; `showmount` sin `no_root_squash`; escritura root denegada.
+| B1 | Samba **4.5.10** (fix) + `server min protocol = SMB2` | `smbd --version` 4.5.10 | 🟢 |
+| B2 | vsftpd 2.3.4 limpio, sin backdoor | `:6200` cerrado; no aplica | ⚪ |
+| B3 | `anonymous_enable=NO`, `local_enable=YES`; `credenciales.txt` eliminado | FTP anónimo = **530** | 🟢 |
+| B4 | NFS `root_squash` en los tres exports | `exportfs -v` = `root_squash` | 🟢 |
+| B5 | Clave SSH `rony123` rotada a `M3_Backup_2026!` | SSH viejo falla; nuevo entra | 🟢 |
 
 ---
 
 ## 7.4 M4 · Windows Server
 
-| ID | Medida | Comando/acción | Estado |
+| ID | Medida aplicada | Verificación | Estado |
 |---|---|---|---|
-| S1 | MS17-010 + SMBv1 OFF | Windows Update; `Disable-WindowsOptionalFeature -FeatureName SMB1Protocol` | ⬜ |
-| S2 | PrintNightmare + Spooler | Parche; `Set-Service Spooler -StartupType Disabled` si no se imprime | ⬜ |
-| S3 | Clave única / LAPS | `net user Administrator <fuerte>`; LAPS | ⬜ |
-| S4 | AXFR restringido | DNS → Transferencias → solo NS autorizados | ⬜ |
-| S5 | Signing ON + LLMNR/NBT-NS OFF | `Set-SmbServerConfiguration -RequireSecuritySignature $true`; GPO | ⬜ |
+| S1 | SMB1 **off** | `SMBv1:False` | 🟢 |
+| S2 | Spooler **Stopped/Disabled**; usuario `soporte` eliminado | `(Get-Service Spooler).Status` = Stopped; sin `soporte` | 🟢 |
+| S3 | Clave de `Administrador` rotada a `M4_Admin_2026!` | vieja = LOGON_FAILURE; nueva = OK | 🟢 |
+| S4 | AXFR restringido | `dig axfr` = Transfer failed | 🟢 |
+| S5 | SMB signing **on** | `signing:True` | 🟢 |
 
-**Verificación:** `smb-vuln-ms17-010` limpio; `smb-security-mode` signing required; `dig axfr` REFUSED; `nxc` denegado.
+> M4 solo es accesible desde M1 (firewall por diseño); el retest se hizo por túnel SSH M6 → M1 → M4.
 
 ---
 
 ## 7.5 M5 · Estación cliente
 
-| ID | Medida | Comando/acción | Estado |
-|---|---|---|---|
-| C1 | Parches + SMBv1 OFF | Windows Update; deshabilitar SMB1 | ⬜ |
-| C2 | Clave única / LAPS | Cambiar `cliente`; no reutilizar | ⬜ |
-| C3 | NLA + software al día | `UserAuthentication=1`; actualizar Firefox/Office | ⬜ |
-| C4 | VNC con clave + localhost/firewall o desinstalar | TightVNC → password; `localhost`; regla; o desinstalar | ⬜ |
-
-**Verificación:** VNC pide clave; `445 filtered`; RDP con NLA; credencial vieja falla.
-
----
-
-## 7.6 M6 / R0
-
-| Elemento | Medida | Estado |
+| ID | Medida | Estado |
 |---|---|---|
-| M6 | Cerrar `eth2` durante la explotación; limpiar artefactos; conservar logs | ⬜ |
-| R0 | DHCP OFF, sin DSL, WPA2, UPnP/WPS OFF | ✅ según guía; verificar foto |
+| C1 | No aplica (Win10 19045) | ⚪ |
+| C2 | Clave única/LAPS | ⬜ pendiente: M5 con 445/3389/5900 filtrados |
+| C3 | RDP con NLA | ⬜ pendiente |
+| C4 | VNC con clave/localhost o desinstalar | ⬜ pendiente |
 
 ---
 
-## 7.7 Registro de cambios
+## 7.6 Registro de cambios
 
-| Fecha UTC | Máquina | Cambio | Versión/config final | Responsable | Evidencia |
-|---|---|---|---|---|---|
-| — | — | — | — | — | — |
+| Fecha UTC | Máquina | Cambio | Versión/config final | Evidencia |
+|---|---|---|---|---|
+| 2026-10-27 | M1 | WP 7.0.2 + bloqueo batch | 7.0.2 | `EV-007-RETEST` |
+| 2026-10-27 | M1 | PHP 8.4.27 + `upload_progress=Off` | 8.4.27 | `EV-007-RETEST` |
+| 2026-10-27 | M1 | Apache 2.4.51 + CGI denegado | 2.4.51 | `EV-007-RETEST` |
+| 2026-10-27 | M1 | Claves W4/SSH + W5–W7 | config | `EV-007-RETEST` |
+| 2026-10-27 | M2 | Redis 6.2.7 + auth + UFW + SNMP | 6.2.7 | `EV-007-RETEST` |
+| 2026-10-27 | M2 | Claves DB rotadas | config | `EV-007-RETEST` |
+| 2026-10-27 | M3 | FTP anónimo off, NFS root_squash, SSH | config | `EV-007-RETEST` |
+| 2026-10-27 | M4 | SMB1 off, signing on, Spooler off, claves, AXFR | config | `EV-007-RETEST` |
+| — | M5 | Pendiente de acceso | — | — |
 
-> Completar al aplicar cada parche. La tabla es la fuente para la sección 7 del informe y para el retest.
+> La tabla de versiones antes/después está en [`../docs/version-gate-2026-10-27-patched.md`](../docs/version-gate-2026-10-27-patched.md).

@@ -1,0 +1,12 @@
+=== EV-W2-09 · ROOT M1 marcador final ===
+Host: kali · Fecha UTC: 2026-10-27T21:12:23Z
+Comando:
+./informe/tools/root-marker.sh
+----------------------------------------------------------------------
+uid=0(root) gid=0(root) groups=0(root)
+m1-app
+ROOT-PWNED-M1
+-rw-r--r-- 1 root root 14 oct 27 21:12 /root/PWNED-M1-root.txt
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-09.png
+Cierre UTC: 2026-10-27T21:12:25Z

@@ -1,0 +1,74 @@
+=== EV-007-RETEST · Fase 6 retest completo ===
+Host: kali · Fecha UTC: 2026-10-27T22:08:34Z
+Comando:
+./informe/tools/fase6-retest.sh
+----------------------------------------------------------------------
+== M1 · versiones ==
+7.0.2
+PHP 8.4.27 (cli) (built: Oct 27 2026 21:46:32) (ZTS)
+Server version: Apache/2.4.51 (Unix)
+display_errors => Off => Off
+session.upload_progress.enabled => Off => Off
+
+== M1 · W1/W3/W5/W6/W7 ==
+W1_batch=403
+W3_RCE=<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+W5=403
+W6=404
+W7=403
+W2_lfi=404
+
+== M1 · W4 ==
+W4_old=200
+W4_new=302
+
+== M1 · SSH ==
+SSH_old=paramiko.ssh_exception.AuthenticationException: Authentication failed.
+SSH_new=uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd)
+m1-app
+
+== M2 ==
+Redis server v=6.2.7 sha=00000000:0 malloc=jemalloc-5.1.0 bits=64 build=55bc37b040799a8a
+redis_sin_auth=NOAUTH Authentication required.
+redis_con_auth=PONG
+-- puertos desde M6 --
+3306/tcp filtered mysql
+6379/tcp filtered redis
+161/udp open|filtered snmp
+
+== M1 · D2 (credenciales DB) ==
+old=ERR
+new=OK
+
+== M3 ==
+[sudo] password for rony123: Version 4.5.10
+anonymous_enable=NO
+local_enable=YES
+/srv/storage/backups
+		10.10.10.0/24(sync,wdelay,hide,no_subtree_check,sec=sys,rw,secure,root_squash,no_all_squash)
+FTP_anon=530
+530/denegado
+SSH_old=paramiko.ssh_exception.AuthenticationException: Authentication failed.
+SSH_new=uid=1000(rony123) gid=1000(rony123) groups=1000(rony123),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd)
+bkp01
+
+== M4 ==
+SMB                      127.0.0.1       1445   SRVOLD           [*] Windows 10 / Server 2016 Build 14393 (name:SRVOLD) (domain:SRVOLD) (signing:True) (SMBv1:False)
+admin_old=SMB                      127.0.0.1       1445   SRVOLD           [-] SRVOLD\Administrador:password_2026 STATUS_LOGON_FAILURE 
+admin_new=SMB                      127.0.0.1       1445   SRVOLD           [+] SRVOLD\Administrador:M4_Admin_2026! (Pwn3d!)
+WINRM                    127.0.0.1       15985  SRVOLD           Stopped
+WINRM                    127.0.0.1       15985  SRVOLD           False
+WINRM                    127.0.0.1       15985  SRVOLD           True
+WINRM                    127.0.0.1       15985  SRVOLD           Administrador
+WINRM                    127.0.0.1       15985  SRVOLD           DefaultAccount
+WINRM                    127.0.0.1       15985  SRVOLD           Invitado
+AXFR=; Transfer failed.
+
+== M5 ==
+Host is up (0.00035s latency).
+445/tcp  filtered microsoft-ds
+3389/tcp filtered ms-wbt-server
+5900/tcp filtered vnc
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-007-RETEST.png
+Cierre UTC: 2026-10-27T22:09:42Z

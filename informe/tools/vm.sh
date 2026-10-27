@@ -8,9 +8,9 @@ TARGET="${1:?uso: vm.sh <m1|m2|m3|m6> \"<comando>\"}"
 CMD="${2:?falta el comando}"
 
 case "$TARGET" in
-  m1) HOST=10.10.10.11; USER=ubuntu;  PASS='Admin13.-' ;;
+  m1) HOST=10.10.10.11; USER=ubuntu;  PASS="${M1_PASS:-Admin13.-}" ;;
   m2) HOST=10.10.10.12; USER=adminm2; PASS='adminm2' ;;
-  m3) HOST=10.10.10.13; USER=rony123; PASS='rony123' ;;
+  m3) HOST=10.10.10.13; USER=rony123; PASS="${M3_PASS:-rony123}" ;;
   m6) HOST=10.10.10.20; USER=kali;    PASS='' ;;          # local, sin SSH
   *)  echo "Destino inválido: $TARGET (m1|m2|m3|m6)" >&2; exit 2 ;;
 esac

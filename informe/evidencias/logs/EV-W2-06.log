@@ -1,0 +1,16 @@
+=== EV-W2-06 · W2 CVE-2026-109618 OOM estilo Datadog ===
+Host: kali · Fecha UTC: 2026-10-27T21:06:38Z
+Comando:
+python3 informe/tools/w2-datadog.py
+----------------------------------------------------------------------
+N=2.88MB status=200 body_len=40 cookie_len=50
+cookie: PHPSESSID=06dbe937041ee66cee304f68f7755460; path=/
+body: b'sid=06dbe937041ee66cee304f68f7755460 n=1'
+------------------------------------------------------------
+N=3.00MB status=200 body_len=151 cookie_len=0
+cookie: 
+body: b'<br />\n<b>Fatal error</b>:  Allowed memory size of 16777216 bytes exhausted (tried to allocate 3145760 bytes) in <b>Unknown</b> on line <b>0</b><br />\n'
+------------------------------------------------------------
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-06.png
+Cierre UTC: 2026-10-27T21:06:38Z

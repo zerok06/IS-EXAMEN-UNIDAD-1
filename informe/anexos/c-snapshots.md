@@ -61,14 +61,14 @@ Cada entrada del registro debe incluir: máquina, nombre, fecha UTC, propósito 
 
 | Nombre lógico | Nombre real en VMware | Máquina | Fecha UTC | Responsable |
 |---|---|---|---|---|
-| `estado-inicial-vulnerable` | ______________________ | M1 | — | Estudiante 1 |
-| `previo-a-W2` | ______________________ | M1 | — | Estudiante 1 |
-| `estado-inicial-vulnerable` | ______________________ | M2 | — | Estudiante 2 |
-| `estado-inicial-vulnerable` | ______________________ | M3 | — | Estudiante 3 |
-| `estado-inicial-vulnerable` | ______________________ | M4 | — | Estudiante 4 |
-| `previo-a-S1` | ______________________ | M4 | — | Estudiante 4 |
-| `estado-inicial-vulnerable` | ______________________ | M5 | — | Estudiante 5 |
-| `estado-parcheado` | ______________________ | M1–M5 | — | Cada dueño |
+| `estado-inicial-vulnerable` | por mapear | M1 | — | Estudiante 1 |
+| `previo-a-W2` | por mapear | M1 | — | Estudiante 1 |
+| `estado-inicial-vulnerable` | por mapear | M2 | — | Estudiante 2 |
+| `estado-inicial-vulnerable` | por mapear | M3 | — | Estudiante 3 |
+| `estado-inicial-vulnerable` | por mapear | M4 | — | Estudiante 4 |
+| `previo-a-S1` | por mapear | M4 | — | Estudiante 4 |
+| `estado-inicial-vulnerable` | por mapear | M5 | — | Estudiante 5 |
+| `estado-parcheado` | por mapear | M1–M5 | — | Cada dueño |
 
 > **Cómo leerlo:** si el nombre real es distinto (`snapshot1`, `base`, `antes-W2`, etc.), se anota en la segunda columna y se usa ese nombre al restaurar. El nombre lógico es el que aparece en este informe.
 

