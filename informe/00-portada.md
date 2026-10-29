@@ -10,17 +10,16 @@
 
 **Título:** Montaje, análisis y aseguramiento de un entorno de red con servicios vulnerables
 
-**Grupo:** _(completar número y nombre)_
-**Integrantes y roles:**
+**Integrantes:**
 
-| Integrante | Máquina | Rol |
-|---|---|---|
-| _(nombre)_ | M1 `10.10.10.11` | Servidor de aplicación |
-| _(nombre)_ | M2 `10.10.10.12` | Servidor de base de datos |
-| _(nombre)_ | M3 `10.10.10.13` | Servidor de respaldos |
-| _(nombre)_ | M4 `10.10.10.14` | Windows Server heredado |
-| _(nombre)_ | M5 `10.10.10.15` | Estación de trabajo |
-| _(nombre)_ | M6 `10.10.10.20` | Kali / auditoría |
+- APAZA ANAHUA, DORIS
+- ANCCO RAFAEL, FABIOLA ANDREA
+- RAMOS VERA, ERICK JEAN PIER
+- NINA CRUZ, MARCO
+- CHURATA HUACANI, RONY FRANK
+- PAYE MAMANI, JOSE ENRIQUE
+
+**Roles por máquina:** M1 aplicación, M2 base de datos, M3 respaldos, M4 Windows Server, M5 estación cliente y M6 auditoría.
 
 **Fecha:** 2026-10-24
 **Entorno:** laboratorio aislado `10.10.10.0/24`, autorizado por el docente.

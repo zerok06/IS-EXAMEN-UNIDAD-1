@@ -1,0 +1,20 @@
+{
+  "name": "php2shell-video",
+  "version": "1.0.0",
+  "description": "Video Remotion del caso PHP2Shell - IS-1023",
+  "type": "module",
+  "scripts": {
+    "start": "remotion studio src/index.js",
+    "compositions": "remotion compositions src/index.js",
+    "assets": "python scripts/make_assets.py",
+    "whisper": "python scripts/whisper_transcribe.py",
+    "render-fast": "python scripts/ffmpeg_render.py",
+    "render": "remotion render src/index.js PHP2ShellVideo out/PHP2Shell-IS1023.mp4 --codec=h264 --crf=20 --pixel-format=yuv420p --concurrency=10 --x264-preset=ultrafast --audio-codec=aac --audio-bitrate=160k --browser-executable=\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --overwrite"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.538",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.538"
+  }
+}

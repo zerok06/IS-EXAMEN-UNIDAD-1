@@ -1,0 +1,18 @@
+# Dependencias locales
+node_modules/
+presentacion/node_modules/
+presentacion/remotion/node_modules/
+
+# Render temporales y duplicados
+presentacion/remotion/out/
+presentacion/video/
+presentacion/remotion/whisper/whisper.log
+
+# Auxiliares de LaTeX
+plantilla-IS1023/*.aux
+plantilla-IS1023/*.log
+plantilla-IS1023/*.lof
+plantilla-IS1023/*.lot
+plantilla-IS1023/*.out
+plantilla-IS1023/*.toc
+plantilla-IS1023/compile2.log

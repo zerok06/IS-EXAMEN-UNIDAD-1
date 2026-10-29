@@ -1,0 +1,1182 @@
+[
+  {
+    "n": 1,
+    "title": "Portada — PHP2Shell",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 24.816,
+    "language": "es",
+    "text": "Buenas tardes. Somos el equipo de seguridad de la información y presentamos PHP 2L, un caso real de explotación sobre PHP 8.4.26 en la red universitaria. Partimos de la superficie expuesta, llegamos a www.dera y luego a root. Todo está respaldado con comandos, capturas y hashes. La réplica se hará en vivo desde Cali.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 12.0,
+        "text": "Buenas tardes. Somos el equipo de seguridad de la información y presentamos PHP 2L, un caso real de explotación sobre PHP 8.4.26 en la red universitaria."
+      },
+      {
+        "start": 12.0,
+        "end": 24.0,
+        "text": "Partimos de la superficie expuesta, llegamos a www.dera y luego a root. Todo está respaldado con comandos, capturas y hashes. La réplica se hará en vivo desde Cali."
+      }
+    ]
+  },
+  {
+    "n": 2,
+    "title": "Recorrido de la exposición",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 36.456,
+    "language": "es",
+    "text": "El recorrido tiene cinco fases. Fase 1, configuración y superficie, con la red, topología, activos, puertos y versiones. Fase 2, exploración, con dos comandos por máquina y su salida. Fase 3, explotación de PHP 2L, desde el version get hasta chene, wwwdera y root. Fase 4, mitigación, con versión o configuración por máquina y el comando de verificación. Fase 5, retest y cierre. La idea es simple, de la versión vulnerable a root, con evidencia en cada fase.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.8,
+        "text": "El recorrido tiene cinco fases."
+      },
+      {
+        "start": 2.8,
+        "end": 9.8,
+        "text": "Fase 1, configuración y superficie, con la red, topología, activos, puertos y versiones."
+      },
+      {
+        "start": 9.8,
+        "end": 14.8,
+        "text": "Fase 2, exploración, con dos comandos por máquina y su salida."
+      },
+      {
+        "start": 14.8,
+        "end": 22.1,
+        "text": "Fase 3, explotación de PHP 2L, desde el version get hasta chene, wwwdera y root."
+      },
+      {
+        "start": 22.1,
+        "end": 28.4,
+        "text": "Fase 4, mitigación, con versión o configuración por máquina y el comando de verificación."
+      },
+      {
+        "start": 28.4,
+        "end": 30.4,
+        "text": "Fase 5, retest y cierre."
+      },
+      {
+        "start": 30.4,
+        "end": 36.4,
+        "text": "La idea es simple, de la versión vulnerable a root, con evidencia en cada fase."
+      }
+    ]
+  },
+  {
+    "n": 3,
+    "title": "Contexto: qué quisimos montar",
+    "voice": "es-PE-AlexNeural",
+    "duration": 29.256,
+    "language": "es",
+    "text": "La red universitaria expone un portal web, base de datos, respaldos, un Windows heredado y estaciones de trabajo. Todo en 10.10.10.0 diagonal 24, m6 es el punto de auditoría desde donde se valida la superficie. Identificamos 24 hallazgos, 22 se llevaron a evidencia. El objetivo es identificar, enumerar, explotar, escalar a root, remediar y verificar.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 8.3,
+        "text": "La red universitaria expone un portal web, base de datos, respaldos, un Windows heredado y estaciones de trabajo."
+      },
+      {
+        "start": 8.3,
+        "end": 17.2,
+        "text": "Todo en 10.10.10.0 diagonal 24, m6 es el punto de auditoría desde donde se valida la superficie."
+      },
+      {
+        "start": 17.2,
+        "end": 22.4,
+        "text": "Identificamos 24 hallazgos, 22 se llevaron a evidencia."
+      },
+      {
+        "start": 22.4,
+        "end": 29.1,
+        "text": "El objetivo es identificar, enumerar, explotar, escalar a root, remediar y verificar."
+      }
+    ]
+  },
+  {
+    "n": 4,
+    "title": "Arquitectura y camino de ataque",
+    "voice": "es-PE-AlexNeural",
+    "duration": 32.52,
+    "language": "es",
+    "text": "La topología tiene una sola puerta web, M1. Desde M1 se pibota a M2, la base de datos, y a M3, los respaldos. M4 es el Windows Server y M5 la estación cliente. R0 solo transporta. La separación es lógica, no física, documentamos que 445 de M4 y 5900 de M5 quedaron visibles desde M6. Ese detalle también es parte del hallazgo.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 4.1,
+        "text": "La topología tiene una sola puerta web, M1."
+      },
+      {
+        "start": 4.1,
+        "end": 11.1,
+        "text": "Desde M1 se pibota a M2, la base de datos, y a M3, los respaldos."
+      },
+      {
+        "start": 11.1,
+        "end": 15.66,
+        "text": "M4 es el Windows Server y M5 la estación cliente."
+      },
+      {
+        "start": 15.66,
+        "end": 18.2,
+        "text": "R0 solo transporta."
+      },
+      {
+        "start": 18.2,
+        "end": 29.1,
+        "text": "La separación es lógica, no física, documentamos que 445 de M4 y 5900 de M5 quedaron visibles desde M6."
+      },
+      {
+        "start": 29.1,
+        "end": 32.1,
+        "text": "Ese detalle también es parte del hallazgo."
+      }
+    ]
+  },
+  {
+    "n": 5,
+    "title": "Activos: qué expone cada máquina",
+    "voice": "es-PE-AlexNeural",
+    "duration": 38.064,
+    "language": "es",
+    "text": "Estas son las versiones que observamos desde Cali. M1 corre Apache 2.4.49, PHP 8.4.26 y WordPress 7.0.1. M2 tiene MariaDB 10.11.19 y Redis 6.2.6. M3 se expone FTP, SMB y NFS. M4 es Windows Server 2016 con DNS y SMB. M5 es Windows 10 con Tiktok BNC. Las versiones exactas son las que disparan el version gate.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 3.52,
+        "text": "Estas son las versiones que observamos desde Cali."
+      },
+      {
+        "start": 3.52,
+        "end": 13.36,
+        "text": "M1 corre Apache 2.4.49, PHP 8.4.26 y WordPress 7.0.1."
+      },
+      {
+        "start": 13.36,
+        "end": 19.96,
+        "text": "M2 tiene MariaDB 10.11.19 y Redis 6.2.6."
+      },
+      {
+        "start": 19.96,
+        "end": 24.8,
+        "text": "M3 se expone FTP, SMB y NFS."
+      },
+      {
+        "start": 24.8,
+        "end": 29.8,
+        "text": "M4 es Windows Server 2016 con DNS y SMB."
+      },
+      {
+        "start": 29.8,
+        "end": 33.8,
+        "text": "M5 es Windows 10 con Tiktok BNC."
+      },
+      {
+        "start": 33.8,
+        "end": 37.8,
+        "text": "Las versiones exactas son las que disparan el version gate."
+      }
+    ]
+  },
+  {
+    "n": 6,
+    "title": "M1 · Aplicación",
+    "voice": "es-PE-AlexNeural",
+    "duration": 27.336,
+    "language": "es",
+    "text": "N1 es el servidor de aplicación y la puerta de entrada. Publica WordPress y Moodle, y concentra la base de datos. Aquí explotamos W2 por Chena, que nos dio wwwdera, W3, el traversal de Apache, que también dio wwwdera, y W4, una clave débil que permitió entrar como administrador. Con Asasach y sudo cerramos el camino a root.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 4.0,
+        "text": "N1 es el servidor de aplicación y la puerta de entrada."
+      },
+      {
+        "start": 4.0,
+        "end": 8.5,
+        "text": "Publica WordPress y Moodle, y concentra la base de datos."
+      },
+      {
+        "start": 8.5,
+        "end": 13.5,
+        "text": "Aquí explotamos W2 por Chena, que nos dio wwwdera,"
+      },
+      {
+        "start": 13.5,
+        "end": 18.5,
+        "text": "W3, el traversal de Apache, que también dio wwwdera,"
+      },
+      {
+        "start": 18.5,
+        "end": 23.5,
+        "text": "y W4, una clave débil que permitió entrar como administrador."
+      },
+      {
+        "start": 23.5,
+        "end": 27.0,
+        "text": "Con Asasach y sudo cerramos el camino a root."
+      }
+    ]
+  },
+  {
+    "n": 7,
+    "title": "M2 · Base de datos",
+    "voice": "es-PE-CamilaNeural",
+    "duration": 20.448,
+    "language": "es",
+    "text": "M2 es la base de datos. Redis respondió sin autenticación y confirmamos el acceso con un PON. Desde WQQNFG obtuvimos las claves de la base y, por un túnel SSH, leímos WordPress con 12 tablas y mudé el guión bajo DB con 487. No hizo falta un exploit complejo, la configuración expuesta fue suficiente.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.0,
+        "text": "M2 es la base de datos."
+      },
+      {
+        "start": 2.0,
+        "end": 6.0,
+        "text": "Redis respondió sin autenticación y confirmamos el acceso con un PON."
+      },
+      {
+        "start": 6.0,
+        "end": 15.0,
+        "text": "Desde WQQNFG obtuvimos las claves de la base y, por un túnel SSH, leímos WordPress con 12 tablas y mudé el guión bajo DB con 487."
+      },
+      {
+        "start": 15.0,
+        "end": 20.0,
+        "text": "No hizo falta un exploit complejo, la configuración expuesta fue suficiente."
+      }
+    ]
+  },
+  {
+    "n": 8,
+    "title": "M3 · Respaldos",
+    "voice": "es-BO-MarceloNeural",
+    "duration": 23.232,
+    "language": "es",
+    "text": "M3 es el servidor de respaldos. El Actity aceptaba acceso anónimo y dentro estaba credenciales, TXT con la clave Admin 13. Esa misma clave se reutilizaba en M1. Además, NFS permitía escribir como root por node yon bajo root yon bajo squash. Con esas dos debilidades, M3 se convirtió en el eslabón que entregó la llave maestra.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.76,
+        "text": "M3 es el servidor de respaldos."
+      },
+      {
+        "start": 2.76,
+        "end": 8.84,
+        "text": "El Actity aceptaba acceso anónimo y dentro estaba credenciales, TXT con la clave Admin 13."
+      },
+      {
+        "start": 8.84,
+        "end": 11.96,
+        "text": "Esa misma clave se reutilizaba en M1."
+      },
+      {
+        "start": 11.96,
+        "end": 17.66,
+        "text": "Además, NFS permitía escribir como root por node yon bajo root yon bajo squash."
+      },
+      {
+        "start": 17.66,
+        "end": 23.16,
+        "text": "Con esas dos debilidades, M3 se convirtió en el eslabón que entregó la llave maestra."
+      }
+    ]
+  },
+  {
+    "n": 9,
+    "title": "M4 · Windows Server",
+    "voice": "es-MX-DaliaNeural",
+    "duration": 24.36,
+    "language": "es",
+    "text": "M4 es el Windows Server. La cuenta de administrador tenía una clave débil, con ello obtuvimos PWN3 de y acceso a las comparticiones. El DNS permitía transferencia de zona, así que obtuvimos el mapa completo de Unic Lab. Con credenciales administrativas llegamos a Sistem mediante una tarea programada. No fue un privilege escalation desde un usuario limitado.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.5,
+        "text": "M4 es el Windows Server."
+      },
+      {
+        "start": 2.5,
+        "end": 9.5,
+        "text": "La cuenta de administrador tenía una clave débil, con ello obtuvimos PWN3 de y acceso a las comparticiones."
+      },
+      {
+        "start": 9.5,
+        "end": 15.5,
+        "text": "El DNS permitía transferencia de zona, así que obtuvimos el mapa completo de Unic Lab."
+      },
+      {
+        "start": 15.5,
+        "end": 20.5,
+        "text": "Con credenciales administrativas llegamos a Sistem mediante una tarea programada."
+      },
+      {
+        "start": 20.5,
+        "end": 24.5,
+        "text": "No fue un privilege escalation desde un usuario limitado."
+      }
+    ]
+  },
+  {
+    "n": 10,
+    "title": "M5 · Cliente",
+    "voice": "es-CO-GonzaloNeural",
+    "duration": 23.04,
+    "language": "es",
+    "text": "M5 es la estación cliente. Tituense no pedía autenticación, así que abrimos el escritorio directamente. Buami confirmó el usuario cliente y dejamos el marcador poner M5. También se reutilizaba la clave por SMB. Es el impacto más visible, el usuario final, su escritorio y sus archivos. La remediación de M5 quedó pendiente por filtrado.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.0,
+        "text": "M5 es la estación cliente."
+      },
+      {
+        "start": 2.0,
+        "end": 7.0,
+        "text": "Tituense no pedía autenticación, así que abrimos el escritorio directamente."
+      },
+      {
+        "start": 7.0,
+        "end": 11.0,
+        "text": "Buami confirmó el usuario cliente y dejamos el marcador poner M5."
+      },
+      {
+        "start": 11.0,
+        "end": 14.0,
+        "text": "También se reutilizaba la clave por SMB."
+      },
+      {
+        "start": 14.0,
+        "end": 19.0,
+        "text": "Es el impacto más visible, el usuario final, su escritorio y sus archivos."
+      },
+      {
+        "start": 19.0,
+        "end": 23.0,
+        "text": "La remediación de M5 quedó pendiente por filtrado."
+      }
+    ]
+  },
+  {
+    "n": 11,
+    "title": "M6 · Auditoría",
+    "voice": "es-AR-TomasNeural",
+    "duration": 20.784,
+    "language": "es",
+    "text": "M6 Scali, la estación de auditoría, y no es objetivo. Desde aquí ejecutamos reconocimiento, escaneo, explotación, túneles y captura de evidencia. También aloja el FTP de artefactos y los lows con Sa-256. Es el punto de partida y el punto donde se demuestra que todo lo anterior es reproducible.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 4.2,
+        "text": "M6 Scali, la estación de auditoría, y no es objetivo."
+      },
+      {
+        "start": 4.2,
+        "end": 10.5,
+        "text": "Desde aquí ejecutamos reconocimiento, escaneo, explotación, túneles y captura de evidencia."
+      },
+      {
+        "start": 10.5,
+        "end": 15.6,
+        "text": "También aloja el FTP de artefactos y los lows con Sa-256."
+      },
+      {
+        "start": 15.6,
+        "end": 20.6,
+        "text": "Es el punto de partida y el punto donde se demuestra que todo lo anterior es reproducible."
+      }
+    ]
+  },
+  {
+    "n": 12,
+    "title": "Reparto de PHP2Shell",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 30.888,
+    "language": "es",
+    "text": "Para la exposición dividimos PHP 2L en seis partes. Eric presenta la ficha, el CVSS y el version get. Doris, las precondiciones, NTS, Prefork y PHP, INI. Ronny, los offsets reales y el servicio en 8080. Fabiola, la inyección de sesión. Marco, el LFI y la ejecución. José cierra con evidencia, el root por B3, SSH y sudo, y el retest.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 4.2,
+        "text": "Para la exposición dividimos PHP 2L en seis partes."
+      },
+      {
+        "start": 4.2,
+        "end": 8.68,
+        "text": "Eric presenta la ficha, el CVSS y el version get."
+      },
+      {
+        "start": 8.68,
+        "end": 14.04,
+        "text": "Doris, las precondiciones, NTS, Prefork y PHP, INI."
+      },
+      {
+        "start": 14.04,
+        "end": 18.36,
+        "text": "Ronny, los offsets reales y el servicio en 8080."
+      },
+      {
+        "start": 18.36,
+        "end": 21.12,
+        "text": "Fabiola, la inyección de sesión."
+      },
+      {
+        "start": 21.12,
+        "end": 24.52,
+        "text": "Marco, el LFI y la ejecución."
+      },
+      {
+        "start": 24.52,
+        "end": 30.52,
+        "text": "José cierra con evidencia, el root por B3, SSH y sudo, y el retest."
+      }
+    ]
+  },
+  {
+    "n": 13,
+    "title": "Metodología y version gate",
+    "voice": "es-PE-AlexNeural",
+    "duration": 42.144,
+    "language": "es",
+    "text": "Trabajamos en 7 fases, alcance, reconocimiento, enumeración, análisis, explotación, remediación y retest. Cada flecha tiene una puerta de versión. Primero verificamos que versión está instalada, segundo, si está dentro del rango vulnerable, tercero, que versión la corrige, cuarto, decidimos si es explotable. Si la instalada es igual o mayor que el fix, el CV no cuenta. En W2 la versión estaba en rango y el servicio explotado cumplía las condiciones, NTS, Prefork y Offset reales. El gate confirmó versión y condiciones antes de ejecutar.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 9.0,
+        "text": "Trabajamos en 7 fases, alcance, reconocimiento, enumeración, análisis, explotación, remediación y retest."
+      },
+      {
+        "start": 9.0,
+        "end": 12.0,
+        "text": "Cada flecha tiene una puerta de versión."
+      },
+      {
+        "start": 12.0,
+        "end": 18.0,
+        "text": "Primero verificamos que versión está instalada, segundo, si está dentro del rango vulnerable,"
+      },
+      {
+        "start": 18.0,
+        "end": 23.0,
+        "text": "tercero, que versión la corrige, cuarto, decidimos si es explotable."
+      },
+      {
+        "start": 23.0,
+        "end": 28.0,
+        "text": "Si la instalada es igual o mayor que el fix, el CV no cuenta."
+      },
+      {
+        "start": 28.0,
+        "end": 37.0,
+        "text": "En W2 la versión estaba en rango y el servicio explotado cumplía las condiciones, NTS, Prefork y Offset reales."
+      },
+      {
+        "start": 37.0,
+        "end": 41.0,
+        "text": "El gate confirmó versión y condiciones antes de ejecutar."
+      }
+    ]
+  },
+  {
+    "n": 14,
+    "title": "Qué es PHP2Shell y por qué importa",
+    "voice": "es-PE-AlexNeural",
+    "duration": 44.448,
+    "language": "es",
+    "text": "PHP 12 es el caso de 12v de corrupción de memoria en PHP 8.4.26 que permiten ejecución remota antes de autenticarse. Se vuelve relevante porque afecta una versión muy extendida, el ataque es remoto y de baja complejidad, y el pose es reproducible, además, la historia se entiende rápido, de un PHP vulnerable a root. En nuestro caso, la versión 8.4.26 estaba en rango, el servicio 8,080 cumplía las condiciones y Chena dio WWW dera, luego B3, SSH y sudo dieron root. Por eso el version get, la evidencia y el retest son parte de la misma cadena.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 10.6,
+        "text": "PHP 12 es el caso de 12v de corrupción de memoria en PHP 8.4.26 que permiten ejecución remota antes de autenticarse."
+      },
+      {
+        "start": 10.6,
+        "end": 18.8,
+        "text": "Se vuelve relevante porque afecta una versión muy extendida, el ataque es remoto y de baja complejidad, y el pose es reproducible,"
+      },
+      {
+        "start": 18.8,
+        "end": 24.2,
+        "text": "además, la historia se entiende rápido, de un PHP vulnerable a root."
+      },
+      {
+        "start": 24.2,
+        "end": 38.2,
+        "text": "En nuestro caso, la versión 8.4.26 estaba en rango, el servicio 8,080 cumplía las condiciones y Chena dio WWW dera, luego B3, SSH y sudo dieron root."
+      },
+      {
+        "start": 38.2,
+        "end": 44.2,
+        "text": "Por eso el version get, la evidencia y el retest son parte de la misma cadena."
+      }
+    ]
+  },
+  {
+    "n": 15,
+    "title": "W2 · Ficha",
+    "voice": "es-PE-AlexNeural",
+    "duration": 46.824,
+    "language": "es",
+    "text": "W2 son 2 CV de corrupción de memoria en PHP 8.4.26, CV 2026, 1096, 18 y CV 2026, 1096, 19. El vector es de red, sin autenticación y sin interacción, el CVS es versión 3.1 es 9.8, crítico. La versión afectada va de 8.4.0 a 8.4.26 y la corrige 8.4.27. El EPSS está sin dato porque el CV es reciente. El resultado real, RCE como wwwdera y root por la cadena B3, SSH y sudo.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 15.2,
+        "text": "W2 son 2 CV de corrupción de memoria en PHP 8.4.26, CV 2026, 1096, 18 y CV 2026, 1096, 19."
+      },
+      {
+        "start": 15.2,
+        "end": 24.74,
+        "text": "El vector es de red, sin autenticación y sin interacción, el CVS es versión 3.1 es 9.8, crítico."
+      },
+      {
+        "start": 24.74,
+        "end": 33.74,
+        "text": "La versión afectada va de 8.4.0 a 8.4.26 y la corrige 8.4.27."
+      },
+      {
+        "start": 33.74,
+        "end": 38.74,
+        "text": "El EPSS está sin dato porque el CV es reciente."
+      },
+      {
+        "start": 38.74,
+        "end": 46.74,
+        "text": "El resultado real, RCE como wwwdera y root por la cadena B3, SSH y sudo."
+      }
+    ]
+  },
+  {
+    "n": 16,
+    "title": "W2 · Version gate",
+    "voice": "es-PE-AlexNeural",
+    "duration": 25.08,
+    "language": "es",
+    "text": "El Dorsion Gate confirma que 8.4.26 está dentro del rango vulnerable y que 8.4.27 corrige. El servicio expuesto corre con NTS y Prefork y cumple las condiciones del posee. Por eso declaramos versión y condiciones verificadas y ejecutamos la cadena. El Gate separa a Ion CVE de se puede explotar aquí.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 9.1,
+        "text": "El Dorsion Gate confirma que 8.4.26 está dentro del rango vulnerable y que 8.4.27 corrige."
+      },
+      {
+        "start": 9.1,
+        "end": 15.3,
+        "text": "El servicio expuesto corre con NTS y Prefork y cumple las condiciones del posee."
+      },
+      {
+        "start": 15.3,
+        "end": 20.7,
+        "text": "Por eso declaramos versión y condiciones verificadas y ejecutamos la cadena."
+      },
+      {
+        "start": 20.7,
+        "end": 24.8,
+        "text": "El Gate separa a Ion CVE de se puede explotar aquí."
+      }
+    ]
+  },
+  {
+    "n": 17,
+    "title": "W2 · Precondiciones",
+    "voice": "es-PE-CamilaNeural",
+    "duration": 29.424,
+    "language": "es",
+    "text": "El servicio explotado presenta seis condiciones. Necesita NTS, es decir, Sintrad Safety, Apache con MP MP4, Display yo bajo Error se encendido, Memory yo bajo Limit de 16 MB, Session. Upload yo bajo Progres habilitado y con Clean up apagado, y los Offsets del binario real. Se verificaron con PHP y HTTP de VINM antes de ejecutar. El pose usa comandos de hasta 14 bytes y Chen asuma una sesión compartida y un ZenKalafá.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 3.16,
+        "text": "El servicio explotado presenta seis condiciones."
+      },
+      {
+        "start": 3.16,
+        "end": 9.98,
+        "text": "Necesita NTS, es decir, Sintrad Safety, Apache con MP MP4, Display yo bajo Error se encendido,"
+      },
+      {
+        "start": 9.98,
+        "end": 13.58,
+        "text": "Memory yo bajo Limit de 16 MB, Session."
+      },
+      {
+        "start": 13.58,
+        "end": 18.82,
+        "text": "Upload yo bajo Progres habilitado y con Clean up apagado, y los Offsets del binario real."
+      },
+      {
+        "start": 18.82,
+        "end": 23.94,
+        "text": "Se verificaron con PHP y HTTP de VINM antes de ejecutar."
+      },
+      {
+        "start": 23.94,
+        "end": 29.34,
+        "text": "El pose usa comandos de hasta 14 bytes y Chen asuma una sesión compartida y un ZenKalafá."
+      }
+    ]
+  },
+  {
+    "n": 18,
+    "title": "W2 · Rebuild",
+    "voice": "es-PE-CamilaNeural",
+    "duration": 24.288,
+    "language": "es",
+    "text": "El servicio vulnerable es php8.4.26 nts sobre Apache 2.4.49 preform, publicado en el puerto 8080. Presente display y gomajo errors, memory gomajo limit de 16m, session, upload gomajo progress y session 2, PHP con HTTP 200 y session compartida. Es el entorno que se explotó y quedó documentado en UVW 2-Gion 01.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 8.8,
+        "text": "El servicio vulnerable es php8.4.26 nts sobre Apache 2.4.49 preform, publicado en el puerto 8080."
+      },
+      {
+        "start": 9.3,
+        "end": 18.6,
+        "text": "Presente display y gomajo errors, memory gomajo limit de 16m, session, upload gomajo progress y session 2, PHP con HTTP 200 y session compartida."
+      },
+      {
+        "start": 19.1,
+        "end": 23.7,
+        "text": "Es el entorno que se explotó y quedó documentado en UVW 2-Gion 01."
+      }
+    ]
+  },
+  {
+    "n": 19,
+    "title": "W2 · Configuración y offsets",
+    "voice": "es-BO-MarceloNeural",
+    "duration": 23.688,
+    "language": "es",
+    "text": "Los offsets no se copian de internet. Se derivan del lib.s o del servidor m1. Con nm obtuvimos las direcciones de sifgion bajo system, spalgion bajo ptrgion bajo toritrata. An offset de otro b oda hace fallar el pose aunque la versión sea correcta. Por eso el PHP, INI y los símbolos se verifican sobre el handler de apache, no solo por línea de comandos.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.7,
+        "text": "Los offsets no se copian de internet."
+      },
+      {
+        "start": 2.7,
+        "end": 6.36,
+        "text": "Se derivan del lib.s o del servidor m1."
+      },
+      {
+        "start": 6.36,
+        "end": 12.8,
+        "text": "Con nm obtuvimos las direcciones de sifgion bajo system, spalgion bajo ptrgion bajo toritrata."
+      },
+      {
+        "start": 12.8,
+        "end": 17.16,
+        "text": "An offset de otro b oda hace fallar el pose aunque la versión sea correcta."
+      },
+      {
+        "start": 17.16,
+        "end": 23.6,
+        "text": "Por eso el PHP, INI y los símbolos se verifican sobre el handler de apache, no solo por línea de comandos."
+      }
+    ]
+  },
+  {
+    "n": 20,
+    "title": "W2 · Chain A",
+    "voice": "es-MX-DaliaNeural",
+    "duration": 40.536,
+    "language": "es",
+    "text": "China convierte la sesión en ejecución remota en cinco pasos. Primero, Sashen uploadió majo progres creaba radional TMP barradionalses con el contenido del request. Segundo, el nombre del campo y el valor inyectan código PHP. Tercero, el sencoutfá incluye ese archivo. Cuarto, PHP interpreta el código en el worker. Quinto, ID devuelve UID 33, www, y escribimos el marcador PnetM1-WWWWData. La cadena se ejecuta contra el servicio 8080 y luego se escala por B3, SSH y sudo.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 4.2,
+        "text": "China convierte la sesión en ejecución remota en cinco pasos."
+      },
+      {
+        "start": 4.2,
+        "end": 11.6,
+        "text": "Primero, Sashen uploadió majo progres creaba radional TMP barradionalses con el contenido del request."
+      },
+      {
+        "start": 11.6,
+        "end": 16.2,
+        "text": "Segundo, el nombre del campo y el valor inyectan código PHP."
+      },
+      {
+        "start": 16.2,
+        "end": 20.0,
+        "text": "Tercero, el sencoutfá incluye ese archivo."
+      },
+      {
+        "start": 20.0,
+        "end": 23.8,
+        "text": "Cuarto, PHP interpreta el código en el worker."
+      },
+      {
+        "start": 23.8,
+        "end": 33.8,
+        "text": "Quinto, ID devuelve UID 33, www, y escribimos el marcador PnetM1-WWWWData."
+      },
+      {
+        "start": 33.8,
+        "end": 39.8,
+        "text": "La cadena se ejecuta contra el servicio 8080 y luego se escala por B3, SSH y sudo."
+      }
+    ]
+  },
+  {
+    "n": 21,
+    "title": "W2 · Comandos",
+    "voice": "es-CO-GonzaloNeural",
+    "duration": 28.32,
+    "language": "es",
+    "text": "Estos son los cinco comandos clave. El primero crea la sesión con un plug-in bajo progres y deja el código inyectado en barra diagonal tmp barra diagonal ses. El segundo fuerza el mismo Worker y confirma que la sesión persiste. El tercero incluye el archivo de sesión por el LFI. El cuarto ejecuta id y devuelve wwwdata. El quinto reutiliza la clave b3 para entrar por sch como Ubuntu y escalar a root console. Cada paso tiene su salida esperada.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.4,
+        "text": "Estos son los cinco comandos clave."
+      },
+      {
+        "start": 2.4,
+        "end": 5.6,
+        "text": "El primero crea la sesión con un plug-in bajo progres y deja el código"
+      },
+      {
+        "start": 5.6,
+        "end": 8.9,
+        "text": "inyectado en barra diagonal tmp barra diagonal ses."
+      },
+      {
+        "start": 8.9,
+        "end": 12.9,
+        "text": "El segundo fuerza el mismo Worker y confirma que la sesión persiste."
+      },
+      {
+        "start": 12.9,
+        "end": 16.3,
+        "text": "El tercero incluye el archivo de sesión por el LFI."
+      },
+      {
+        "start": 16.3,
+        "end": 20.4,
+        "text": "El cuarto ejecuta id y devuelve wwwdata."
+      },
+      {
+        "start": 20.4,
+        "end": 23.8,
+        "text": "El quinto reutiliza la clave b3 para entrar por sch como Ubuntu"
+      },
+      {
+        "start": 23.8,
+        "end": 25.8,
+        "text": "y escalar a root console."
+      },
+      {
+        "start": 25.8,
+        "end": 28.1,
+        "text": "Cada paso tiene su salida esperada."
+      }
+    ]
+  },
+  {
+    "n": 22,
+    "title": "Otra vía · W3",
+    "voice": "es-PE-AlexNeural",
+    "duration": 30.192,
+    "language": "es",
+    "text": "W3 es una segunda vía, independiente de PHP 2L. Apache 2.4.49 permite traversal de rutas, conseje y habilitado, la ruta llega a barra diagonal-bin-diagonal-esach. El comando se ejecuta como wwwdera. No necesitamos W3 para el resultado, pero demuestra que había más de un camino al mismo nivel. W3 y W12 se parchean por separado.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 5.16,
+        "text": "W3 es una segunda vía, independiente de PHP 2L."
+      },
+      {
+        "start": 5.16,
+        "end": 11.22,
+        "text": "Apache 2.4.49 permite traversal de rutas, conseje y habilitado,"
+      },
+      {
+        "start": 11.22,
+        "end": 15.34,
+        "text": "la ruta llega a barra diagonal-bin-diagonal-esach."
+      },
+      {
+        "start": 15.34,
+        "end": 19.34,
+        "text": "El comando se ejecuta como wwwdera."
+      },
+      {
+        "start": 19.34,
+        "end": 22.28,
+        "text": "No necesitamos W3 para el resultado,"
+      },
+      {
+        "start": 22.28,
+        "end": 26.22,
+        "text": "pero demuestra que había más de un camino al mismo nivel."
+      },
+      {
+        "start": 26.22,
+        "end": 29.22,
+        "text": "W3 y W12 se parchean por separado."
+      }
+    ]
+  },
+  {
+    "n": 23,
+    "title": "Otra vía · B3",
+    "voice": "es-BO-MarceloNeural",
+    "duration": 28.56,
+    "language": "es",
+    "text": "V3 es la llave maestra. El aptity de M3 permite acceso anónimo y expone barra diagonal backups. Dentro está Credenciales, TXT con Admin 13. Esa clave se reutiliza en Ubuntu en M1. Entramos por SSH, ejecutamos su DoID y obtenemos su ID cero root. No es un exploit nuevo, es reutilización de credenciales. Y es lo que convierte el acceso wwwdata en control total.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.26,
+        "text": "V3 es la llave maestra."
+      },
+      {
+        "start": 2.26,
+        "end": 7.3,
+        "text": "El aptity de M3 permite acceso anónimo y expone barra diagonal backups."
+      },
+      {
+        "start": 7.3,
+        "end": 10.96,
+        "text": "Dentro está Credenciales, TXT con Admin 13."
+      },
+      {
+        "start": 10.96,
+        "end": 14.1,
+        "text": "Esa clave se reutiliza en Ubuntu en M1."
+      },
+      {
+        "start": 14.1,
+        "end": 19.44,
+        "text": "Entramos por SSH, ejecutamos su DoID y obtenemos su ID cero root."
+      },
+      {
+        "start": 19.44,
+        "end": 23.56,
+        "text": "No es un exploit nuevo, es reutilización de credenciales."
+      },
+      {
+        "start": 23.56,
+        "end": 28.36,
+        "text": "Y es lo que convierte el acceso wwwdata en control total."
+      }
+    ]
+  },
+  {
+    "n": 24,
+    "title": "W2 · Evidencia",
+    "voice": "es-AR-TomasNeural",
+    "duration": 28.608,
+    "language": "es",
+    "text": "La evidencia es lo que sostiene todo. EV-W2G107 documenta China, session injection más LFI, con UI de 33WWWW data desde M1. EV-W2G109 documenta el root, V3, credenciales, SSH como Ubuntu, sudo y el archivo barra diagonal root barra diagonal PNED M1 root TXT. Cada lo tiene captura ISO 256.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.8,
+        "text": "La evidencia es lo que sostiene todo."
+      },
+      {
+        "start": 2.8,
+        "end": 12.5,
+        "text": "EV-W2G107 documenta China, session injection más LFI, con UI de 33WWWW data desde M1."
+      },
+      {
+        "start": 12.5,
+        "end": 24.8,
+        "text": "EV-W2G109 documenta el root, V3, credenciales, SSH como Ubuntu, sudo y el archivo barra diagonal root barra diagonal PNED M1 root TXT."
+      },
+      {
+        "start": 24.8,
+        "end": 28.3,
+        "text": "Cada lo tiene captura ISO 256."
+      }
+    ]
+  },
+  {
+    "n": 25,
+    "title": "W2 · Impacto",
+    "voice": "es-AR-TomasNeural",
+    "duration": 25.104,
+    "language": "es",
+    "text": "El impacto real es este. WW2 por China dio WWWWData. WW3 también dio WWWWData. V3 más SSH y sudo dieron root. La diferencia entre hay un CV y se explotó está en la evidencia, un ID, un archivo o una captura verificable. WW2 no dio root por sí solo, la cadena completa sí.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.0,
+        "text": "El impacto real es este."
+      },
+      {
+        "start": 2.0,
+        "end": 6.0,
+        "text": "WW2 por China dio WWWWData."
+      },
+      {
+        "start": 6.0,
+        "end": 10.0,
+        "text": "WW3 también dio WWWWData."
+      },
+      {
+        "start": 10.0,
+        "end": 13.0,
+        "text": "V3 más SSH y sudo dieron root."
+      },
+      {
+        "start": 13.0,
+        "end": 20.0,
+        "text": "La diferencia entre hay un CV y se explotó está en la evidencia, un ID, un archivo o una captura verificable."
+      },
+      {
+        "start": 20.0,
+        "end": 25.0,
+        "text": "WW2 no dio root por sí solo, la cadena completa sí."
+      }
+    ]
+  },
+  {
+    "n": 26,
+    "title": "Cadena completa: de Kali a root",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 29.064,
+    "language": "es",
+    "text": "La cadena completa tiene cinco eslabones. Cali entra a M1 por W2 China y obtiene WWW Dera. Desde M3, el FTP Anónimo Entrega Credenciales, TXT. Esa clave permite SSH como Ubuntu en M1. Con sudo llegamos a Root y dejamos Net, M1, Root, etc. La réplica en vivo sigue el mismo orden, versión, precondiciones, pose, evidencia y retest.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 3.0,
+        "text": "La cadena completa tiene cinco eslabones."
+      },
+      {
+        "start": 3.0,
+        "end": 8.0,
+        "text": "Cali entra a M1 por W2 China y obtiene WWW Dera."
+      },
+      {
+        "start": 8.0,
+        "end": 13.0,
+        "text": "Desde M3, el FTP Anónimo Entrega Credenciales, TXT."
+      },
+      {
+        "start": 13.0,
+        "end": 17.0,
+        "text": "Esa clave permite SSH como Ubuntu en M1."
+      },
+      {
+        "start": 17.0,
+        "end": 22.0,
+        "text": "Con sudo llegamos a Root y dejamos Net, M1, Root, etc."
+      },
+      {
+        "start": 22.0,
+        "end": 29.0,
+        "text": "La réplica en vivo sigue el mismo orden, versión, precondiciones, pose, evidencia y retest."
+      }
+    ]
+  },
+  {
+    "n": 27,
+    "title": "Resto de la red",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 31.56,
+    "language": "es",
+    "text": "El resto de la red también aporta. NM-2, redicina autenticación y las claves de la base permitieron volcar datos. NM-3, el FTP anónimo y ANAFAS NOD YON BAJO RUT YON BAJO ESQUAZ entregaron credenciales y escritura RUT. NM-4, la clave débil del administrador y el AXFR llevaron a Sistem y al mapa de DNS. NM-5, VNC sin autenticación abrió el escritorio. M5 sigue pendiente de remediación por filtrado.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 2.6,
+        "text": "El resto de la red también aporta."
+      },
+      {
+        "start": 2.6,
+        "end": 8.24,
+        "text": "NM-2, redicina autenticación y las claves de la base permitieron volcar datos."
+      },
+      {
+        "start": 8.24,
+        "end": 15.88,
+        "text": "NM-3, el FTP anónimo y ANAFAS NOD YON BAJO RUT YON BAJO ESQUAZ entregaron credenciales y escritura RUT."
+      },
+      {
+        "start": 15.88,
+        "end": 23.04,
+        "text": "NM-4, la clave débil del administrador y el AXFR llevaron a Sistem y al mapa de DNS."
+      },
+      {
+        "start": 23.04,
+        "end": 27.68,
+        "text": "NM-5, VNC sin autenticación abrió el escritorio."
+      },
+      {
+        "start": 27.68,
+        "end": 31.28,
+        "text": "M5 sigue pendiente de remediación por filtrado."
+      }
+    ]
+  },
+  {
+    "n": 28,
+    "title": "Remediación",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 37.992,
+    "language": "es",
+    "text": "El parcheo se aplicó en cada servidor. Cambiaron versiones y configuraciones. PHP pasó a 8.4.27, WordPress a 7.0.2, Apache a 2.4.51 y Redis a 6.2.7. Apagamos su pl ratio en bajo progres, eliminamos el LFI, cerramos el FTP anónimo y deshabilitamos SMV1, M1 a M4 que daron cerrados. M5 no se pudo corregir porque 445, 3389 y 5900 quedaron filtrados, se declara pendiente, no remediado.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 3.0,
+        "text": "El parcheo se aplicó en cada servidor."
+      },
+      {
+        "start": 3.0,
+        "end": 5.3,
+        "text": "Cambiaron versiones y configuraciones."
+      },
+      {
+        "start": 5.3,
+        "end": 16.4,
+        "text": "PHP pasó a 8.4.27, WordPress a 7.0.2, Apache a 2.4.51 y Redis a 6.2.7."
+      },
+      {
+        "start": 16.4,
+        "end": 27.2,
+        "text": "Apagamos su pl ratio en bajo progres, eliminamos el LFI, cerramos el FTP anónimo y deshabilitamos SMV1, M1 a M4 que daron cerrados."
+      },
+      {
+        "start": 27.2,
+        "end": 37.2,
+        "text": "M5 no se pudo corregir porque 445, 3389 y 5900 quedaron filtrados, se declara pendiente, no remediado."
+      }
+    ]
+  },
+  {
+    "n": 29,
+    "title": "Retest: antes y después",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 37.968,
+    "language": "es",
+    "text": "El retesto son los mismos comandos de validación. M1 tiene 8 cierres, WordPress 7.0.2, PHP 8.4.27, Apache 2.4.51, el LFI en 404 y las claves rotadas. M2 tiene 4, Redisconnouse y puertos filtrados. M3 tiene 5, FTP anónimo en 530, Rucion bajo escuas y SSH rotado. M4 tiene 5, SMB1off, Sanenon, Spulerooff y AXFR cerrado. M5 sigue pendiente.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 3.46,
+        "text": "El retesto son los mismos comandos de validación."
+      },
+      {
+        "start": 3.46,
+        "end": 17.2,
+        "text": "M1 tiene 8 cierres, WordPress 7.0.2, PHP 8.4.27, Apache 2.4.51, el LFI en 404 y las claves rotadas."
+      },
+      {
+        "start": 17.2,
+        "end": 21.4,
+        "text": "M2 tiene 4, Redisconnouse y puertos filtrados."
+      },
+      {
+        "start": 21.4,
+        "end": 28.66,
+        "text": "M3 tiene 5, FTP anónimo en 530, Rucion bajo escuas y SSH rotado."
+      },
+      {
+        "start": 28.66,
+        "end": 35.42,
+        "text": "M4 tiene 5, SMB1off, Sanenon, Spulerooff y AXFR cerrado."
+      },
+      {
+        "start": 35.42,
+        "end": 37.42,
+        "text": "M5 sigue pendiente."
+      }
+    ]
+  },
+  {
+    "n": 30,
+    "title": "Cuatro lecciones de PHP2Shell",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 32.688,
+    "language": "es",
+    "text": "Cuatro lecciones. Primera, la versión es el punto de partida. PHP 8.4.26 habilitó la cadena. Segunda, los offsets son del binario. Copiarlos de otro pódase fallar el posee. Tercera, W2 más B3 tan rude. Cada eslabón tiene evidencia. Cuarta, parchear si cambia el juego. 8.4.27, Upload y un bajo progreso y LFI eliminado se verificaron en el retest. La fortaleza es la transabilidad de lo demostrado.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 8.06,
+        "text": "Cuatro lecciones. Primera, la versión es el punto de partida. PHP 8.4.26 habilitó la cadena."
+      },
+      {
+        "start": 8.06,
+        "end": 13.6,
+        "text": "Segunda, los offsets son del binario. Copiarlos de otro pódase fallar el posee."
+      },
+      {
+        "start": 13.6,
+        "end": 18.64,
+        "text": "Tercera, W2 más B3 tan rude. Cada eslabón tiene evidencia."
+      },
+      {
+        "start": 18.64,
+        "end": 27.0,
+        "text": "Cuarta, parchear si cambia el juego. 8.4.27, Upload y un bajo progreso y LFI eliminado"
+      },
+      {
+        "start": 27.0,
+        "end": 31.88,
+        "text": "se verificaron en el retest. La fortaleza es la transabilidad de lo demostrado."
+      }
+    ]
+  },
+  {
+    "n": 31,
+    "title": "Cierre y preguntas",
+    "voice": "es-MX-JorgeNeural",
+    "duration": 29.088,
+    "language": "es",
+    "text": "Con esto cerramos. PHP 2 el quedó demostrado con Chene, WWWDRE y Root por B3, SSH y sudo. W3 fue una segunda vía real. La remediación y el retest están documentados. Ahora respondemos preguntas si, si el docente lo permite, repetimos la réplica en vivo desde Cali, en el mismo orden, DORGENGATE, precondiciones, pose, evidencia y retest. Gracias.",
+    "segments": [
+      {
+        "start": 0.0,
+        "end": 1.9,
+        "text": "Con esto cerramos."
+      },
+      {
+        "start": 1.9,
+        "end": 9.3,
+        "text": "PHP 2 el quedó demostrado con Chene, WWWDRE y Root por B3, SSH y sudo."
+      },
+      {
+        "start": 9.3,
+        "end": 12.3,
+        "text": "W3 fue una segunda vía real."
+      },
+      {
+        "start": 12.3,
+        "end": 15.7,
+        "text": "La remediación y el retest están documentados."
+      },
+      {
+        "start": 15.7,
+        "end": 19.2,
+        "text": "Ahora respondemos preguntas si, si el docente lo permite,"
+      },
+      {
+        "start": 19.2,
+        "end": 22.9,
+        "text": "repetimos la réplica en vivo desde Cali, en el mismo orden,"
+      },
+      {
+        "start": 22.9,
+        "end": 27.5,
+        "text": "DORGENGATE, precondiciones, pose, evidencia y retest."
+      },
+      {
+        "start": 27.5,
+        "end": 29.5,
+        "text": "Gracias."
+      }
+    ]
+  }
+]

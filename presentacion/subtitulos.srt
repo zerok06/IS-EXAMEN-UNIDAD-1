@@ -1,0 +1,786 @@
+1
+00:00:00,000 --> 00:00:01,096
+Buenas tardes.
+
+2
+00:00:01,096 --> 00:00:12,134
+Somos el equipo de Seguridad de la Información y presentamos PHP2Shell, un
+caso real de explotación sobre PHP 8.4.26 en la red universitaria.
+
+3
+00:00:12,134 --> 00:00:17,692
+Partimos de la superficie expuesta, llegamos a www-data y luego a root.
+
+4
+00:00:17,692 --> 00:00:21,841
+Todo está respaldado con comandos, capturas y hashes.
+
+5
+00:00:21,841 --> 00:00:24,816
+La réplica se hará en vivo desde Kali.
+
+6
+00:00:25,466 --> 00:00:27,840
+El recorrido tiene cinco fases.
+
+7
+00:00:27,840 --> 00:00:34,733
+Fase uno: configuración y superficie, con la red, topología, activos, puertos
+y versiones.
+
+8
+00:00:34,733 --> 00:00:39,635
+Fase dos: exploración, con dos comandos por máquina y su salida.
+
+9
+00:00:39,635 --> 00:00:46,528
+Fase tres: explotación de PHP2Shell, desde el version gate hasta Chain A, www-
+data y root.
+
+10
+00:00:46,528 --> 00:00:53,727
+Fase cuatro: mitigación, con versión o configuración por máquina y el comando
+de verificación.
+
+11
+00:00:53,727 --> 00:00:55,872
+Fase cinco: retest y cierre.
+
+12
+00:00:55,872 --> 00:01:01,922
+La idea es simple: de la versión vulnerable a root, con evidencia en cada
+fase.
+
+13
+00:01:02,572 --> 00:01:11,832
+La red universitaria expone un portal web, base de datos, respaldos, un
+Windows heredado y estaciones de trabajo.
+
+14
+00:01:11,832 --> 00:01:18,962
+Todo en 10.10.10.0/24; M6 es el punto de auditoría desde donde se valida la
+superficie.
+
+15
+00:01:18,962 --> 00:01:24,862
+Identificamos veinticuatro hallazgos; veintidós se llevaron a evidencia.
+
+16
+00:01:24,862 --> 00:01:31,828
+El objetivo es identificar, enumerar, explotar, escalar a root, remediar y
+verificar.
+
+17
+00:01:32,478 --> 00:01:36,834
+La topología tiene una sola puerta web: M1.
+
+18
+00:01:36,834 --> 00:01:43,419
+Desde M1 se pivota a M2, la base de datos, y a M3, los respaldos.
+
+19
+00:01:43,419 --> 00:01:48,383
+M4 es el Windows Server y M5 la estación cliente.
+
+20
+00:01:48,383 --> 00:01:50,308
+R0 solo transporta.
+
+21
+00:01:50,308 --> 00:02:00,743
+La separación es lógica, no física: documentamos que 445 de M4 y 5900 de M5
+quedaron visibles desde M6.
+
+22
+00:02:00,743 --> 00:02:04,998
+Ese detalle también es parte del hallazgo.
+
+23
+00:02:05,648 --> 00:02:12,056
+Estas son las versiones que observamos desde Kali.
+
+24
+00:02:12,056 --> 00:02:18,849
+M1 corre Apache 2.4.49, PHP 8.4.26 y WordPress 7.0.1.
+
+25
+00:02:18,849 --> 00:02:23,975
+M2 tiene MariaDB 10.11.19 y Redis 6.2.6.
+
+26
+00:02:23,975 --> 00:02:27,179
+M3 expone FTP, SMB y NFS.
+
+27
+00:02:27,179 --> 00:02:32,306
+M4 es Windows Server 2016 con DNS y SMB.
+
+28
+00:02:32,306 --> 00:02:36,150
+M5 es Windows 10 con TightVNC.
+
+29
+00:02:36,150 --> 00:02:43,712
+Las versiones exactas son las que disparan el version gate.
+
+30
+00:02:44,362 --> 00:02:49,090
+M1 es el servidor de aplicación y la puerta de entrada.
+
+31
+00:02:49,090 --> 00:02:53,990
+Publica WordPress y Moodle, y concentra la base de datos.
+
+32
+00:02:53,990 --> 00:02:56,655
+Aquí explotamos W2 por Chain A,
+
+33
+00:02:56,655 --> 00:02:58,804
+que nos dio www-data; W3,
+
+34
+00:02:58,804 --> 00:03:00,781
+el traversal de Apache,
+
+35
+00:03:00,781 --> 00:03:03,446
+que también dio www-data; y W4,
+
+36
+00:03:03,446 --> 00:03:08,174
+una clave débil que permitió entrar como administrador.
+
+37
+00:03:08,174 --> 00:03:11,698
+Con SSH y sudo cerramos el camino a root.
+
+38
+00:03:12,348 --> 00:03:13,832
+M2 es la base de datos.
+
+39
+00:03:13,832 --> 00:03:18,347
+Redis respondió sin autenticación y confirmamos el acceso con un PONG.
+
+40
+00:03:18,347 --> 00:03:27,894
+Desde wp-config obtuvimos las claves de la base y, por un túnel SSH, leímos
+wordpress con doce tablas y moodle_db con cuatrocientas ochenta y siete.
+
+41
+00:03:27,894 --> 00:03:32,796
+No hizo falta un exploit complejo: la configuración expuesta fue suficiente.
+
+42
+00:03:33,446 --> 00:03:35,871
+M3 es el servidor de respaldos.
+
+43
+00:03:35,871 --> 00:03:42,520
+El FTP aceptaba acceso anónimo y dentro estaba credenciales.txt con la clave
+Admin13.
+
+44
+00:03:42,520 --> 00:03:45,414
+Esa misma clave se reutilizaba en M1.
+
+45
+00:03:45,414 --> 00:03:50,029
+Además, NFS permitía escribir como root por no_root_squash.
+
+46
+00:03:50,029 --> 00:03:56,678
+Con esas dos debilidades, M3 se convirtió en el eslabón que entregó la llave
+maestra.
+
+47
+00:03:57,328 --> 00:03:58,989
+M4 es el Windows Server.
+
+48
+00:03:58,989 --> 00:04:06,255
+La cuenta de administrador tenía una clave débil; con ella obtuvimos Pwn3d y
+acceso a las comparticiones.
+
+49
+00:04:06,255 --> 00:04:12,138
+El DNS permitía transferencia de zona, así que obtuvimos el mapa completo de
+uni.lab.
+
+50
+00:04:12,138 --> 00:04:17,743
+Con credenciales administrativas llegamos a SYSTEM mediante una tarea
+programada.
+
+51
+00:04:17,743 --> 00:04:21,688
+No fue un privilege escalation desde un usuario limitado.
+
+52
+00:04:22,338 --> 00:04:24,142
+M5 es la estación cliente.
+
+53
+00:04:24,142 --> 00:04:29,417
+TightVNC no pedía autenticación, así que abrimos el escritorio directamente.
+
+54
+00:04:29,417 --> 00:04:33,997
+whoami confirmó el usuario cliente y dejamos el marcador PWNED-M5.
+
+55
+00:04:33,997 --> 00:04:36,773
+También se reutilizaba la clave por SMB.
+
+56
+00:04:36,773 --> 00:04:41,908
+Es el impacto más visible: el usuario final, su escritorio y sus archivos.
+
+57
+00:04:41,908 --> 00:04:45,378
+La remediación de M5 quedó pendiente por filtrado.
+
+58
+00:04:46,028 --> 00:04:49,929
+M6 es Kali, la estación de auditoría, y no es objetivo.
+
+59
+00:04:49,929 --> 00:04:56,385
+Desde aquí ejecutamos reconocimiento, escaneo, explotación, túneles y captura
+de evidencia.
+
+60
+00:04:56,385 --> 00:05:00,428
+También aloja el FTP de artefactos y los logs con SHA256.
+
+61
+00:05:00,428 --> 00:05:06,812
+Es el punto de partida y el punto donde se demuestra que todo lo anterior es
+reproducible.
+
+62
+00:05:07,462 --> 00:05:12,471
+Para la exposición dividimos PHP2Shell en seis partes.
+
+63
+00:05:12,471 --> 00:05:17,201
+Erick presenta la ficha, el CVSS y el version gate.
+
+64
+00:05:17,201 --> 00:05:21,839
+Doris, las precondiciones: NTS, prefork y php.ini.
+
+65
+00:05:21,839 --> 00:05:26,199
+Rony, los offsets reales y el servicio en 8080.
+
+66
+00:05:26,199 --> 00:05:29,167
+Fabiola, la inyección de sesión.
+
+67
+00:05:29,167 --> 00:05:31,857
+Marco, el LFI y la ejecución.
+
+68
+00:05:31,857 --> 00:05:38,350
+Jose cierra con la evidencia, el root por B3, SSH y sudo, y el retest.
+
+69
+00:05:39,000 --> 00:05:47,523
+Trabajamos en siete fases: alcance, reconocimiento, enumeración, análisis,
+explotación, remediación y retest.
+
+70
+00:05:47,523 --> 00:05:50,650
+Cada flecha tiene una puerta de versión.
+
+71
+00:05:50,650 --> 00:05:55,029
+Primero verificamos qué versión está instalada; segundo,
+
+72
+00:05:55,029 --> 00:05:58,547
+si está dentro del rango vulnerable; tercero,
+
+73
+00:05:58,547 --> 00:06:00,971
+qué versión la corrige; cuarto,
+
+74
+00:06:00,971 --> 00:06:03,082
+decidimos si es explotable.
+
+75
+00:06:03,082 --> 00:06:07,930
+Si la instalada es igual o mayor que el fix, el CVE no cuenta.
+
+76
+00:06:07,930 --> 00:06:16,687
+En W2 la versión estaba en rango y el servicio explotado cumplía las
+condiciones: NTS, prefork y offsets reales.
+
+77
+00:06:16,687 --> 00:06:21,144
+El gate confirmó versión y condiciones antes de ejecutar.
+
+78
+00:06:21,794 --> 00:06:31,789
+PHP2Shell es el caso de dos CVE de corrupción de memoria en PHP 8.4.26 que
+permiten ejecución remota antes de autenticarse.
+
+79
+00:06:31,789 --> 00:06:36,664
+Se vuelve relevante porque afecta una versión muy extendida,
+
+80
+00:06:36,664 --> 00:06:40,077
+el ataque es remoto y de baja complejidad,
+
+81
+00:06:40,077 --> 00:06:42,759
+y el PoC es reproducible; además,
+
+82
+00:06:42,759 --> 00:06:47,634
+la historia se entiende rápido: de un PHP vulnerable a root.
+
+83
+00:06:47,634 --> 00:06:59,823
+En nuestro caso, la versión 8.4.26 estaba en rango, el servicio 8080 cumplía
+las condiciones y Chain A dio www-data; luego B3, SSH y sudo dieron root.
+
+84
+00:06:59,823 --> 00:07:06,242
+Por eso el version gate, la evidencia y el retest son parte de la misma
+cadena.
+
+85
+00:07:06,892 --> 00:07:18,533
+W2 son dos CVE de corrupción de memoria en PHP 8.4.26: CVE-2026-109618 y
+CVE-2026-109619.
+
+86
+00:07:18,533 --> 00:07:29,912
+El vector es de red, sin autenticación y sin interacción; el CVSS v3.1 es 9.8,
+crítico.
+
+87
+00:07:29,912 --> 00:07:37,890
+La versión afectada va de 8.4.0 a 8.4.26 y la corrige 8.4.27.
+
+88
+00:07:37,890 --> 00:07:44,168
+El EPSS está sin dato porque el CVE es reciente.
+
+89
+00:07:44,168 --> 00:07:53,716
+El resultado real: RCE como www-data y root por la cadena B3, SSH y sudo.
+
+90
+00:07:54,366 --> 00:08:01,940
+El version gate confirma que 8.4.26 está dentro del rango vulnerable y que
+8.4.27 corrige.
+
+91
+00:08:01,940 --> 00:08:08,589
+El servicio expuesto corre con NTS y prefork, y cumple las condiciones del
+PoC.
+
+92
+00:08:08,589 --> 00:08:15,070
+Por eso declaramos versión y condiciones verificadas, y ejecutamos la cadena.
+
+93
+00:08:15,070 --> 00:08:19,446
+El gate separa hay un CVE de se puede explotar aquí.
+
+94
+00:08:20,096 --> 00:08:23,532
+El servicio explotado presenta seis condiciones.
+
+95
+00:08:23,532 --> 00:08:24,463
+Necesita NTS,
+
+96
+00:08:24,463 --> 00:08:25,107
+es decir,
+
+97
+00:08:25,107 --> 00:08:38,567
+sin Thread Safety; Apache con MPM prefork; display_errors encendido;
+memory_limit de 16 megabytes; session.upload_progress habilitado y con cleanup
+apagado; y los offsets del binario real.
+
+98
+00:08:38,567 --> 00:08:42,790
+Se verificaron con php -i, httpd -V y nm antes de ejecutar.
+
+99
+00:08:42,790 --> 00:08:49,520
+El PoC usa comandos de hasta catorce bytes y Chain A suma una sesión
+compartida y un sink LFI.
+
+100
+00:08:50,170 --> 00:08:58,763
+El servicio vulnerable es PHP 8.4.26 NTS sobre Apache 2.4.49 prefork,
+publicado en el puerto 8080.
+
+101
+00:08:58,763 --> 00:09:09,109
+Presenta display_errors, memory_limit de 16M, session.upload_progress y
+session2.php con HTTP 200 y sesión compartida.
+
+102
+00:09:09,109 --> 00:09:14,458
+Es el entorno que se explotó y quedó documentado en EV-W2-01.
+
+103
+00:09:15,108 --> 00:09:17,780
+Los offsets no se copian de Internet.
+
+104
+00:09:17,780 --> 00:09:20,741
+Se derivan del libphp.so del servidor M1.
+
+105
+00:09:20,741 --> 00:09:25,869
+Con nm obtuvimos las direcciones de zif_system, zval_ptr_dtor y htdata.
+
+106
+00:09:25,869 --> 00:09:31,213
+Un offset de otro build hace fallar el PoC aunque la versión sea correcta.
+
+107
+00:09:31,213 --> 00:09:38,796
+Por eso el php.ini y los símbolos se verifican sobre el handler de Apache, no
+solo por línea de comandos.
+
+108
+00:09:39,446 --> 00:09:45,121
+Chain A convierte la sesión en ejecución remota en cinco pasos.
+
+109
+00:09:45,121 --> 00:09:52,057
+Primero, session.upload_progress crea /tmp/sess con el contenido del request.
+
+110
+00:09:52,057 --> 00:09:57,462
+Segundo, el nombre del campo y el valor inyectan código PHP.
+
+111
+00:09:57,462 --> 00:10:01,155
+Tercero, el sink LFI incluye ese archivo.
+
+112
+00:10:01,155 --> 00:10:05,299
+Cuarto, PHP interpreta el código en el worker.
+
+113
+00:10:05,299 --> 00:10:12,595
+Quinto, id devuelve uid=33, www-data, y escribimos el marcador PWNED-M1-www-
+data.
+
+114
+00:10:12,595 --> 00:10:19,982
+La cadena se ejecuta contra el servicio 8080 y luego se escala por B3, SSH y
+sudo.
+
+115
+00:10:20,632 --> 00:10:23,055
+Estos son los cinco comandos clave.
+
+116
+00:10:23,055 --> 00:10:29,010
+El primero crea la sesión con upload_progress y deja el código inyectado en
+/tmp/sess.
+
+117
+00:10:29,010 --> 00:10:33,719
+El segundo fuerza el mismo worker y confirma que la sesión persiste.
+
+118
+00:10:33,719 --> 00:10:37,250
+El tercero incluye el archivo de sesión por el LFI.
+
+119
+00:10:37,250 --> 00:10:40,089
+El cuarto ejecuta id y devuelve www-data.
+
+120
+00:10:40,089 --> 00:10:46,529
+El quinto reutiliza la clave de B3 para entrar por SSH como ubuntu y escalar a
+root con sudo.
+
+121
+00:10:46,529 --> 00:10:48,952
+Cada paso tiene su salida esperada.
+
+122
+00:10:49,602 --> 00:10:54,651
+W3 es una segunda vía, independiente de PHP2Shell.
+
+123
+00:10:54,651 --> 00:11:03,335
+Apache 2.4.49 permite traversal de rutas; con CGI habilitado, la ruta llega a
+/bin/sh.
+
+124
+00:11:03,335 --> 00:11:06,970
+El comando se ejecuta como www-data.
+
+125
+00:11:06,970 --> 00:11:16,462
+No necesitamos W3 para el resultado, pero demuestra que había más de un camino
+al mismo nivel.
+
+126
+00:11:16,462 --> 00:11:19,794
+W3 y W2 se parchean por separado.
+
+127
+00:11:20,444 --> 00:11:22,423
+B3 es la llave maestra.
+
+128
+00:11:22,423 --> 00:11:27,068
+El FTP de M3 permite acceso anónimo y expone /backups.
+
+129
+00:11:27,068 --> 00:11:30,595
+Dentro está credenciales.txt con Admin13.
+
+130
+00:11:30,595 --> 00:11:33,950
+Esa clave se reutiliza en ubuntu en M1.
+
+131
+00:11:33,950 --> 00:11:39,111
+Entramos por SSH, ejecutamos sudo id y obtenemos uid=0 root.
+
+132
+00:11:39,111 --> 00:11:44,015
+No es un exploit nuevo: es reutilización de credenciales.
+
+133
+00:11:44,015 --> 00:11:49,004
+Y es lo que convierte el acceso www-data en control total.
+
+134
+00:11:49,654 --> 00:11:53,757
+La evidencia es lo que sostiene todo.
+
+135
+00:11:53,757 --> 00:12:03,071
+EV-W2-07 documenta Chain A: session injection más LFI, con uid=33 www-data
+desde M1.
+
+136
+00:12:03,071 --> 00:12:14,714
+EV-W2-09 documenta el root: B3, credenciales, SSH como ubuntu, sudo y el
+archivo /root/PWNED-M1-root.txt.
+
+137
+00:12:14,714 --> 00:12:18,262
+Cada log tiene captura y SHA256.
+
+138
+00:12:18,912 --> 00:12:21,177
+El impacto real es este.
+
+139
+00:12:21,177 --> 00:12:23,820
+W2 por Chain A dio www-data.
+
+140
+00:12:23,820 --> 00:12:26,085
+W3 también dio www-data.
+
+141
+00:12:26,085 --> 00:12:28,916
+B3 más SSH y sudo dieron root.
+
+142
+00:12:28,916 --> 00:12:39,297
+La diferencia entre hay un CVE y se explotó está en la evidencia: un id, un
+archivo o una captura verificable.
+
+143
+00:12:39,297 --> 00:12:44,016
+W2 no dio root por sí solo; la cadena completa sí.
+
+144
+00:12:44,666 --> 00:12:48,344
+La cadena completa tiene cinco eslabones.
+
+145
+00:12:48,344 --> 00:12:52,829
+Kali entra a M1 por W2 Chain A y obtiene www-data.
+
+146
+00:12:52,829 --> 00:12:57,314
+Desde M3, el FTP anónimo entrega credenciales.txt.
+
+147
+00:12:57,314 --> 00:13:00,902
+Esa clave permite SSH como ubuntu en M1.
+
+148
+00:13:00,902 --> 00:13:05,657
+Con sudo llegamos a root y dejamos PWNED-M1-root.txt.
+
+149
+00:13:05,657 --> 00:13:13,730
+La réplica en vivo sigue el mismo orden: versión, precondiciones, PoC,
+evidencia y retest.
+
+150
+00:13:14,380 --> 00:13:17,211
+El resto de la red también aporta.
+
+151
+00:13:17,211 --> 00:13:23,873
+En M2, Redis sin autenticación y las claves de la base permitieron volcar
+datos.
+
+152
+00:13:23,873 --> 00:13:30,868
+En M3, el FTP anónimo y NFS no_root_squash entregaron credenciales y escritura
+root.
+
+153
+00:13:30,868 --> 00:13:37,946
+En M4, la clave débil del administrador y el AXFR llevaron a SYSTEM y al mapa
+de DNS.
+
+154
+00:13:37,946 --> 00:13:42,026
+En M5, VNC sin autenticación abrió el escritorio.
+
+155
+00:13:42,026 --> 00:13:45,940
+M5 sigue pendiente de remediación por filtrado.
+
+156
+00:13:46,590 --> 00:13:50,524
+El parcheo se aplicó en cada servidor.
+
+157
+00:13:50,524 --> 00:14:01,808
+Cambiaron versiones y configuraciones: PHP pasó a 8.4.27, WordPress a 7.0.2,
+Apache a 2.4.51 y Redis a 6.2.7.
+
+158
+00:14:01,808 --> 00:14:11,331
+Apagamos upload_progress, eliminamos el LFI, cerramos el FTP anónimo y
+deshabilitamos SMBv1.
+
+159
+00:14:11,331 --> 00:14:14,023
+M1 a M4 quedaron cerrados.
+
+160
+00:14:14,023 --> 00:14:24,582
+M5 no se pudo corregir porque 445, 3389 y 5900 quedaron filtrados; se declara
+pendiente, no remediado.
+
+161
+00:14:25,232 --> 00:14:30,454
+El retest usó los mismos comandos de validación.
+
+162
+00:14:30,454 --> 00:14:41,551
+M1 tiene ocho cierres: WordPress 7.0.2, PHP 8.4.27, Apache 2.4.51, el LFI en
+404 y las claves rotadas.
+
+163
+00:14:41,551 --> 00:14:47,425
+M2 tiene cuatro: Redis con NOAUTH y puertos filtrados.
+
+164
+00:14:47,425 --> 00:14:54,062
+M3 tiene cinco: FTP anónimo en 530, root_squash y SSH rotado.
+
+165
+00:14:54,062 --> 00:15:01,133
+M4 tiene cinco: SMB1 off, signing on, Spooler off y AXFR cerrado.
+
+166
+00:15:01,133 --> 00:15:03,200
+M5 sigue pendiente.
+
+167
+00:15:03,850 --> 00:15:05,282
+Cuatro lecciones.
+
+168
+00:15:05,282 --> 00:15:11,517
+Primera: la versión es el punto de partida; PHP 8.4.26 habilitó la cadena.
+
+169
+00:15:11,517 --> 00:15:18,341
+Segunda: los offsets son del binario; copiarlos de otro build hace fallar el
+PoC.
+
+170
+00:15:18,341 --> 00:15:23,227
+Tercera: W2 más B3 dan root; cada eslabón tiene evidencia.
+
+171
+00:15:23,227 --> 00:15:32,410
+Cuarta: parchear sí cambia el juego; 8.4.27, upload_progress off y LFI
+eliminado se verificaron en el retest.
+
+172
+00:15:32,410 --> 00:15:36,538
+La fortaleza es la trazabilidad de lo demostrado.
+
+173
+00:15:37,188 --> 00:15:38,728
+Con esto cerramos.
+
+174
+00:15:38,728 --> 00:15:45,144
+PHP2Shell quedó demostrado con Chain A, www-data y root por B3, SSH y sudo.
+
+175
+00:15:45,144 --> 00:15:47,540
+W3 fue una segunda vía real.
+
+176
+00:15:47,540 --> 00:15:51,475
+La remediación y el retest están documentados.
+
+177
+00:15:51,475 --> 00:15:54,042
+Ahora respondemos preguntas y,
+
+178
+00:15:54,042 --> 00:15:56,181
+si el docente lo permite,
+
+179
+00:15:56,181 --> 00:15:59,603
+repetimos la réplica en vivo desde Kali,
+
+180
+00:15:59,603 --> 00:16:02,341
+en el mismo orden: version gate,
+
+181
+00:16:02,341 --> 00:16:03,624
+precondiciones,
+
+182
+00:16:03,624 --> 00:16:03,966
+PoC,
+
+183
+00:16:03,966 --> 00:16:05,592
+evidencia y retest.
+
+184
+00:16:05,592 --> 00:16:06,276
+Gracias.
