@@ -1,108 +1,80 @@
-# AGENTS.md · Laboratorio IS-1023
+# AGENTS.md · Lab PHP2Shell (IS-1023)
 
 ## 1. Contexto
 
-Este repositorio contiene el **Trabajo Final de la Unidad I** de **IS-1023 Seguridad de la Información** (UNAM/EPISI, Semana 07). El entregable es un **informe técnico + sustentación con réplica en vivo**; el laboratorio de 6 VM es el medio para demostrar el ciclo completo: identificar, explotar, remediar y verificar.
+Trabajo Final de la Unidad I de **IS-1023 Seguridad de la Información** (UNAM/EPISI).
+El entregable es una **cadena de intrusión demostrable** en una red aislada:
 
-- Guía del docente: [`Guía_Trabajo_Final (1).pdf`](./Gu%C3%ADa_Trabajo_Final%20%281%29.pdf)
-- Red: `10.10.10.0/24`, aislada, sin Internet mientras los servicios vulnerables están activos.
-- Máquinas: M1 app `.11`, M2 DB `.12`, M3 respaldos `.13`, M4 Windows `.14`, M5 cliente `.15`, M6 Kali `.20`, R0 router `.1`.
-- El proyecto ya tiene arquitectura, guías, informe, evidencias y inventario; el objetivo de esta capa SDD es **convertir documentación en requisitos verificables y ejecución demostrable**.
+```
+M6 (Kali) --PHP2Shell--> M1 (www-data) --> M2 --> M3 --> M4 (DNS) --> M5
+```
+
+La única entrada es **PHP2Shell** en M1. Todo lo demás es pivoteo y escalada.
+La arquitectura completa está en [`lab/README.md`](./lab/README.md).
 
 ## 2. Reglas no negociables
 
 1. **Alcance:** solo `10.10.10.0/24`, solo VM del grupo, solo con autorización del docente.
-2. **Aislamiento:** sin Internet y sin red universitaria mientras los servicios vulnerables estén activos.
-3. **Ética:** nada de terceros, DoS, ransomware, cifrado simulado, borrado de backups ni datos reales.
-4. **Snapshots:** antes de cada cambio o PoC; `estado-inicial-vulnerable` y `estado-parcheado` son obligatorios.
-5. **Verdad:** no se inventan salidas. Si un PoC falla, se documenta la limitación y el fallback.
-6. **Evidencia:** no se afirma RCE sin `id`, `whoami`, archivo de prueba o captura verificable.
-7. **Separación:** el informe oficial lleva metodología, impacto y evidencia; los comandos y PoCs viven en el **anexo interno**.
-8. **Remediación:** no se parchea el estado comprometido; se restaura `estado-inicial-vulnerable` y se parchea desde ahí.
-9. **CVSS:** no se mezclan métricas v3.1 y v4.0; cada ficha declara la métrica.
-10. **CVE:** cada hallazgo debe tener NVD/CVE.org, versión afectada, versión corregida, CVSS, evidencia y retest.
-11. **Version gate:** no se avanza si la versión instalada no está comparada con el rango vulnerable y la versión que corrige. Si la instalada es igual o mayor que el fix, el CVE no se cuenta.
-12. **Artefactos:** solo se instala lo que está en `artifacts/` con SHA256 verificado. No se descarga nada durante la explotación; no se guardan binarios troyanizados ni malware.
-13. **Revalidación:** no se cuentan como profundidad las vulnerabilidades no reproducibles (D1, B2) ni las no aplicables (S1, C1). El estado real está en `docs/VALIDACION-VULNERABILIDADES.md`.
+2. **Aislamiento:** sin Internet mientras los servicios vulnerables estén activos.
+3. **Ética:** nada de terceros, DoS, ransomware, cifrado simulado ni datos reales.
+4. **Snapshots:** antes de cada cambio: `00-base`, `01-<rol>-listo`, `estado-inicial`, `estado-parcheado`.
+5. **Verdad:** no se inventan salidas. Si un PoC falla, se documenta la etapa y la limitación.
+6. **Evidencia:** no se afirma RCE sin `id`/`whoami` y un marcador recuperado por un canal independiente.
+7. **Artefactos:** solo lo que está en `artifacts/` con SHA256 verificado. Nada se descarga de Internet.
+8. **No mezclar vectores:** `entry-b` (session injection + LFI) se declara como tal; **no** es el UAF de CVE-2026-109618.
+9. **No parchear el estado comprometido:** restaurar `estado-inicial` y parchear desde ahí.
+10. **Credenciales:** solo laboratorio; rotar al cerrar la práctica.
 
-## 3. Orden de lectura para un agente
+## 3. Orden de lectura
 
-1. [`docs/constitution.md`](./docs/constitution.md) — reglas del proyecto.
-2. [`docs/PROCESO-7-FASES.md`](./docs/PROCESO-7-FASES.md) — 7 fases + informe y version gate.
-3. [`docs/VALIDACION-VULNERABILIDADES.md`](./docs/VALIDACION-VULNERABILIDADES.md) — qué vuln es real y cuál no.
-4. [`specs/<fase>/spec.md`](./specs/) — requisitos EARS de la fase.
-5. [`specs/<fase>/plan.md`](./specs/) — cómo se implementa.
-6. [`specs/005-fase-4-validacion-explotacion/vulns/`](./specs/005-fase-4-validacion-explotacion/vulns/) — flujo por vulnerabilidad.
-7. [`specs/<fase>/tasks.md`](./specs/) — tareas y estado.
-8. [`MEMORY.md`](./MEMORY.md) — estado, decisiones, credenciales y limitaciones.
-9. [`docs/PLAN-MAESTRO.md`](./docs/PLAN-MAESTRO.md) — contexto completo y plan de ataque.
-10. [`templates/`](./templates/) — plantillas de informe, hallazgo y version gate.
+1. [`lab/README.md`](./lab/README.md) — red, servicios, cadena, credenciales, contrato.
+2. [`MEMORY.md`](./MEMORY.md) — estado real, decisiones y pendientes.
+3. [`lab/common/lib.sh`](./lab/common/lib.sh) — API que usan todos los instaladores.
+4. `lab/m1` … `lab/m6` — instaladores y `verify.sh` por máquina.
+5. [`lab/chain`](./lab/chain) — comandos por salto.
+6. [`legacy/`](./legacy) — material anterior, **solo consulta**.
 
-## 4. Flujo SDD
+## 4. Flujo de trabajo
 
 ```text
-Constitución → Spec → Clarificación → Plan → Tareas → Implementación → Validación → Loop
+snapshot → instalar rol → verify.sh → explotar salto → evidencia → siguiente salto
 ```
 
-Se aplica a **7 fases técnicas (0–6) + Fase 7 de informe final**. Cada fase tiene un **version gate** obligatorio.
+- No se instala nada sin snapshot previo.
+- No se cierra un salto sin evidencia y sin `verify.sh` en verde.
+- Si cambia un requisito: actualizar `lab/README.md`, el instalador y `MEMORY.md`.
 
-- No se implementa sin `spec.md` aprobada.
-- No se cierra una tarea sin evidencia.
-- Al terminar cada fase: actualizar `tasks.md`, `MEMORY.md` y el registro de evidencias.
-- Si cambia un requisito: actualizar `spec.md`, `plan.md`, `tasks.md` y registrar la decisión en `MEMORY.md`.
+## 5. Mapa de máquinas
 
-## 5. Fases y specs
-
-| Fase guía | Spec | Objetivo |
-|---|---|---|
-| Pre-0 | [`specs/000-artefactos`](./specs/000-artefactos/) | Descargar, verificar y servir artefactos por FTP |
-| 0 | [`specs/001-fase-0-preparacion-snapshots`](./specs/001-fase-0-preparacion-snapshots/) | Preparación, aislamiento, snapshots y clones |
-| 1 | [`specs/002-fase-1-montaje-entorno`](./specs/002-fase-1-montaje-entorno/) | Montaje de las 6 VM y servicios |
-| 2 | [`specs/003-fase-2-implementacion-vulnerabilidades`](./specs/003-fase-2-implementacion-vulnerabilidades/) | Implementar vulnerabilidades corregidas |
-| 3 | [`specs/004-fase-3-reconocimiento-enumeracion`](./specs/004-fase-3-reconocimiento-enumeracion/) | Reconocimiento, escaneo y enumeración |
-| 4 | [`specs/005-fase-4-validacion-explotacion`](./specs/005-fase-4-validacion-explotacion/) | Validación, explotación, cadena e impacto |
-| 5 | [`specs/006-fase-5-remediacion`](./specs/006-fase-5-remediacion/) | Remediación por versión o configuración |
-| 6 | [`specs/007-fase-6-verificacion-retest`](./specs/007-fase-6-verificacion-retest/) | Retest y antes/después |
-| 7 | [`specs/008-fase-7-documentacion-sustentacion`](./specs/008-fase-7-documentacion-sustentacion/) | Informe final, plantillas, diapositivas y réplica en vivo |
+| VM | IP | Rol | Instalador |
+|---|---|---|---|
+| M1 | .11 | nginx TLS → Apache prefork → PHP 8.4.26 + WP/Moodle | `lab/m1/install.sh` |
+| M2 | .12 | MariaDB + Redis + SSH débil | `lab/m2/install.sh` |
+| M3 | .13 | FTP anónimo + NFS + backups con credenciales | `lab/m3/install.sh` |
+| M4 | .14 | DNS `uni.lab` + SMB + WinRM | `lab/m4/install.ps1` |
+| M5 | .15 | cliente Windows (SMB/RDP/VNC) | `lab/m5/install.ps1` |
+| M6 | .20 | Kali: repo, artefactos, ataque | `lab/m6/install.sh` |
 
 ## 6. Convenciones
 
-- Requisitos: `REQ-<spec>-NN`.
-- Tareas: `T-<spec>-NN`.
-- Evidencias: `EV-F0X-NNN.png`, `LOG-F0X-NNN.txt`, `CMD-F0X-NNN`.
-- Snapshots: `00-base`, `01-<rol>-listo`, `estado-inicial-vulnerable`, `previo-a-<ID>`, `estado-parcheado`.
-- Horas en **UTC**.
-- Cada evidencia: captura + log + SHA256.
-- Nombres de máquinas: `M1`…`M6`, `R0`.
+- Evidencias: `EV-<salto>-NN.png`, `LOG-<salto>-NN.txt`, con SHA256 y hora UTC.
+- Snapshots: `00-base`, `01-<rol>-listo`, `estado-inicial`, `estado-parcheado`.
+- Nombres: `M1`…`M6`, `R0`.
+- Scripts: bash estricto, idempotentes, sin descargas de Internet, comentarios en español.
 
-## 7. Estado actual (2026-10-26)
-
-- Laboratorio apagado; no responde ningún `10.10.10.x` desde el host.
-- 24 hallazgos documentados: 9 CVE + 15 configuraciones.
-- 5/5 máquinas con presencia, pero **0 RCE de los CVE estrella** y **0 versiones parcheadas**.
-- M4 no tiene privesc real desde acceso limitado.
-- B1/B2/S1/C1 son inválidos o no aplicables tal como están.
-- Prioridad: **W1 wp2shell** → W4/W3 de respaldo → **W2 PHP2Shell** con time-box; M4 con usuario limitado + PrintNightmare; M3 con Samba 4.5.9; upgrades de versión.
-
-## 8. Validación
+## 7. Validación
 
 ```bash
-tests/check-artifacts.sh             # presencia y SHA256 de artefactos
-tests/check-versions.sh              # inventario de versiones desde M6
-tests/check-version-gates.sh vuln    # versión vulnerable vs. fix
-tests/check-version-gates.sh patched # versión corregida vs. fix
-tests/check-retest.sh                # estado parcheado
-tests/check-evidence.sh              # integridad de evidencias
-tests/check-lab.ps1                  # conectividad desde el host Windows
+bash lab/tests/smoke.sh          # desde M6: puertos, DNS y HTTPS
+bash lab/m1/verify.sh            # en cada VM, tras instalar
+bash lab/chain/01-m1-php2shell.sh --run
 ```
 
-Todos los tests son **read-only**. No explotan, no borran y no cambian configuración.
+## 8. Qué no hacer
 
-## 9. Qué no hacer
-
-- No editar `informe/evidencias/` a mano.
-- No borrar logs reales.
-- No cambiar versiones sin snapshot.
-- No usar `nmap -p-` en la demo; solo en la bitácora interna.
-- No incluir comandos de exploit en el informe oficial.
-- No declarar “parcheado” si solo se bloqueó una ruta o se deshabilitó una función.
+- No editar evidencias a mano ni borrar logs reales.
+- No afirmar `entry-a` resuelto sin `id` real.
+- No presentar el LFI del plugin como si fuera el UAF de CVE-2026-109618.
+- No usar `nmap -p-` en la demo; solo en bitácora interna.
+- No declarar "parcheado" si solo se bloqueó una ruta.
+- No tocar `legacy/` salvo para consultar.

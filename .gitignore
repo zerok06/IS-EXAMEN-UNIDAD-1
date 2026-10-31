@@ -1,18 +1,16 @@
 # Dependencias locales
 node_modules/
 presentacion/node_modules/
-presentacion/remotion/node_modules/
 
-# Render temporales y duplicados
-presentacion/remotion/out/
-presentacion/video/
-presentacion/remotion/whisper/whisper.log
+# Material archivado: se conserva en git, no se sirve en el despliegue
+legacy/
 
-# Auxiliares de LaTeX
-plantilla-IS1023/*.aux
-plantilla-IS1023/*.log
-plantilla-IS1023/*.lof
-plantilla-IS1023/*.lot
-plantilla-IS1023/*.out
-plantilla-IS1023/*.toc
-plantilla-IS1023/compile2.log
+# Secretos del laboratorio (CA y llaves emitidas)
+lab/pki/out/
+*.key
+
+# Trabajo y caché
+lab-work/
+*.part
+*.tar.gz.sha256
+*.zip.sha256
