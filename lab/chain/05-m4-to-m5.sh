@@ -109,7 +109,7 @@ fi
 # --------------------------------------------------------------- ejecución
 step "a) credenciales del cliente en M4 ($M4_FILE)"
 if command -v impacket-wmiexec.py >/dev/null 2>&1; then
-  out="$(impacket-wmiexec.py "$M4_DOMAIN/$M4_USER:$M4_PASS@$M4" "cmd /c type $M4_FILE" 2>/dev/null || true)"
+  out="$(impacket-wmiexec.py "$M4_USER:$M4_PASS@$M4" "cmd /c type $M4_FILE" 2>/dev/null || true)"
   if [[ -n "$out" ]]; then
     printf '%s\n' "$out" | sed '/^Impacket v/d; /^\[/d' | tail -n 5
     ok "archivo leído en M4"
