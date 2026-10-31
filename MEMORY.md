@@ -24,12 +24,16 @@
 4. **`entry-b` es el camino operativo:** `session.upload_progress` + sink LFI del
    plugin `legacy-download`. Se declara como tal; no se vende como el UAF.
 5. **`entry-a` va con time-box** y se documenta la limitación. Sin `id`, no cuenta.
-6. **M4 es Windows:** el salto M3→M4 es por credenciales y WinRM, no por PHP.
-7. **M4→M5 por DNS + credenciales:** AXFR de `uni.lab`, resolución de `pc-est01`,
-   share `Transfer` y reutilización de clave.
-8. **Instalación automatizada:** cada VM baja `lab.tar.gz` de M6:8000 y ejecuta su rol.
-9. **Artefactos solo de `artifacts/`;** nada de Internet.
-10. **Todo lo viejo queda congelado** en `legacy/`; no se consulta para la demo.
+6. **Cada salto es una vulnerabilidad, no una contraseña.** M1→M2 Redis sin auth
+   como root; M2→M3 NFS `no_root_squash` + cron root; M3→M4 MS17-010; M4→M5 VNC
+   sin autenticación.
+7. **M4 es Windows:** el salto M3→M4 es EternalBlue (SMBv1), no PHP.
+8. **M5 se alcanza por VNC sin auth** (CWE-306), no por reutilización de claves.
+9. **Las cuentas de `§4` son solo de administración** y no forman parte de la cadena.
+10. **La LAN es plana:** los saltos se ejecutan desde M6; el pivote es lógico.
+11. **Instalación automatizada:** cada VM baja `lab.tar.gz` de M6:8000 y ejecuta su rol.
+12. **Artefactos solo de `artifacts/`;** nada de Internet.
+13. **Todo lo viejo queda congelado** en `legacy/`; no se consulta para la demo.
 
 ## 3. Verdad sobre PHP2Shell
 
@@ -63,11 +67,13 @@
 
 1. **Probar los instaladores en VM real** (M1 es el crítico: build de Apache/PHP ~20 min).
 2. **Probar `entry-b`** contra M1 y guardar `WS_SID`; verificar el `id` por el sink.
-3. **`entry-a`:** decidir si se intenta un exploit propio o se cierra como limitación.
-4. **M5 VNC:** el `.msi` no está en `lab/artifacts`; el instalador lo omite con WARN.
-5. **Snapshots:** `00-base` y `01-<rol>-listo` por VM antes de explotar.
-6. **Informe:** reescribir con la estructura de 5 saltos y evidencias nuevas.
-7. **Rotar credenciales** al cerrar la práctica.
+3. **Probar la cadena nueva:** Redis→root, NFS+cron→root, MS17-010→SYSTEM, VNC sin auth.
+4. **MS17-010 depende del build:** si el ISO de WS2016 ya trae el parche, usar
+   PrintNightmare con `soporte` (documentado como fallback).
+5. **`entry-a`:** decidir si se intenta un exploit propio o se cierra como limitación.
+6. **Snapshots:** `00-base` y `01-<rol>-listo` por VM antes de explotar.
+7. **Informe:** reescribir con la estructura de 5 saltos y evidencias nuevas.
+8. **Rotar credenciales** al cerrar la práctica.
 
 ## 6. Bitácora
 
@@ -76,3 +82,4 @@
 | 2026-10-31 | Reestructuración: `docs/ guias/ informe/ specs/ templates/ tests/ presentacion/ plantilla-IS1023/ .agents/` → `legacy/`; tag `pre-php2shell-2026-10-31` |
 | 2026-10-31 | Nuevo `lab/`: README, lib común, instaladores M1–M6, PKI, bootstrap, cadena y smoke |
 | 2026-10-31 | M1: nginx TLS → Apache 2.4.49 prefork → PHP 8.4.26 NTS mod_php; harness `/lab/session.php`; sink `legacy-download`; `session.save_path=/tmp` |
+| 2026-10-31 | Cadena rediseñada a vulnerabilidades: Redis sin auth como root (M2), NFS `no_root_squash` + cron root (M3), MS17-010 (M4), VNC sin auth (M5). Se eliminan los saltos por credenciales |

@@ -9,9 +9,9 @@
 |---|---|---|---|---|
 | R0 | 10.10.10.1 | router/NAT interno | — | gateway |
 | M1 | 10.10.10.11 | app / entrada | Ubuntu 22.04 | nginx TLS :443 → Apache 2.4.49 prefork :8080 (mod_php 8.4.26) + WordPress 7.0.1 + Moodle 5.0.11 |
-| M2 | 10.10.10.12 | base de datos | Ubuntu 22.04 | MariaDB 10.11 :3306, Redis 6.2.6 :6379, SSH |
-| M3 | 10.10.10.13 | respaldos | Ubuntu 22.04 | vsftpd 2.3.4 :21, NFS :2049, Samba 4.5.9 :445, SSH |
-| M4 | 10.10.10.14 | red / DNS | Windows Server 2016 | DNS `uni.lab` (AXFR), SMB, WinRM, Spooler |
+| M2 | 10.10.10.12 | base de datos | Ubuntu 22.04 | MariaDB 10.11 :3306, Redis 6.2.6 :6379 **sin auth y como root**, SSH |
+| M3 | 10.10.10.13 | respaldos | Ubuntu 22.04 | vsftpd 2.3.4 :21, NFS `no_root_squash` :2049, cron root sobre el export, SSH |
+| M4 | 10.10.10.14 | red / DNS | Windows Server 2016 | DNS `uni.lab` (AXFR), SMB1, SMB, WinRM, Spooler |
 | M5 | 10.10.10.15 | cliente | Windows 10 19045 | SMB, RDP sin NLA, VNC |
 | M6 | 10.10.10.20 | atacante | Kali | repo + artefactos servidos en :8000 |
 
@@ -57,26 +57,33 @@ El sink LFI es intencional y forma parte del escenario: plugin `legacy-download`
 en WordPress (`/wp-content/plugins/legacy-download/dl.php?file=`), un plugin
 "heredado" mal escrito. Está versionado en `m1/app/`.
 
-## 4. Cadena
+## 4. Cadena (cada salto es una vulnerabilidad)
+
+| # | Salto | Vulnerabilidad | Resultado |
+|---|---|---|---|
+| 1 | M6 → M1 | **PHP2Shell** (CVE-2026-109618/619) + sink LFI | `www-data` en M1 |
+| 2 | M1 → M2 | **Redis 6.2.6 sin auth y como root**: `CONFIG SET dir/dbfilename` + `SAVE` → `authorized_keys` | `root` en M2 |
+| 3 | M2 → M3 | **NFS `no_root_squash`** + cron root sobre el export: se sobrescribe `rotate.sh` | `root` en M3 |
+| 4 | M3 → M4 | **MS17-010 / EternalBlue** (SMBv1 sin parchear) | `SYSTEM` en M4 |
+| 5 | M4 → M5 | **VNC sin autenticación** (TightVNC 2.8.90, CWE-306) | escritorio de M5 |
+
+Ningún salto usa una contraseña ni un archivo de credenciales. Las cuentas de
+`§6` son solo de administración del laboratorio y **no forman parte de la cadena**.
 
 ```
 M6 ──php2shell──> M1 www-data
-                     │ lee wp-config.php (DB_HOST=10.10.10.12, wp_user/ClaveDebil123)
+                     │ Redis 0.0.0.0:6379 sin auth, como root
                      ▼
-M2 adminm2/adminm2 (SSH) ──sudo──> root ──/root/.ssh/id_ed25519──> M3
-                     │ volcado wp_db/moodle_db, Redis sin auth
+M2 root ──NFS no_root_squash + cron root──> M3 root
+                     │ MS17-010 (SMBv1)
                      ▼
-M3 backup (llave) ──> /srv/storage/backups/credenciales.txt ──> M4
-                     │ NFS no_root_squash → SUID root en M1
-                     ▼
-M4 Administrador/M4_Admin_2026! (WinRM) ──> DNS uni.lab, shares
-                     │ AXFR + pc-est01.uni.lab + credenciales en share
-                     ▼
-M5 cliente/Admin13.- (SMB/RDP) ──> flag
+M4 SYSTEM ──VNC sin auth──> M5
 ```
 
-Comandos por salto en `chain/`. Cada script imprime el comando exacto, no lo ejecuta
-a ciegas: se corre desde M6 con el túnel/proxychains correspondiente.
+> La LAN del laboratorio es plana: los scripts de `chain/` se ejecutan desde M6,
+> que alcanza a todas las VM. El "pivote" es lógico (cada salto usa el acceso
+> obtenido en el anterior y las credenciales/llaves que ese acceso deja), no un
+> túnel. Si se quiere pivote real, se añade proxychains/ligolo en una fase aparte.
 
 ## 5. Instalación automatizada
 
@@ -103,7 +110,7 @@ iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing | iex
 instalador del rol. Todos los instaladores son **idempotentes** y terminan con
 `verify.sh`, que falla ruidosamente si el servicio no quedó como se espera.
 
-## 6. Credenciales (solo laboratorio aislado)
+## 6. Credenciales de administración (no se usan en la cadena)
 
 | Servicio | Usuario | Clave |
 |---|---|---|

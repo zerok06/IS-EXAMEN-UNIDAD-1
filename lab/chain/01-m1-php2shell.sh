@@ -18,7 +18,7 @@
 #    bash lab/chain/01-m1-php2shell.sh --run --entry a --timebox 600
 #
 #  Con --run, el SID que funciona se guarda en $LAB_STATE (def. /tmp/lab-chain.env)
-#  para que 02-m1-to-m2.sh lo reutilice como canal de ejecución.
+#  como evidencia del salto 1.
 #
 #  Credenciales: las de laboratorio (lab/README.md §6). Datos ficticios.
 # ============================================================================
@@ -234,8 +234,4 @@ fi
 
 # --------------------------------------------------------------- cierre
 step "siguiente salto"
-if [[ -s "$STATE" ]]; then
-  printf '  bash %s/02-m1-to-m2.sh --run    # usa WS_SID de %s\n' "$HERE" "$STATE" >&2
-else
-  printf '  bash %s/02-m1-to-m2.sh          # primero leer los comandos\n' "$HERE" >&2
-fi
+printf '  bash %s/02-m1-to-m2.sh --run    # Redis sin auth -> root en M2\n' "$HERE" >&2

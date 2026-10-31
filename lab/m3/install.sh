@@ -261,15 +261,23 @@ setup_nfs() {
     ok "directorio ${STORAGE}/${d} (2775 www-data:www-data)"
   done
 
-  # Contenido del escenario: credenciales de las máquinas Windows.
-  write_if_changed "${STORAGE}/backups/credenciales.txt" <<'EOF'
-M4 Administrador:M4_Admin_2026!
-M5 cliente:Admin13.-
-# nota: rotar al cerrar la práctica
+  # Contenido del escenario: tarea de rotación que corre como root desde un
+  # directorio exportado con no_root_squash. Es el vector de M3 en la cadena.
+  write_if_changed "${STORAGE}/backups/rotate.sh" <<'EOF'
+#!/bin/sh
+# Rotación de respaldos (tarea programada del sistema).
+find /srv/storage/backups -name '*.sql.gz' -mtime +7 -delete 2>/dev/null
 EOF
-  chown www-data:www-data "${STORAGE}/backups/credenciales.txt"
-  chmod 0644 "${STORAGE}/backups/credenciales.txt"
-  ok "credenciales.txt escrito (644)"
+  chmod 0755 "${STORAGE}/backups/rotate.sh"
+  write_if_changed /etc/cron.d/lab-rotate <<EOF
+# LAB PHP2Shell — M3. Ejecuta la rotación como root desde el export NFS.
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * root ${STORAGE}/backups/rotate.sh
+EOF
+  chmod 0644 /etc/cron.d/lab-rotate
+  systemctl restart cron >/dev/null 2>&1 || true
+  ok "cron root sobre ${STORAGE}/backups/rotate.sh (cada minuto)"
 
   # Respaldo del archivo original antes de gestionarlo (no se borra nada).
   if [[ -f /etc/exports ]] && ! grep -q 'LAB PHP2Shell' /etc/exports; then

@@ -508,6 +508,21 @@ function Ensure-LabShare {
     Grant-EveryoneFullControl -Path $Path
 }
 
+function Enable-LabSmb1 {
+    try {
+        $feature = Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -ErrorAction Stop
+        if ($feature.State -ne 'Enabled') {
+            Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart -ErrorAction Stop | Out-Null
+            Ok 'SMB1 habilitado (intencional: MS17-010)'
+        } else {
+            Ok 'SMB1 ya habilitado'
+        }
+        Set-SmbServerConfiguration -EnableSMB1Protocol $true -Force -ErrorAction Stop
+    } catch {
+        Fail ('no se pudo habilitar SMB1: {0}' -f $_.Exception.Message)
+    }
+}
+
 function Disable-SmbSigning {
     $config = Get-SmbServerConfiguration -ErrorAction Stop
     if (-not $config.RequireSecuritySignature) {
@@ -730,6 +745,7 @@ Set-LabAccounts
 
 Step '6/10 share SMB y firma'
 Ensure-LabShare -Name $ShareName -Path $SharePath -Description 'Transfer del laboratorio (Everyone lectura/escritura)'
+Enable-LabSmb1
 Disable-SmbSigning
 
 Step '7/10 WinRM'
@@ -742,7 +758,7 @@ Step '9/10 firewall'
 Set-LabFirewall
 
 Step '10/10 credenciales y nombre de equipo'
-Write-CredentialsFile -Path (Join-Path $SharePath 'credenciales.txt') -Content 'M5 cliente:Admin13.-'
+Write-CredentialsFile -Path (Join-Path $SharePath 'README.txt') -Content 'Share de transferencia del laboratorio. Sin secretos: la cadena no usa credenciales.'
 Rename-LabComputer -NewName $M4Name
 
 Show-Summary

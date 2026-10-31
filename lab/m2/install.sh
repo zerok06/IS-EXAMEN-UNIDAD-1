@@ -66,7 +66,7 @@ ensure_user() {
 install_packages() {
   step "paquetes base"
   apt_install mariadb-server mariadb-client openssh-server ufw curl \
-              ca-certificates sshpass rsync
+              ca-certificates sshpass rsync nfs-common
   ok "paquetes base instalados"
 }
 
@@ -200,8 +200,10 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=redis
-Group=redis
+# Intencional: Redis corre como root. Con `CONFIG SET dir/dbfilename` + SAVE
+# escribe donde quiera; es el vector de M2 en la cadena (sin credenciales).
+User=root
+Group=root
 RuntimeDirectory=redis-lab
 RuntimeDirectoryMode=0750
 ExecStart=${REDIS_BIN} /etc/redis-lab/redis.conf

@@ -211,9 +211,13 @@ Invoke-Check 'firma SMB no es obligatoria' {
     -not (Get-SmbServerConfiguration -ErrorAction Stop).RequireSecuritySignature
 }
 
-$credentialsPath = Join-Path $SharePath 'credenciales.txt'
-Invoke-Check ('{0} contiene la credencial de M5' -f $credentialsPath) {
-    (Get-Content -LiteralPath $credentialsPath -Raw -ErrorAction Stop).Trim() -eq 'M5 cliente:Admin13.-'
+Invoke-Check 'SMB1 habilitado (MS17-010)' {
+    (Get-SmbServerConfiguration -ErrorAction Stop).EnableSMB1Protocol
+}
+
+$readmePath = Join-Path $SharePath 'README.txt'
+Invoke-Check ('{0} presente y sin secretos' -f $readmePath) {
+    (Get-Content -LiteralPath $readmePath -Raw -ErrorAction Stop) -match 'sin secretos'
 }
 
 # ---------------------------------------------------------------- cuentas

@@ -137,21 +137,16 @@ for d in backups wp-uploads moodledata; do
   fi
 done
 
-creds="${STORAGE}/backups/credenciales.txt"
-if [[ -r "$creds" ]]; then
-  pass "credenciales.txt legible ($(stat -c '%a' "$creds"))"
-  if grep -qxF 'M4 Administrador:M4_Admin_2026!' "$creds"; then
-    pass "credencial M4 presente"
-  else
-    fail "credencial M4 ausente en credenciales.txt"
-  fi
-  if grep -qxF 'M5 cliente:Admin13.-' "$creds"; then
-    pass "credencial M5 presente"
-  else
-    fail "credencial M5 ausente en credenciales.txt"
-  fi
+rotate="${STORAGE}/backups/rotate.sh"
+if [[ -x "$rotate" ]]; then
+  pass "rotate.sh ejecutable (cron root del escenario)"
 else
-  fail "no se puede leer ${creds}"
+  fail "falta ${rotate} o no es ejecutable"
+fi
+if grep -q "${STORAGE}/backups/rotate.sh" /etc/cron.d/lab-rotate 2>/dev/null; then
+  pass "cron root sobre rotate.sh (cada minuto)"
+else
+  fail "sin /etc/cron.d/lab-rotate apuntando a rotate.sh"
 fi
 
 # ---- usuarios y llave -----------------------------------------------------
@@ -174,7 +169,7 @@ if id -u backup >/dev/null 2>&1; then
     if [[ -s "$ak" ]]; then
       pass "authorized_keys con $(wc -l <"$ak") llave(s)"
     else
-      fail "authorized_keys vacío: M2 aún no copió su llave"
+      warn "authorized_keys vacío (M2 aún no copió su llave; no es parte de la cadena)"
     fi
   else
     fail "no existe ${ak}"
@@ -227,4 +222,4 @@ if (( FAIL > 0 )); then
   warn "M3 NO está como espera el escenario (${FAIL} fallo(s))"
   exit 1
 fi
-ok "M3 verificado: vsFTPd 2.3.4 :21, NFS no_root_squash, backup por llave, credenciales"
+ok "M3 verificado: vsFTPd 2.3.4 :21, NFS no_root_squash, cron root del export"

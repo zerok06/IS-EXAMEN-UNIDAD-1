@@ -160,7 +160,7 @@ if [[ -f /root/.ssh/id_ed25519 ]]; then
     fail "llave root ilegible"
   fi
 else
-  fail "no existe /root/.ssh/id_ed25519 (necesaria para el salto a M3)"
+  fail "no existe /root/.ssh/id_ed25519 (llave de administración)"
 fi
 
 # ---- firewall y configuración ---------------------------------------------
