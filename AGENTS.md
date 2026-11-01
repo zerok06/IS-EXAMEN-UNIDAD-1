@@ -28,11 +28,12 @@ La arquitectura completa está en [`lab/README.md`](./lab/README.md).
 ## 3. Orden de lectura
 
 1. [`lab/README.md`](./lab/README.md) — red, servicios, cadena, credenciales, contrato.
-2. [`MEMORY.md`](./MEMORY.md) — estado real, decisiones y pendientes.
-3. [`lab/common/lib.sh`](./lab/common/lib.sh) — API que usan todos los instaladores.
-4. `lab/m1` … `lab/m6` — instaladores y `verify.sh` por máquina.
-5. [`lab/chain`](./lab/chain) — comandos por salto.
-6. [`legacy/`](./legacy) — material anterior, **solo consulta**.
+2. [`lab/GUIA-EXPLOTACION.md`](./lab/GUIA-EXPLOTACION.md) — comandos por salto y evidencias.
+3. [`MEMORY.md`](./MEMORY.md) — estado real, decisiones y pendientes.
+4. [`lab/common/lib.sh`](./lab/common/lib.sh) — API que usan todos los instaladores.
+5. `lab/m1` … `lab/m6` — instaladores y `verify.sh` por máquina.
+6. [`lab/chain`](./lab/chain) — comandos por salto.
+7. [`legacy/`](./legacy) — material anterior, **solo consulta**.
 
 ## 4. Flujo de trabajo
 
