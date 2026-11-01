@@ -69,9 +69,9 @@
 
 1. **Probar los instaladores en VM real** (M1 es el crítico: build de Apache/PHP ~20 min).
 2. **Probar `entry-b`** contra M1 y guardar `WS_SID`; verificar el `id` por el sink.
-3. **Probar la cadena nueva:** Redis→root, NFS+cron→root, PrintNightmare→SYSTEM, VNC sin auth.
-4. **PrintNightmare:** verificar el nombre del módulo (`search printnightmare`) y que la
-   cuenta `soporte` y el spooler estén listos. EternalBlue solo si M4 es 2012 R2.
+5. **Probar la cadena nueva:** Redis→root, NFS+cron→root, PrintNightmare→SYSTEM, VNC sin auth.
+6. **Probar el parchado:** `lab/patch/m1-php.sh` … `m5.ps1` + `retest.sh` (los 5 saltos deben fallar).
+7. **Moodle:** opcional (`INSTALL_MOODLE=0`); 5.0.11 exige MariaDB 10.11 y Ubuntu trae 10.6.
 5. **`entry-a`:** decidir si se intenta un exploit propio o se cierra como limitación.
 6. **Snapshots:** `00-base` y `01-<rol>-listo` por VM antes de explotar.
 7. **Informe:** reescribir con la estructura de 5 saltos y evidencias nuevas.
@@ -84,4 +84,4 @@
 | 2026-10-31 | Reestructuración: `docs/ guias/ informe/ specs/ templates/ tests/ presentacion/ plantilla-IS1023/ .agents/` → `legacy/`; tag `pre-php2shell-2026-10-31` |
 | 2026-10-31 | Nuevo `lab/`: README, lib común, instaladores M1–M6, PKI, bootstrap, cadena y smoke |
 | 2026-10-31 | M1: nginx TLS → Apache 2.4.49 prefork → PHP 8.4.26 NTS mod_php; harness `/lab/session.php`; sink `legacy-download`; `session.save_path=/tmp` |
-| 2026-10-31 | Cadena rediseñada a vulnerabilidades: Redis sin auth como root (M2), NFS `no_root_squash` + cron root (M3), PrintNightmare (M4), VNC sin auth (M5). Pivote ligolo por M1 (`01b`) |
+| 2026-10-31 | Pivote ligolo por M1 (`01b`), matriz de versiones (`VERSIONES.md`), chequeo (`check-versions.sh`) y scripts de parchado/retest (`lab/patch/`) |

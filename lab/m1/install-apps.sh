@@ -11,6 +11,8 @@ require_root
 WP_DIR=/var/www/wp
 MOODLE_DIR=/var/www/moodle
 PHP=/usr/local/bin/php
+# Moodle 5.0.11 exige MariaDB 10.11 (Ubuntu 22.04 trae 10.6): por defecto NO se instala.
+INSTALL_MOODLE="${INSTALL_MOODLE:-0}"
 
 # ---------------------------------------------------------------- espera M2
 step "esperando MariaDB en $M2:3306"
@@ -87,7 +89,9 @@ fi
 
 # ---------------------------------------------------------------- Moodle
 step "Moodle"
-if [[ -f "$MOODLE_DIR/config.php" ]]; then
+if [[ "$INSTALL_MOODLE" != "1" ]]; then
+  warn "Moodle omitido (INSTALL_MOODLE=0): 5.0.11 exige MariaDB 10.11 y Ubuntu 22.04 trae 10.6"
+elif [[ -f "$MOODLE_DIR/config.php" ]]; then
   ok "Moodle ya configurado"
 else
   sudo -u www-data "$PHP" "$MOODLE_DIR/admin/cli/install.php" \

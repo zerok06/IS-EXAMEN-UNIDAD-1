@@ -8,8 +8,8 @@
 | VM | IP | Rol | SO | Servicios |
 |---|---|---|---|---|
 | R0 | 10.10.10.1 | router/NAT interno | — | gateway |
-| M1 | 10.10.10.11 | app / entrada | Ubuntu 22.04 | nginx TLS :443 → Apache 2.4.49 prefork :8080 (mod_php 8.4.26) + WordPress 7.0.1 + Moodle 5.0.11 |
-| M2 | 10.10.10.12 | base de datos | Ubuntu 22.04 | MariaDB 10.11 :3306, Redis 6.2.6 :6379 **sin auth y como root**, SSH |
+| M1 | 10.10.10.11 | app / entrada | Ubuntu 22.04 | nginx TLS :443 → Apache 2.4.49 prefork :8080 (mod_php 8.4.26) + WordPress 7.0.1 (Moodle 5.0.11 opcional) |
+| M2 | 10.10.10.12 | base de datos | Ubuntu 22.04 | MariaDB 10.6 :3306, Redis 6.2.6 :6379 **sin auth y como root**, SSH |
 | M3 | 10.10.10.13 | respaldos | Ubuntu 22.04 | vsftpd 2.3.4 :21, NFS `no_root_squash` :2049, cron root sobre el export, SSH |
 | M4 | 10.10.10.14 | red / DNS | Windows Server 2016 | DNS `uni.lab` (AXFR), SMB1, SMB, WinRM, Spooler |
 | M5 | 10.10.10.15 | cliente | Windows 10 19045 | SMB, RDP sin NLA, VNC |
@@ -136,7 +136,13 @@ instalador del rol. Todos los instaladores son **idempotentes** y terminan con
 5. `entry-a` no se presenta como resuelto hasta que produzca `id` real.
 6. Revertir todo: `git checkout pre-php2shell-2026-10-31` (el árbol viejo vive en `legacy/`).
 
-## 8. Estructura
+## 9. Versiones y parchado
+
+- Versiones exactas y SHA256: [`VERSIONES.md`](./VERSIONES.md).
+- Chequeo en cada VM: `bash lab/tests/check-versions.sh m1` (o m2/m3/m6).
+- Parchado y retest: [`patch/README.md`](./patch/README.md).
+
+## 10. Estructura
 
 ```
 lab/
@@ -150,5 +156,6 @@ lab/
 ├── m5/  install.ps1 verify.ps1
 ├── m6/  install.sh  serve.sh
 ├── chain/  00-preflight.sh  01-m1-php2shell.sh  01b-pivot.sh  02-m1-to-m2.sh … 05-m4-to-m5.sh
-└── tests/  smoke.sh
+├── patch/  m1-php.sh  m2-redis.sh  m3-nfs.sh  m4.ps1  m5.ps1  retest.sh
+└── tests/  smoke.sh  check-versions.sh
 ```

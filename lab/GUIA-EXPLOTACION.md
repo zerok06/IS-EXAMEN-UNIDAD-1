@@ -431,14 +431,28 @@ Guarda por salto: comando, salida, captura y `sha256sum`.
 
 ## 11. Volver al estado parcheado
 
-Restaurar `estado-inicial` y aplicar:
+Restaurar el snapshot `estado-inicial` y ejecutar los scripts de `lab/patch/`:
+
+```bash
+# en cada VM, tras restaurar el snapshot
+sudo bash /opt/lab/lab/patch/m1-php.sh     # M1: PHP 8.4.27 + upload_progress Off + sink fuera
+sudo bash /opt/lab/lab/patch/m2-redis.sh   # M2: Redis 6.2.7 + requirepass + loopback + sin root
+sudo bash /opt/lab/lab/patch/m3-nfs.sh     # M3: root_squash + cron fuera
+# Windows (consola elevada)
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\lab\lab\patch\m4.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\lab\lab\patch\m5.ps1
+
+# desde M6: los 5 saltos deben fallar
+bash lab/patch/retest.sh
+```
 
 | VM | Parche |
 |---|---|
-| M1 | PHP 8.4.27 + `session.upload_progress.enabled=Off` + borrar el plugin legado |
-| M2 | `requirepass`, `bind 127.0.0.1`, Redis sin root |
-| M3 | `root_squash`, quitar el cron sobre el export |
-| M4 | PrintNightmare parcheado + Spooler detenido |
-| M5 | VNC con contraseña + RDP con NLA |
+| M1 | PHP 8.4.27 + `session.upload_progress.enabled=Off` + plugin/harness eliminados |
+| M2 | Redis 6.2.7 + `requirepass` + `bind 127.0.0.1` + usuario `redis` |
+| M3 | `root_squash` + cron y `rotate.sh` eliminados |
+| M4 | SMB1 off + Spooler detenido + SMB anónimo off |
+| M5 | VNC loopback + auth + RDP NLA + SMB anónimo off |
 
-Después, repetir los mismos comandos: deben fallar.
+Después, repetir los mismos comandos: deben fallar. Guardar `LOG-PATCH-*` y
+tomar el snapshot `estado-parcheado`.
