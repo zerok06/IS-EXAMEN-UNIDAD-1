@@ -30,11 +30,12 @@ La arquitectura completa está en [`lab/README.md`](./lab/README.md).
 1. [`lab/README.md`](./lab/README.md) — red, servicios, cadena, credenciales, contrato.
 2. [`lab/GUIA-EXPLOTACION.md`](./lab/GUIA-EXPLOTACION.md) — comandos por salto y evidencias.
 3. [`lab/GUION-SUSTENTACION.md`](./lab/GUION-SUSTENTACION.md) — cómo explicarlo y defenderlo.
-4. [`MEMORY.md`](./MEMORY.md) — estado real, decisiones y pendientes.
-5. [`lab/common/lib.sh`](./lab/common/lib.sh) — API que usan todos los instaladores.
-6. `lab/m1` … `lab/m6` — instaladores y `verify.sh` por máquina.
-7. [`lab/chain`](./lab/chain) — comandos por salto.
-8. [`legacy/`](./legacy) — material anterior, **solo consulta**.
+4. [`lab/GUIA-RETEST.md`](./lab/GUIA-RETEST.md) — verificar que el parchado funciona.
+5. [`MEMORY.md`](./MEMORY.md) — estado real, decisiones y pendientes.
+6. [`lab/common/lib.sh`](./lab/common/lib.sh) — API que usan todos los instaladores.
+7. `lab/m1` … `lab/m6` — instaladores y `verify.sh` por máquina.
+8. [`lab/chain`](./lab/chain) — comandos por salto.
+9. [`legacy/`](./legacy) — material anterior, **solo consulta**.
 
 ## 4. Flujo de trabajo
 

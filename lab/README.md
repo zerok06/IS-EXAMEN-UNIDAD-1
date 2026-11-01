@@ -140,7 +140,7 @@ instalador del rol. Todos los instaladores son **idempotentes** y terminan con
 
 - Versiones exactas y SHA256: [`VERSIONES.md`](./VERSIONES.md).
 - Chequeo en cada VM: `bash lab/tests/check-versions.sh m1` (o m2/m3/m6).
-- Parchado y retest: [`patch/README.md`](./patch/README.md).
+- Parchado y retest: [`patch/README.md`](./patch/README.md) · [`GUIA-RETEST.md`](./GUIA-RETEST.md).
 
 ## 10. Estructura
 
