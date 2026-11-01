@@ -134,13 +134,25 @@ ensure_line() { # ensure_line <archivo> <línea>
 }
 
 # ---------------------------------------------------------------- servicios
-enable_now() { systemctl enable --now "$1" >/dev/null 2>&1 || systemctl restart "$1"; ok "servicio: $1"; }
+enable_now() {
+  if systemctl enable --now "$1" >/dev/null 2>&1; then
+    ok "servicio: $1"
+    return 0
+  fi
+  systemctl status --no-pager -l "$1" >&2 || true
+  die "el servicio $1 no arrancó"
+}
 
 wait_port() { # wait_port <host> <port> [segundos]
   local host="$1" port="$2" secs="${3:-30}" i=0
   while ((i < secs)); do
-    (exec 3<>"/dev/tcp/$host/$port") 2>/dev/null && { exec 3>&-; ok "puerto $host:$port abierto"; return 0; }
-    sleep 1; ((i++))
+    if (exec 3<>"/dev/tcp/$host/$port") 2>/dev/null; then
+      exec 3>&-
+      ok "puerto $host:$port abierto"
+      return 0
+    fi
+    sleep 1
+    i=$((i + 1))
   done
   die "timeout esperando $host:$port"
 }

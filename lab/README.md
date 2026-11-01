@@ -62,9 +62,10 @@ en WordPress (`/wp-content/plugins/legacy-download/dl.php?file=`), un plugin
 | # | Salto | Vulnerabilidad | Resultado |
 |---|---|---|---|
 | 1 | M6 → M1 | **PHP2Shell** (CVE-2026-109618/619) + sink LFI | `www-data` en M1 |
+| 1.5 | M1 (pivote) | ligolo-ng: M1 pasa a ser la puerta | tráfico a M2–M5 por M1 |
 | 2 | M1 → M2 | **Redis 6.2.6 sin auth y como root**: `CONFIG SET dir/dbfilename` + `SAVE` → `authorized_keys` | `root` en M2 |
 | 3 | M2 → M3 | **NFS `no_root_squash`** + cron root sobre el export: se sobrescribe `rotate.sh` | `root` en M3 |
-| 4 | M3 → M4 | **MS17-010 / EternalBlue** (SMBv1 sin parchear) | `SYSTEM` en M4 |
+| 4 | M3 → M4 | **PrintNightmare** (CVE-2021-34527, spooler) | `SYSTEM` en M4 |
 | 5 | M4 → M5 | **VNC sin autenticación** (TightVNC 2.8.90, CWE-306) | escritorio de M5 |
 
 Ningún salto usa una contraseña ni un archivo de credenciales. Las cuentas de
@@ -75,15 +76,15 @@ M6 ──php2shell──> M1 www-data
                      │ Redis 0.0.0.0:6379 sin auth, como root
                      ▼
 M2 root ──NFS no_root_squash + cron root──> M3 root
-                     │ MS17-010 (SMBv1)
+                     │ PrintNightmare (spooler)
                      ▼
 M4 SYSTEM ──VNC sin auth──> M5
 ```
 
-> La LAN del laboratorio es plana: los scripts de `chain/` se ejecutan desde M6,
-> que alcanza a todas las VM. El "pivote" es lógico (cada salto usa el acceso
-> obtenido en el anterior y las credenciales/llaves que ese acceso deja), no un
-> túnel. Si se quiere pivote real, se añade proxychains/ligolo en una fase aparte.
+> **Pivote real:** `01b-pivot.sh` sube el agente de ligolo-ng a M1 y monta un
+> túnel con rutas `/32` para M2–M5. A partir de ahí el tráfico sale por M1;
+> M6 conserva la ruta directa solo a M1 (para el 443 y el agente). Si el túnel
+> no está montado, los saltos avisan de que están yendo directo.
 
 ## 5. Instalación automatizada
 
@@ -148,6 +149,6 @@ lab/
 ├── m4/  install.ps1 verify.ps1
 ├── m5/  install.ps1 verify.ps1
 ├── m6/  install.sh  serve.sh
-├── chain/  00-preflight.sh  01-m1.sh … 05-m5.sh
+├── chain/  00-preflight.sh  01-m1-php2shell.sh  01b-pivot.sh  02-m1-to-m2.sh … 05-m4-to-m5.sh
 └── tests/  smoke.sh
 ```

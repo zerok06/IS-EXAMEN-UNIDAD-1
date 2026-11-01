@@ -46,11 +46,13 @@ WITH_SERVICE=0
 # Los paquetes que el laboratorio necesita sí o sí en M6.
 PKGS=(
   nmap curl openssl sshpass hydra python3 python3-pip netcat-openbsd
-  smbclient ftp dnsutils proxychains4 jq git
+  smbclient ftp dnsutils proxychains4 jq git redis-tools
 )
-# Paquetes de apoyo para la cadena (06-04/05). Si Kali no los trae, se avisa.
+# Paquetes de apoyo para la cadena (04/05 y el pivote). Si Kali no los trae,
+# se avisa y se continúa.
 PKGS_OPT=(
-  nfs-common default-mysql-client freerdp2-x11 zip
+  nfs-common default-mysql-client freerdp2-x11 tigervnc-viewer zip
+  metasploit-framework
   python3-impacket impacket-scripts evil-winrm netexec
 )
 

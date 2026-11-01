@@ -26,10 +26,15 @@ chk "8080 solo loopback"   bash -c "ss -lnt | grep -q '127.0.0.1:8080'"
 chk "443 escuchando"       bash -c "ss -lnt | grep -q ':443 '"
 
 step "contenido"
-chk "harness /lab/session.php" bash -c "curl -ks -H 'Host: wp.uni.lab' https://127.0.0.1/lab/session.php | grep -q 'sid='"
-chk "sink dl.php"              bash -c "curl -ks -H 'Host: wp.uni.lab' 'https://127.0.0.1/wp-content/plugins/legacy-download/dl.php?file=default.php' | grep -q 'Plantilla base'"
-chk "WordPress responde"       bash -c "curl -ks -H 'Host: wp.uni.lab' https://127.0.0.1/ | grep -qi 'wp-'"
-chk "Moodle responde"          bash -c "curl -ks -H 'Host: moodle.uni.lab' https://127.0.0.1/ | grep -qi 'moodle'"
+chk "harness /lab/session.php" bash -c "curl -ks --max-time 10 -H 'Host: wp.uni.lab' https://127.0.0.1/lab/session.php | grep -q 'sid='"
+chk "sink dl.php"              bash -c "curl -ks --max-time 10 -H 'Host: wp.uni.lab' 'https://wp.uni.lab/wp-content/plugins/legacy-download/dl.php?file=default.php' | grep -q 'Plantilla base'"
+chk "WordPress responde"       bash -c "curl -ks --max-time 10 -H 'Host: wp.uni.lab' https://127.0.0.1/wp-login.php | grep -q 'wp-submit'"
+# Moodle no es parte de la cadena: se avisa, no se falla.
+if curl -ks --max-time 10 -H 'Host: moodle.uni.lab' https://127.0.0.1/ | grep -qi 'moodle'; then
+  ok "Moodle responde"
+else
+  warn "Moodle no responde (requiere MariaDB 10.11; no afecta a la cadena)"
+fi
 
 step "php.ini del PoC"
 chk "upload_progress On"   bash -c "curl -ks -H 'Host: wp.uni.lab' https://127.0.0.1/lab/session.php >/dev/null; /usr/local/bin/php -i | grep -q 'session.upload_progress.enabled => On'"

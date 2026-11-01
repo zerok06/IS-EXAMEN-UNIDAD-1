@@ -11,7 +11,7 @@
       - Cuentas locales: Administrador (clave debil intencional) y soporte (sin admin).
       - Share SMB Transfer sobre C:\Transfer con Everyone lectura/escritura y sin firma.
       - WinRM habilitado, Spooler activo y puertos del rol abiertos en el firewall.
-      - C:\Transfer\credenciales.txt con la credencial de M5 (debilidad intencional).
+      - C:\Transfer\README.txt con el marcador del share (sin secretos).
 
     SOLO para el laboratorio aislado 10.10.10.0/24, sin Internet y con autorizacion
     del docente. Las configuraciones debiles son intencionales (escenario de clase);
@@ -519,8 +519,19 @@ function Enable-LabSmb1 {
         }
         Set-SmbServerConfiguration -EnableSMB1Protocol $true -Force -ErrorAction Stop
     } catch {
-        Fail ('no se pudo habilitar SMB1: {0}' -f $_.Exception.Message)
+        Warn ('no se pudo habilitar SMB1 todavía: {0} — se reintenta tras el reinicio' -f $_.Exception.Message)
     }
+}
+
+function Enable-AnonymousSmb {
+    # Intencional: el token anónimo incluye Everyone y no se restringe la
+    # sesión nula. Permite leer los marcadores con `smbclient -N`.
+    Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' `
+        -Name EveryoneIncludesAnonymous -Value 1 -Type DWord -Force -ErrorAction Stop
+    Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' `
+        -Name RestrictNullSessAccess -Value 0 -Type DWord -Force -ErrorAction Stop
+    Restart-Service LanmanServer -Force -ErrorAction SilentlyContinue
+    Ok 'SMB anónimo habilitado (lectura de marcadores sin credenciales)'
 }
 
 function Disable-SmbSigning {
@@ -747,6 +758,7 @@ Step '6/10 share SMB y firma'
 Ensure-LabShare -Name $ShareName -Path $SharePath -Description 'Transfer del laboratorio (Everyone lectura/escritura)'
 Enable-LabSmb1
 Disable-SmbSigning
+Enable-AnonymousSmb
 
 Step '7/10 WinRM'
 Enable-LabWinRm

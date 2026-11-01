@@ -29,12 +29,14 @@ sudo bash lab/m6/install.sh
 curl -fsSL http://10.10.10.20:8000/bootstrap.sh | sudo bash -s m1
 
 # En Windows (M4/M5, consola elevada):
-iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing | iex
+iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing -OutFile $env:TEMP\bootstrap.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File $env:TEMP\bootstrap.ps1 -Role m4
 
 # Desde M6:
 bash lab/tests/smoke.sh
 bash lab/chain/00-preflight.sh --full
 bash lab/chain/01-m1-php2shell.sh --run
+bash lab/chain/01b-pivot.sh --run
 ```
 
 ## Estado del vector

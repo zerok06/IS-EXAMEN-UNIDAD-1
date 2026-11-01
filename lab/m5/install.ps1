@@ -9,8 +9,8 @@
       - Usuario local cliente / Admin13.- miembro de Administradores (debilidad intencional).
       - RDP habilitado SIN NLA y firewall 3389 abierto para la LAN del laboratorio.
       - Firma SMB desactivada, LLMNR y NBT-NS activos.
-      - Share del escritorio (o C:\Compartido) con Everyone lectura/escritura.
-      - Bandera C:\Users\cliente\Desktop\flag-M5.txt.
+      - Share C:\Compartido con Everyone lectura/escritura.
+      - Bandera C:\Compartido\flag-M5.txt.
       - VNC opcional: solo si existe C:\lab\artifacts\tightvnc.msi (sin password).
 
     SOLO para el laboratorio aislado 10.10.10.0/24, sin Internet y con autorizacion
@@ -44,7 +44,7 @@ $ClientUser     = 'cliente'
 $ClientPassword = 'Admin13.-'
 $ClientDesktop  = 'C:\Users\cliente\Desktop'
 $FallbackShare  = 'C:\Compartido'
-$FlagPath       = 'C:\Users\cliente\Desktop\flag-M5.txt'
+$FlagPath       = 'C:\Compartido\flag-M5.txt'
 $FlagMarker     = 'FLAG-M5-cliente'
 $VncCandidates  = @(
     'C:\lab\artifacts\vulnerable\tightvnc-2.8.90-gpl-setup-64bit.msi',
@@ -362,6 +362,15 @@ function Enable-LabRdp {
 }
 
 # ---------------------------------------------------------------- SMB y share
+function Enable-AnonymousSmb {
+    Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' `
+        -Name EveryoneIncludesAnonymous -Value 1 -Type DWord -Force -ErrorAction Stop
+    Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' `
+        -Name RestrictNullSessAccess -Value 0 -Type DWord -Force -ErrorAction Stop
+    Restart-Service LanmanServer -Force -ErrorAction SilentlyContinue
+    Ok 'SMB anónimo habilitado (evidencia por SMB sin credenciales)'
+}
+
 function Disable-SmbSigning {
     $config = Get-SmbServerConfiguration -ErrorAction Stop
     if (-not $config.RequireSecuritySignature -and -not $config.EnableSecuritySignature) {
@@ -432,33 +441,14 @@ function Ensure-LabShare {
 }
 
 function Ensure-ClientShare {
-    # Se prefiere el escritorio del usuario cliente; si no se puede, C:\Compartido.
-    $path = $ClientDesktop
-    try {
-        if (-not (Test-Path -LiteralPath $path)) {
-            New-Item -ItemType Directory -Path $path -Force -ErrorAction Stop | Out-Null
-            Ok ('carpeta creada: {0}' -f $path)
-        }
-    } catch {
-        Warn ('no se pudo preparar {0}: {1}' -f $path, $_.Exception.Message)
-        $path = $FallbackShare
-        New-Item -ItemType Directory -Path $path -Force | Out-Null
+    # Siempre C:\Compartido: crear el perfil de usuario antes de su primer
+    # logon deja el perfil "a medias" y rompe el escritorio real de `cliente`.
+    $path = $FallbackShare
+    if (-not (Test-Path -LiteralPath $path)) {
+        New-Item -ItemType Directory -Path $path -Force -ErrorAction Stop | Out-Null
         Ok ('carpeta creada: {0}' -f $path)
     }
-
-    $name = if ($path -eq $ClientDesktop) { 'Desktop' } else { 'Compartido' }
-
-    try {
-        Ensure-LabShare -Name $name -Path $path -Description 'Share del cliente (Everyone lectura/escritura)'
-    } catch {
-        Warn ('no se pudo compartir {0}: {1}' -f $path, $_.Exception.Message)
-        $path = $FallbackShare
-        if (-not (Test-Path -LiteralPath $path)) {
-            New-Item -ItemType Directory -Path $path -Force | Out-Null
-        }
-        Ensure-LabShare -Name 'Compartido' -Path $path -Description 'Share del cliente (Everyone lectura/escritura)'
-    }
-
+    Ensure-LabShare -Name 'Compartido' -Path $path -Description 'Share del cliente (Everyone lectura/escritura)'
     return $path
 }
 
@@ -725,6 +715,7 @@ Enable-LabRdp
 
 Step '4/9 SMB sin firma y share del cliente'
 Disable-SmbSigning
+Enable-AnonymousSmb
 $sharePath = Ensure-ClientShare
 
 Step '5/9 bandera'

@@ -28,7 +28,7 @@ $ErrorActionPreference = 'Continue'
 $M5Ip          = '10.10.10.15'
 $M5Dns         = '10.10.10.14'
 $ClientUser    = 'cliente'
-$FlagPath      = 'C:\Users\cliente\Desktop\flag-M5.txt'
+$FlagPath      = 'C:\Compartido\flag-M5.txt'
 $FlagPattern   = 'FLAG-M5-'
 $LlmnrKey      = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient'
 $TsKey         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server'
@@ -149,13 +149,13 @@ Invoke-Check 'firma SMB no es obligatoria' {
     -not (Get-SmbServerConfiguration -ErrorAction Stop).RequireSecuritySignature
 }
 
-$shares = @(Get-SmbShare -ErrorAction SilentlyContinue | Where-Object { $_.Name -in @('Desktop', 'Compartido') })
+$shares = @(Get-SmbShare -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq 'Compartido' })
 if ($shares.Count -gt 0) {
     foreach ($share in $shares) {
         Ok ('share {0} publicado en {1}' -f $share.Name, $share.Path)
     }
 } else {
-    Fail 'no hay share Desktop ni Compartido'
+    Fail 'no hay share Compartido'
 }
 
 Invoke-Check 'SMB escucha TCP/445' { Test-TcpPort -Port 445 }

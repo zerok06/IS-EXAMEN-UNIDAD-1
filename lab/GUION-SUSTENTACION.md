@@ -63,7 +63,7 @@ abra la libreta. Al abrirla, el código se ejecuta.
 2. Enviamos como nombre de campo: `<?php system($_GET["c"]); ?>`.
    PHP lo escribe **tal cual** dentro del archivo de sesión.
 3. El plugin `legacy-download` hace `include $carpeta . $_GET['file']` sin
-   normalizar la ruta. Con `../../../../../../tmp/sess_<id>` sale de su carpeta y
+   normalizar la ruta. Con `../../../../../../../tmp/sess_<id>` sale de su carpeta y
    abre el archivo de sesión.
 4. `include` interpreta el archivo como plantilla PHP. Al llegar al `<?php ... ?>`
    que estaba dentro del texto serializado, lo ejecuta.
@@ -148,33 +148,32 @@ estaba en la carpeta compartida. Lo reemplacé desde M2 y esperé un minuto."
 
 ---
 
-### Salto 4 · MS17-010 (EternalBlue) — de `root` en M3 a `SYSTEM` en M4
+### Salto 4 · PrintNightmare (CVE-2021-34527) — de `root` en M3 a `SYSTEM` en M4
 
 **Analogía.**
-SMBv1 es una puerta vieja con una cerradura rota que todo el mundo conoce desde
-2017. EternalBlue no pide usuario ni contraseña: aprovecha un error de memoria en
-cómo Windows procesa un paquete de red y hace que el sistema ejecute tu código.
+El servicio de impresión de Windows es un conserje que, cuando alguien le pide
+imprimir, va a buscar un controlador a la dirección que le digan. Si esa dirección
+es nuestra, le damos un controlador malicioso y lo ejecuta con los máximos permisos.
 
 **Qué pasa técnicamente.**
-1. M4 tiene **SMBv1 habilitado** y el parche MS17-010 no aplicado.
-2. El exploit envía paquetes SMB especialmente construidos y corrompe memoria del
-   servicio.
-3. El payload se ejecuta en el contexto del servicio SMB, que corre como
-   **`NT AUTHORITY\SYSTEM`**.
-4. Prueba: el payload escribe `whoami` en el share `Transfer`, que es público, y
-   lo leemos **sin credenciales**.
+1. M4 tiene el **spooler** activo y sin el parche de PrintNightmare.
+2. Con la cuenta limitada `soporte` pedimos instalar un controlador desde una ruta
+   de red (`\\10.10.10.20\...`).
+3. El spooler carga nuestra DLL y la ejecuta como **`SYSTEM`**.
+4. Prueba: el payload escribe `whoami` en el share `Transfer`, que es público.
 
-**Por qué funciona.** Desbordamiento de memoria en un servicio expuesto a la red,
-antes de cualquier autenticación.
+**Por qué funciona.** El spooler confía en la ruta del controlador y lo carga con
+demasiados privilegios: no valida quién lo pide ni de dónde viene.
 
 **Qué gano.** `SYSTEM` en M4: el DNS y la red interna, y desde ahí el cliente.
 
 **Cómo lo explico en 20 segundos.**
-"Windows Server 2016 tenía SMBv1 activo y sin el parche de 2017. El exploit de
-EternalBlue ejecuta código como SYSTEM sin pedir credenciales."
+"El servicio de impresión de Windows cargaba un controlador desde donde le
+dijéramos. Le dimos uno nuestro y lo ejecutó como SYSTEM."
 
-**Lo que debo declarar.** Depende del build: si el ISO ya trae MS17-010, el salto
-se hace con PrintNightmare (CVE-2021-34527) desde la cuenta limitada `soporte`.
+**Lo que debo declarar.** Usa la cuenta limitada `soporte` (precondición del
+escenario: un empleado con cuenta, sin privilegios). MS17-010 (EternalBlue) queda
+como alternativa solo si M4 fuera Server 2012 R2.
 
 ---
 
@@ -220,7 +219,7 @@ un `id`.
 
 ### Diapositiva 4 · Mapa de la cadena (1 min)
 ```
-M6 → M1 (PHP2Shell) → M2 (Redis) → M3 (NFS) → M4 (MS17-010) → M5 (VNC)
+M6 → M1 (PHP2Shell) → [pivote] → M2 (Redis) → M3 (NFS) → M4 (PrintNightmare) → M5 (VNC)
 ```
 - Decir en voz alta qué se gana en cada flecha.
 
@@ -241,7 +240,7 @@ Qué se parchea en cada máquina y cómo se verifica que el ataque ya falla.
 ### Diapositiva 12 · Límites y honestidad (1 min)
 - `entry-b` no es el UAF del CVE.
 - Redis como root es configuración, no CVE.
-- EternalBlue depende del build.
+- PrintNightmare usa la cuenta limitada soporte (precondición, no vulnerabilidad).
 - VNC da escritorio, no shell.
 
 ### Cierre (30 s)
@@ -271,7 +270,7 @@ bash lab/tests/smoke.sh                 # todo PASS
 - **Nunca improvisar un "ya funcionó".** Decir: "este salto depende de X; lo
   muestro con el log de la ejecución anterior" y enseñar la evidencia.
 - Tener a mano `LOG-0X.txt` de cada salto por si la red falla.
-- Si EternalBlue no cierra: cambiar a PrintNightmare y explicar por qué.
+- Si PrintNightmare no cierra: revisar spooler y el módulo, y explicar.
 
 ---
 
@@ -284,7 +283,7 @@ laboratorio son solo de administración y no forman parte de la cadena."
 **"¿Eso es un CVE de verdad?"**
 "El salto 1 usa el vector de PHP2Shell, pero materializado con session injection
 y un LFI del laboratorio; no es el fallo de memoria de CVE-2026-109618. Los saltos
-4 sí son CVE (MS17-010). Los saltos 2, 3 y 5 son configuraciones inseguras."
+4 sí es CVE (PrintNightmare); el salto 1 usa el vector PHP2Shell. Los saltos 2, 3 y 5 son configuraciones inseguras."
 
 **"¿Por qué M4 y M5 son Windows?"**
 "Para demostrar que la cadena no depende de un solo sistema: Linux para la
@@ -292,7 +291,7 @@ entrada y los servicios, Windows para la red y el puesto del cliente."
 
 **"¿Cómo se detiene esto?"**
 "Tabla de remediación: PHP 8.4.27 y quitar el plugin; Redis con contraseña y sin
-root; NFS con `root_squash` y sin cron sobre el export; MS17-010 y SMB1 off; VNC
+root; NFS con `root_squash` y sin cron sobre el export; PrintNightmare parcheado y spooler detenido; VNC
 con contraseña."
 
 **"¿Por qué Redis corre como root?"**
@@ -300,8 +299,9 @@ con contraseña."
 CVE, la variante es CVE-2022-0543 con el paquete Debian de Redis."
 
 **"¿Hay pivote real?"**
-"La LAN del laboratorio es plana: los scripts corren desde M6 y el pivote es
-lógico. Un pivote con túnel (proxychains/ligolo) es una mejora pendiente."
+"Sí: después del salto 1, `01b-pivot.sh` sube el agente de ligolo-ng a M1 y monta
+un túnel con rutas /32. A partir de ahí, el tráfico a M2–M5 sale por M1; M6 solo
+habla directo con M1."
 
 **"¿Qué evidencia tienen?"**
 "Por salto: comando, salida, captura, SHA256 y hora UTC. Sin `id`/`whoami` y
@@ -315,7 +315,7 @@ marcador, el salto no se declara."
 2. **Presentar el LFI como el CVE.** Separar siempre vector, sink y CVE.
 3. **Leer comandos en voz alta.** Explicar el concepto; el comando se ve en pantalla.
 4. **No tener evidencia de respaldo.** Si la red falla, se muestra el log.
-5. **Prometer un salto que depende del build.** EternalBlue puede fallar; decirlo.
+5. **Prometer un salto que depende de un módulo.** PrintNightmare puede fallar; decirlo.
 6. **Mezclar CVSS v3.1 y v4.0.** Usar una sola métrica por hallazgo.
 
 ---
@@ -329,7 +329,7 @@ No es "actualicen todo". Es: **cada salto se cae si se quita su condición.**
 | 1 | PHP 8.4.27, `upload_progress=Off`, plugin legado eliminado | el LFI da 404 y el vector no escribe sesión |
 | 2 | Redis con `requirepass`, `bind 127.0.0.1`, sin root | `PING` sin auth falla |
 | 3 | NFS con `root_squash` y sin cron sobre el export | `mount` no permite escribir como root |
-| 4 | MS17-010 aplicado y SMB1 deshabilitado | `smb-vuln-ms17-010` ya no marca vulnerable |
+| 4 | PrintNightmare parcheado y spooler detenido | el exploit ya no carga la DLL |
 | 5 | VNC con contraseña (o localhost) | `vnc-info` ya no dice `None` |
 
 Ese es el mensaje final: **la cadena se rompe por cualquier eslabón.**

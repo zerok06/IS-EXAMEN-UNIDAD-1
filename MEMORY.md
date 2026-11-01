@@ -25,12 +25,14 @@
    plugin `legacy-download`. Se declara como tal; no se vende como el UAF.
 5. **`entry-a` va con time-box** y se documenta la limitación. Sin `id`, no cuenta.
 6. **Cada salto es una vulnerabilidad, no una contraseña.** M1→M2 Redis sin auth
-   como root; M2→M3 NFS `no_root_squash` + cron root; M3→M4 MS17-010; M4→M5 VNC
+   como root; M2→M3 NFS `no_root_squash` + cron root; M3→M4 PrintNightmare; M4→M5 VNC
    sin autenticación.
-7. **M4 es Windows:** el salto M3→M4 es EternalBlue (SMBv1), no PHP.
+7. **M4 es Windows:** el salto M3→M4 es PrintNightmare (spooler); MS17-010 solo vale
+   si M4 fuera Server 2012 R2.
 8. **M5 se alcanza por VNC sin auth** (CWE-306), no por reutilización de claves.
 9. **Las cuentas de `§4` son solo de administración** y no forman parte de la cadena.
-10. **La LAN es plana:** los saltos se ejecutan desde M6; el pivote es lógico.
+10. **El pivote es real:** `01b-pivot.sh` monta ligolo-ng en M1 con rutas `/32`; el
+    tráfico a M2–M5 sale por M1.
 11. **Instalación automatizada:** cada VM baja `lab.tar.gz` de M6:8000 y ejecuta su rol.
 12. **Artefactos solo de `artifacts/`;** nada de Internet.
 13. **Todo lo viejo queda congelado** en `legacy/`; no se consulta para la demo.
@@ -67,9 +69,9 @@
 
 1. **Probar los instaladores en VM real** (M1 es el crítico: build de Apache/PHP ~20 min).
 2. **Probar `entry-b`** contra M1 y guardar `WS_SID`; verificar el `id` por el sink.
-3. **Probar la cadena nueva:** Redis→root, NFS+cron→root, MS17-010→SYSTEM, VNC sin auth.
-4. **MS17-010 depende del build:** si el ISO de WS2016 ya trae el parche, usar
-   PrintNightmare con `soporte` (documentado como fallback).
+3. **Probar la cadena nueva:** Redis→root, NFS+cron→root, PrintNightmare→SYSTEM, VNC sin auth.
+4. **PrintNightmare:** verificar el nombre del módulo (`search printnightmare`) y que la
+   cuenta `soporte` y el spooler estén listos. EternalBlue solo si M4 es 2012 R2.
 5. **`entry-a`:** decidir si se intenta un exploit propio o se cierra como limitación.
 6. **Snapshots:** `00-base` y `01-<rol>-listo` por VM antes de explotar.
 7. **Informe:** reescribir con la estructura de 5 saltos y evidencias nuevas.
@@ -82,4 +84,4 @@
 | 2026-10-31 | Reestructuración: `docs/ guias/ informe/ specs/ templates/ tests/ presentacion/ plantilla-IS1023/ .agents/` → `legacy/`; tag `pre-php2shell-2026-10-31` |
 | 2026-10-31 | Nuevo `lab/`: README, lib común, instaladores M1–M6, PKI, bootstrap, cadena y smoke |
 | 2026-10-31 | M1: nginx TLS → Apache 2.4.49 prefork → PHP 8.4.26 NTS mod_php; harness `/lab/session.php`; sink `legacy-download`; `session.save_path=/tmp` |
-| 2026-10-31 | Cadena rediseñada a vulnerabilidades: Redis sin auth como root (M2), NFS `no_root_squash` + cron root (M3), MS17-010 (M4), VNC sin auth (M5). Se eliminan los saltos por credenciales |
+| 2026-10-31 | Cadena rediseñada a vulnerabilidades: Redis sin auth como root (M2), NFS `no_root_squash` + cron root (M3), PrintNightmare (M4), VNC sin auth (M5). Pivote ligolo por M1 (`01b`) |

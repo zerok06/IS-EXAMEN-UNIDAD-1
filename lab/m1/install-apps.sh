@@ -102,5 +102,7 @@ else
     || warn "Moodle CLI falló; revisa la salida"
 fi
 
-chown -R www-data:www-data "$WP_DIR" "$MOODLE_DIR" /var/moodledata
+find "$WP_DIR" -xdev -exec chown www-data:www-data {} +
+find "$MOODLE_DIR" -xdev -exec chown www-data:www-data {} +
+find /var/moodledata -xdev -exec chown www-data:www-data {} +
 ok "aplicaciones listas"

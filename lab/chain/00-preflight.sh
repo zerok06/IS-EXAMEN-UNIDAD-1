@@ -35,7 +35,7 @@ fail() { FAIL=$((FAIL+1)); printf '  [FAIL] %s\n' "$*"; }
 warn() { WARN=$((WARN+1)); printf '  [WARN] %s\n' "$*"; }
 fix()  { FIXES+=("$*"); }
 
-port_open() { (exec 3<>"/dev/tcp/$1/$2") 2>/dev/null; }
+port_open() { timeout 3 bash -c "exec 3<>/dev/tcp/$1/$2" 2>/dev/null; }
 
 ssh_admin() { # ssh_admin host user pass comando
   local h="$1" u="$2" p="$3"; shift 3
@@ -62,17 +62,30 @@ info="$(curl -ks "https://wp.uni.lab/lab/session.php?info=1" 2>/dev/null || true
 grep -q '^session.save_path=/tmp$' <<<"$info" \
   && pass "session.save_path=/tmp" \
   || { fail "session.save_path != /tmp"; fix "M1: /usr/local/lib/php.ini (session.save_path)"; }
-grep -q '^session.upload_progress.enabled=On$' <<<"$info" \
+grep -q '^session.upload_progress.enabled=1$' <<<"$info" \
   && pass "upload_progress On" \
   || { fail "upload_progress Off"; fix "M1: php.ini session.upload_progress.enabled=On"; }
-grep -q '^session.upload_progress.cleanup=Off$' <<<"$info" \
+grep -qE '^session.upload_progress.cleanup=(0)?$' <<<"$info" \
   && pass "upload_progress.cleanup Off" \
   || { fail "cleanup On (borra la sesión antes del LFI)"; fix "M1: php.ini cleanup=Off"; }
+grep -qE '^session.use_strict_mode=0$' <<<"$info" \
+  && pass "session.use_strict_mode=0" \
+  || { fail "use_strict_mode != 0"; fix "M1: php.ini session.use_strict_mode=0"; }
+grep -qE '^open_basedir=$' <<<"$info" \
+  && pass "open_basedir vacío" \
+  || { fail "open_basedir limita el include"; fix "M1: php.ini open_basedir="; }
 
 sink="$(curl -ks "https://wp.uni.lab/wp-content/plugins/legacy-download/dl.php?file=default.php" 2>/dev/null || true)"
 grep -q 'Plantilla base' <<<"$sink" \
   && pass "sink legacy-download responde" \
   || { fail "sink legacy-download no responde"; fix "M1: activar el plugin legacy-download"; }
+
+# Prueba real del traversal (7 niveles): debe leer /etc/hostname de M1.
+trav="$(curl -ks -G "https://wp.uni.lab/wp-content/plugins/legacy-download/dl.php" \
+        --data-urlencode 'file=../../../../../../../etc/hostname' 2>/dev/null || true)"
+grep -q 'm1-app' <<<"$trav" \
+  && pass "traversal 7 niveles (lee /etc/hostname)" \
+  || { fail "traversal roto: no llega a /etc/hostname"; fix "M1: revisar dl.php y los ../ del PoC"; }
 
 # ---------------------------------------------------------------- M2
 step "M2 (${M2}) · Redis sin auth"

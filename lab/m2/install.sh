@@ -86,7 +86,7 @@ EOF
 
   systemctl enable mariadb >/dev/null 2>&1 || true
   systemctl restart mariadb
-  wait_port 127.0.0.1 3306 30
+  wait_port "$LAB_IP" 3306 30
   ok "MariaDB arriba en ${LAB_IP}:3306"
 }
 
@@ -341,7 +341,7 @@ configure_ufw() {
   ufw default deny incoming  >/dev/null
   ufw default allow outgoing >/dev/null
   ufw_rule allow 22/tcp
-  ufw_rule allow from "$M1" to any port 3306 proto tcp
+  ufw_rule allow from "$LAB_NET" to any port 3306 proto tcp
   ufw_rule allow from "$LAB_NET" to any port 6379 proto tcp
   ufw --force enable >/dev/null
   ok "UFW activo: $(ufw status | head -n1)"

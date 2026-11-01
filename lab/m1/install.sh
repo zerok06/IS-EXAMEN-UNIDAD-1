@@ -22,10 +22,13 @@ HTTPD_SRC=/usr/src/httpd-2.4.49
 PHP_SRC=/usr/src/php-8.4.26
 PHP_TARBALL=/usr/src/php-8.4.26.tar.gz
 HTTPD_TARBALL=/usr/src/httpd-2.4.49.tar.gz
+HTTPD_SHA256=345d3b9b218b1974d1cebd5ae72f6a661d83b52d839310222ff9ec94abb62205
+PHP_SHA256=c248abaebc4bb777b80968f0760da0da8e989836e896c9ff637b6775d7d37662
+WP_SHA256=f171740cf45b1f5a1bf52194ca914787cd9d8ea078599b430eca951b62b2d000
+MOODLE_SHA256=1e79e8568719034ba570074ecd073ebba0b35c8063458135412d5c27fa01551f
 APP_BASE=/var/www
 WP_DIR=$APP_BASE/wp
 MOODLE_DIR=$APP_BASE/moodle
-SESSION_DIR=/var/lib/php/sessions
 TLS_DIR=/etc/nginx/tls
 
 # ---------------------------------------------------------------- 1. red
@@ -51,7 +54,8 @@ apt_install build-essential pkg-config autoconf libtool bison re2c \
   libapr1-dev libaprutil1-dev libpcre2-dev libssl-dev zlib1g-dev libexpat1-dev \
   libxml2-dev libsqlite3-dev libcurl4-openssl-dev libzip-dev libonig-dev \
   libicu-dev libsodium-dev libgd-dev libjpeg-dev libfreetype6-dev libpng-dev \
-  libwebp-dev nginx nfs-common default-mysql-client openssl curl unzip ca-certificates
+  libwebp-dev nginx nfs-common default-mysql-client openssl curl unzip ca-certificates \
+  python3 ufw
 ok "dependencias listas"
 
 # ---------------------------------------------------------------- 4. Apache 2.4.49
@@ -60,6 +64,7 @@ if [[ -x $APACHE_PREFIX/bin/httpd ]] && $APACHE_PREFIX/bin/httpd -v 2>/dev/null 
   ok "Apache 2.4.49 ya instalado"
 else
   fetch_artifact "vulnerable/httpd-2.4.49.tar.gz" "$HTTPD_TARBALL"
+  sha256_check "$HTTPD_TARBALL" "$HTTPD_SHA256"
   rm -rf "$HTTPD_SRC"
   tar xzf "$HTTPD_TARBALL" -C /usr/src
   pushd "$HTTPD_SRC" >/dev/null
@@ -82,6 +87,7 @@ if [[ -x $PHP_PREFIX/bin/php ]] && $PHP_PREFIX/bin/php -v 2>/dev/null | grep -q 
   ok "PHP 8.4.26 ya instalado"
 else
   fetch_artifact "vulnerable/php-8.4.26.tar.gz" "$PHP_TARBALL"
+  sha256_check "$PHP_TARBALL" "$PHP_SHA256"
   rm -rf "$PHP_SRC"
   tar xzf "$PHP_TARBALL" -C /usr/src
   pushd "$PHP_SRC" >/dev/null
@@ -162,21 +168,27 @@ systemctl reload nginx
 
 # ---------------------------------------------------------------- 9. aplicaciones
 step "9/12 WordPress 7.0.1 y Moodle 5.0.11"
-install -d "$APP_BASE" "$WP_DIR" "$MOODLE_DIR" /var/moodledata
+install -d "$APP_BASE" "$WP_DIR" "$MOODLE_DIR" /var/moodledata /var/www/app
+if [[ ! -f /var/www/app/index.php ]]; then
+  printf '%s\n' '<?php echo "lab app\n";' > /var/www/app/index.php
+fi
 if [[ ! -f "$WP_DIR/wp-load.php" ]]; then
   fetch_artifact "vulnerable/wordpress-7.0.1.zip" /usr/src/wordpress-7.0.1.zip
+  sha256_check /usr/src/wordpress-7.0.1.zip "$WP_SHA256"
   rm -rf /usr/src/wp-extract && mkdir -p /usr/src/wp-extract
   unzip -q /usr/src/wordpress-7.0.1.zip -d /usr/src/wp-extract
   cp -a /usr/src/wp-extract/wordpress/. "$WP_DIR"/
 fi
 if [[ ! -f "$MOODLE_DIR/version.php" ]]; then
   fetch_artifact "vulnerable/moodle-5.0.11.tar.gz" /usr/src/moodle-5.0.11.tar.gz
+  sha256_check /usr/src/moodle-5.0.11.tar.gz "$MOODLE_SHA256"
   tar xzf /usr/src/moodle-5.0.11.tar.gz -C /usr/src
   cp -a /usr/src/moodle-5.0.11/. "$MOODLE_DIR"/
 fi
-chown -R www-data:www-data "$APP_BASE" /var/moodledata
-find "$APP_BASE" -type d -exec chmod 755 {} +
-find "$APP_BASE" -type f -exec chmod 644 {} +
+find "$APP_BASE" -xdev -exec chown www-data:www-data {} +
+find /var/moodledata -xdev -exec chown www-data:www-data {} +
+find "$APP_BASE" -xdev -type d -exec chmod 755 {} +
+find "$APP_BASE" -xdev -type f -exec chmod 644 {} +
 
 # ---------------------------------------------------------------- 10. sink LFI + harness
 step "10/12 plugin legacy-download y harness de sesión"
@@ -193,8 +205,8 @@ step "11/12 NFS desde M3 (no_root_squash en backups)"
 install -d -m 2775 -o www-data -g www-data "$WP_DIR/wp-content/uploads"
 if ! grep -q "$M3:/srv/storage/wp-uploads" /etc/fstab; then
   cat >> /etc/fstab <<EOF
-$M3:/srv/storage/wp-uploads  $WP_DIR/wp-content/uploads  nfs  rw,hard,_netdev,noatime  0 0
-$M3:/srv/storage/moodledata  /var/moodledata             nfs  rw,hard,_netdev,noatime  0 0
+$M3:/srv/storage/wp-uploads  $WP_DIR/wp-content/uploads  nfs  rw,soft,timeo=100,retrans=3,bg,nofail,_netdev,noatime,x-systemd.device-timeout=10s  0 0
+$M3:/srv/storage/moodledata  /var/moodledata             nfs  rw,soft,timeo=100,retrans=3,bg,nofail,_netdev,noatime,x-systemd.device-timeout=10s  0 0
 EOF
 fi
 if (exec 3<>"/dev/tcp/$M3/2049") 2>/dev/null; then

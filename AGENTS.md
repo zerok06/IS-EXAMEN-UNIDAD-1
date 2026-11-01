@@ -52,7 +52,7 @@ snapshot → instalar rol → verify.sh → explotar salto → evidencia → sig
 |---|---|---|---|
 | M1 | .11 | nginx TLS → Apache prefork → PHP 8.4.26 + WP/Moodle | `lab/m1/install.sh` |
 | M2 | .12 | MariaDB + Redis + SSH débil | `lab/m2/install.sh` |
-| M3 | .13 | FTP anónimo + NFS + backups con credenciales | `lab/m3/install.sh` |
+| M3 | .13 | FTP anónimo + NFS `no_root_squash` + cron root | `lab/m3/install.sh` |
 | M4 | .14 | DNS `uni.lab` + SMB + WinRM | `lab/m4/install.ps1` |
 | M5 | .15 | cliente Windows (SMB/RDP/VNC) | `lab/m5/install.ps1` |
 | M6 | .20 | Kali: repo, artefactos, ataque | `lab/m6/install.sh` |

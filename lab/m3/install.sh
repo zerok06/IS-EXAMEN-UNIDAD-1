@@ -6,7 +6,7 @@
 #   - vsftpd 2.3.4 compilado desde artifacts/ (binario LIMPIO, sin backdoor 2011).
 #   - NFS con /srv/storage/backups compartido a toda la LAN con no_root_squash.
 #   - Usuario backup con acceso solo por llave (la de root de M2).
-#   - /srv/storage/backups/credenciales.txt con credenciales de M4 y M5.
+#   - cron root que ejecuta rotate.sh desde el export (vector del salto 3).
 #
 # Uso:      sudo bash /opt/lab/m3/install.sh
 # Requiere: Ubuntu Server 22.04, red aislada 10.10.10.0/24, root.
@@ -220,7 +220,7 @@ pasv_max_port=40100
 ssl_enable=NO
 # El sandbox seccomp de 2.3.4 falla en kernels/containers modernos
 # ("500 OOPS: prctl PR_SET_SECCOMP"); desactivarlo no cambia la vulnerabilidad.
-seccomp_sandbox=NO
+sandbox=NO
 log_ftp_protocol=YES
 xferlog_enable=NO
 EOF
@@ -374,10 +374,9 @@ print_summary() {
   Llave     /home/backup/.ssh/authorized_keys (600)
             origen: push desde M2 o ${LAB_REPO_DIR}/keys/m2-backup.pub
 
-  Datos     ${STORAGE}/backups/credenciales.txt (644)
-            M4 Administrador / M5 cliente   -> salto M3 -> M4/M5
+  Datos     ${STORAGE}/backups/rotate.sh (cron root, vector del salto 3)
 
-  Firewall  22, 21, 40000-40100/tcp · 2049 solo desde ${M1} · 111 tcp+udp
+  Firewall  22, 21, 40000-40100/tcp · 2049 desde ${M1}/${M2}/LAN · 111 tcp+udp
 
   verify    ${VERIFY_STATUS}
 ────────────────────────────────────────────────────────────────
