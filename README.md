@@ -12,6 +12,7 @@ M6 ──php2shell──> M1 (www-data) ──wp-config──> M2 (DB)
 
 - Arquitectura, red, credenciales y contrato de instalación: [`lab/README.md`](./lab/README.md)
 - **Guía de explotación paso a paso: [`lab/GUIA-EXPLOTACION.md`](./lab/GUIA-EXPLOTACION.md)**
+- **Guion para explicarla en la sustentación: [`lab/GUION-SUSTENTACION.md`](./lab/GUION-SUSTENTACION.md)**
 - Estado, decisiones y pendientes: [`MEMORY.md`](./MEMORY.md)
 - Instaladores por máquina: [`lab/m1`](./lab/m1), [`lab/m2`](./lab/m2), [`lab/m3`](./lab/m3), [`lab/m4`](./lab/m4), [`lab/m5`](./lab/m5), [`lab/m6`](./lab/m6)
 - Cadena de ataque: [`lab/chain`](./lab/chain)
