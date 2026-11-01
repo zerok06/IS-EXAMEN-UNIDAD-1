@@ -148,6 +148,6 @@ lab/
 ├── m4/  install.ps1 verify.ps1
 ├── m5/  install.ps1 verify.ps1
 ├── m6/  install.sh  serve.sh
-├── chain/  01-m1.sh … 05-m5.sh
+├── chain/  00-preflight.sh  01-m1.sh … 05-m5.sh
 └── tests/  smoke.sh
 ```

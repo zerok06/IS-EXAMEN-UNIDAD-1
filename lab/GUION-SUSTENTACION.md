@@ -31,6 +31,11 @@ La cadena completa es eso: **cinco veces convertir un acceso pequeño en uno má
 | Salto | Lo que tengo al empezar | Lo que consigo | Por qué importa |
 |---|---|---|---|
 | 1 | Red y un navegador | `www-data` en M1 | Ya ejecuto comandos en el servidor |
+
+> **Ojo con la palabra "root".** El salto 1 da `www-data`, el usuario del servicio
+> web, **no root**. Root aparece en el salto 2 (M2). Si alguien pregunta "¿ya eres
+> root en M1?", la respuesta honesta es: "no, y no lo necesito: el siguiente salto
+> se ataca por red contra M2".
 | 2 | Comandos en M1 | `root` en M2 | La base de datos y su red |
 | 3 | `root` en M2 | `root` en M3 | Los respaldos y el almacenamiento |
 | 4 | `root` en M3 | `SYSTEM` en M4 | El DNS y la red interna |
@@ -248,7 +253,8 @@ Qué se parchea en cada máquina y cómo se verifica que el ataque ya falla.
 
 ### Antes de entrar al salón
 ```bash
-bash lab/tests/smoke.sh          # todo PASS
+bash lab/chain/00-preflight.sh --full   # FAIL=0
+bash lab/tests/smoke.sh                 # todo PASS
 # snapshots: estado-inicial en todas las VM
 # terminales abiertas: una en M6, una en M4 (opcional), una en M5
 # fuentes grandes, historial limpio

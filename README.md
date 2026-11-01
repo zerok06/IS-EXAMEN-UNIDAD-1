@@ -33,6 +33,7 @@ iwr http://10.10.10.20:8000/bootstrap.ps1 -UseBasicParsing | iex
 
 # Desde M6:
 bash lab/tests/smoke.sh
+bash lab/chain/00-preflight.sh --full
 bash lab/chain/01-m1-php2shell.sh --run
 ```
 

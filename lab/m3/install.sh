@@ -399,7 +399,7 @@ main() {
   set_hostname "m3-bkp"
 
   step "paquetes base"
-  apt_install openssh-server ufw curl ca-certificates rsync
+  apt_install openssh-server ufw curl ca-certificates rsync cron
   ok "paquetes base instalados"
 
   setup_ssh

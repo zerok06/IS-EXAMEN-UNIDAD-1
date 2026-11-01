@@ -68,6 +68,7 @@ snapshot → instalar rol → verify.sh → explotar salto → evidencia → sig
 
 ```bash
 bash lab/tests/smoke.sh          # desde M6: puertos, DNS y HTTPS
+bash lab/chain/00-preflight.sh    # condiciones de los 5 saltos
 bash lab/m1/verify.sh            # en cada VM, tras instalar
 bash lab/chain/01-m1-php2shell.sh --run
 ```
