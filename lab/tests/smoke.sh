@@ -7,7 +7,7 @@
 #    M2  3306, 6379              (MariaDB, Redis)
 #    M3  21, 2049                (vsftpd, NFS)
 #    M4  53, 445, 5985           (DNS, SMB, WinRM)
-#    M5  445, 3389               (SMB, RDP)
+#    M5  445, 3389, 5900        (SMB, RDP, VNC)
 #    DNS wp.uni.lab @M4 → 10.10.10.11
 #    HTTPS https://wp.uni.lab responde
 #
@@ -142,6 +142,7 @@ check_port "M4 WinRM" "$M4" 5985
 
 check_port "M5 SMB" "$M5" 445
 check_port "M5 RDP" "$M5" 3389
+check_port "M5 VNC" "$M5" 5900
 
 check_dns
 

@@ -17,6 +17,23 @@
 
 Convención de evidencias: `EV-<salto>-NN.png` + `LOG-<salto>-NN.txt` + SHA256, hora UTC.
 
+### 0.1 Trazabilidad: de dónde sale cada comando
+
+Todos los comandos de esta guía están implementados en el repo. Si algo cambia,
+se cambia en el script y la guía debe seguirlo.
+
+| Comando de la guía | Dónde está implementado |
+|---|---|
+| `bootstrap.sh` / `bootstrap.ps1` | `lab/bootstrap.sh`, `lab/bootstrap.ps1` |
+| `lab/session.php` y `dl.php` | `lab/m1/app/lab/session.php`, `lab/m1/app/legacy-download/` |
+| `session.save_path=/tmp`, `cleanup=Off` | `lab/m1/conf/php-lab.ini` |
+| 6 niveles `../../../../../../tmp/sess_` | `dl.php` incluye desde `legacy-download/templates/` |
+| `redis-cli ... CONFIG SET` | `lab/m2/install.sh` (Redis `User=root`, sin `requirepass`) |
+| `mount -t nfs` + `rotate.sh` | `lab/m3/install.sh` (`no_root_squash`, `/etc/cron.d/lab-rotate`) |
+| `ms17_010_eternalblue` | `lab/m4/install.ps1` (`Enable-LabSmb1`) + `lab/chain/04` |
+| `vnc-info` / `vncviewer` | `lab/m5/install.ps1` (`UseVncAuthentication=0`, 5900) |
+| Ejecución por pasos | `lab/chain/01-m1-php2shell.sh` … `05-m4-to-m5.sh` |
+
 ---
 
 ## 1. Instalación (una vez)
@@ -61,6 +78,7 @@ bash lab/tests/smoke.sh
 
 # en cada VM, tras instalar
 bash /opt/lab/lab/m1/verify.sh
+# si el paquete se extrajo con la raíz en lab/, la ruta es /opt/lab/m1/verify.sh
 ```
 
 `smoke.sh` debe dar PASS en 443 (M1), 3306/6379 (M2), 21/2049 (M3),
