@@ -47,7 +47,7 @@ $M5Ip       = '10.10.10.15'
 $LabNet     = '10.10.10.0/24'
 
 $AdminPassword   = 'M4_Admin_2026!'
-$SoportePassword = 'Soporte2026!'
+$SoportePassword = 'UniLab2026!'
 $ShareName       = 'Transfer'
 $SharePath       = 'C:\Transfer'
 

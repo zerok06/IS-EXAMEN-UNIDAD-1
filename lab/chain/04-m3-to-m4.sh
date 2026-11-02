@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-#  lab/chain/04-m3-to-m4.sh — salto 4: M3 (root) → M4 (SYSTEM)
+#  lab/chain/04-m3-to-m4.sh — salto 4 (opcional): M3 (root) → M4 (SYSTEM)
 # ----------------------------------------------------------------------------
 #  Vulnerabilidad por defecto: PrintNightmare (CVE-2021-34527) en el spooler
 #  de M4, con la cuenta limitada `soporte`. Es la opción que SÍ cubre
@@ -30,7 +30,7 @@ LHOST="${LHOST:-$M6}"
 SHARE="${M4_SHARE:-Transfer}"
 MARKER="PWNED-M4.txt"
 PN_USER="${PN_USER:-soporte}"
-PN_PASS="${PN_PASS:-Soporte2026!}"
+PN_PASS="${PN_PASS:-UniLab2026!}"
 
 while (($#)); do
   case "$1" in
@@ -42,7 +42,7 @@ while (($#)); do
 done
 
 lab_banner
-step "salto 4 · M3 (${M3}, root) → M4 (${M4}, SYSTEM)"
+step "salto 4 (opcional) · M3 (${M3}, root) → M4 (${M4}, SYSTEM)"
 
 if [[ "$MODE" == "printnightmare" ]]; then
   cat <<EOF

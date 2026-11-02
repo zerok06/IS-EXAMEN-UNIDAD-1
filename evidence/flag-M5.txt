@@ -1,0 +1,5 @@
+FLAG-M5-cliente
+
+Nota: marcador del laboratorio aislado uni.lab (M5 / pc-est01).
+Obtenido por la cadena M4 -> M5 (SMB/RDP). No es un dato real.
+Plantilla del marcador: FLAG-M5-{cliente}

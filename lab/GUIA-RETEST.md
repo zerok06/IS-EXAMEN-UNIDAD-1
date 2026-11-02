@@ -1,7 +1,7 @@
 # Guía de retest · verificar que el parchado funciona
 
 > Objetivo: demostrar, con los **mismos comandos** que antes funcionaban, que
-> después del parche los cinco saltos fallan.
+> después del parche los saltos fallan (incluido el opcional M4).
 > Regla: se restaura `estado-inicial`, se parchea y se retesta. **No** se parchea
 > una máquina comprometida.
 

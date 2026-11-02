@@ -18,7 +18,8 @@
 | **Escalada** | Pasar de un permiso pequeño (un usuario web) a uno grande (root/SYSTEM). |
 | **Pivote** | Usar una máquina ya comprometida para llegar a la siguiente. |
 
-La cadena completa es eso: **cinco veces convertir un acceso pequeño en uno más grande.**
+La cadena completa es eso: **cuatro veces convertir un acceso pequeño en uno
+más grande, con un salto opcional (M4) que exige una credencial declarada.**
 
 ---
 
@@ -31,21 +32,23 @@ La cadena completa es eso: **cinco veces convertir un acceso pequeño en uno má
 | Salto | Lo que tengo al empezar | Lo que consigo | Por qué importa |
 |---|---|---|---|
 | 1 | Red y un navegador | `www-data` en M1 | Ya ejecuto comandos en el servidor |
+| 2 | Comandos en M1 | `root` en M2 | La base de datos y su red |
+| 3 | `root` en M2 | `root` en M3 | Los respaldos y el almacenamiento |
+| 4 (opcional) | `root` en M3 | `SYSTEM` en M4 | El DNS y la red interna; requiere `soporte` |
+| 5 | Acceso a la red | Escritorio de M5 | El cliente final; no depende de M4 |
 
 > **Ojo con la palabra "root".** El salto 1 da `www-data`, el usuario del servicio
 > web, **no root**. Root aparece en el salto 2 (M2). Si alguien pregunta "¿ya eres
 > root en M1?", la respuesta honesta es: "no, y no lo necesito: el siguiente salto
 > se ataca por red contra M2".
-| 2 | Comandos en M1 | `root` en M2 | La base de datos y su red |
-| 3 | `root` en M2 | `root` en M3 | Los respaldos y el almacenamiento |
-| 4 | `root` en M3 | `SYSTEM` en M4 | El DNS y la red interna |
-| 5 | `SYSTEM` en M4 | Escritorio de M5 | El cliente final |
 
-Nadie "adivina contraseñas": cada salto explota un defecto distinto.
+Los saltos 1, 2, 3 y 5 **no usan credenciales**. El salto 4 es opcional y usa
+la cuenta limitada `soporte` como precondición de PrintNightmare: no se adivina
+ni se obtiene por explotación, pero se declara como credencial.
 
 ---
 
-## Parte 3 · Los cinco saltos, explicados
+## Parte 3 · Los saltos, explicados
 
 ### Salto 1 · PHP2Shell — de visitante a `www-data`
 
@@ -148,7 +151,7 @@ estaba en la carpeta compartida. Lo reemplacé desde M2 y esperé un minuto."
 
 ---
 
-### Salto 4 · PrintNightmare (CVE-2021-34527) — de `root` en M3 a `SYSTEM` en M4
+### Salto 4 (opcional) · PrintNightmare (CVE-2021-34527) — de `root` en M3 a `SYSTEM` en M4
 
 **Analogía.**
 El servicio de impresión de Windows es un conserje que, cuando alguien le pide
@@ -165,7 +168,9 @@ es nuestra, le damos un controlador malicioso y lo ejecuta con los máximos perm
 **Por qué funciona.** El spooler confía en la ruta del controlador y lo carga con
 demasiados privilegios: no valida quién lo pide ni de dónde viene.
 
-**Qué gano.** `SYSTEM` en M4: el DNS y la red interna, y desde ahí el cliente.
+**Qué gano.** `SYSTEM` en M4: el DNS y la red interna. **No es requisito para
+M5**: el VNC del cliente está expuesto y sin autenticación, así que la cadena
+operativa puede ser M1 → M2 → M3 → M5.
 
 **Cómo lo explico en 20 segundos.**
 "El servicio de impresión de Windows cargaba un controlador desde donde le
@@ -177,7 +182,7 @@ como alternativa solo si M4 fuera Server 2012 R2.
 
 ---
 
-### Salto 5 · VNC sin autenticación — de `SYSTEM` en M4 al cliente
+### Salto 5 · VNC sin autenticación — del acceso a la red al cliente (no requiere M4)
 
 **Analogía.**
 El escritorio de M5 tiene la puerta abierta: VNC está configurado **sin
@@ -206,12 +211,14 @@ un `id`.
 
 ### Diapositiva 1 · Portada (30 s)
 - Título, materia, integrantes, fecha.
-- Frase: "Una entrada, cinco saltos, una cadena."
+- Frase: "Una entrada, cuatro saltos y un salto opcional."
 
 ### Diapositiva 2 · Qué vamos a demostrar (1 min)
 - Red aislada de 6 VM.
 - Objetivo: llegar de fuera a la máquina del cliente.
-- Regla: **todo por vulnerabilidades, sin contraseñas adivinadas.**
+- Regla: **todo por vulnerabilidades, sin contraseñas adivinadas.** El salto
+  opcional 4 usa la credencial de laboratorio `soporte`, declarada como
+  precondición.
 
 ### Diapositiva 3 · Qué es explotar (1 min)
 - Vulnerabilidad / exploit / payload / RCE / escalada.
@@ -219,7 +226,8 @@ un `id`.
 
 ### Diapositiva 4 · Mapa de la cadena (1 min)
 ```
-M6 → M1 (PHP2Shell) → [pivote] → M2 (Redis) → M3 (NFS) → M4 (PrintNightmare) → M5 (VNC)
+M6 → M1 (PHP2Shell) → [pivote] → M2 (Redis) → M3 (NFS) → M5 (VNC)
+                                        └── M4 (PrintNightmare, opcional; requiere `soporte`)
 ```
 - Decir en voz alta qué se gana en cada flecha.
 
@@ -300,8 +308,8 @@ CVE, la variante es CVE-2022-0543 con el paquete Debian de Redis."
 
 **"¿Hay pivote real?"**
 "Sí: después del salto 1, `01b-pivot.sh` sube el agente de ligolo-ng a M1 y monta
-un túnel con rutas /32. A partir de ahí, el tráfico a M2–M5 sale por M1; M6 solo
-habla directo con M1."
+un túnel con rutas /32 para M2 y M3. M4 y M5 comparten L2 con M6 y van directos;
+forzarlos por el túnel rompe el callback de PrintNightmare."
 
 **"¿Qué evidencia tienen?"**
 "Por salto: comando, salida, captura, SHA256 y hora UTC. Sin `id`/`whoami` y

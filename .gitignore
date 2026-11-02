@@ -11,6 +11,7 @@ lab/pki/out/
 
 # Trabajo y caché
 lab-work/
+ligolo-selfcerts/
 *.part
 *.tar.gz.sha256
 *.zip.sha256

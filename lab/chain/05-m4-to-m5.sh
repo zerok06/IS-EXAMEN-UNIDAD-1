@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-#  lab/chain/05-m4-to-m5.sh — salto 5: M4 (SYSTEM) → M5 (cliente)
+#  lab/chain/05-m4-to-m5.sh — salto 5: M6 → M5 (VNC); no requiere M4
 # ----------------------------------------------------------------------------
 #  Vulnerabilidad: TightVNC 2.8.90 con autenticación VNC desactivada
 #  (CWE-306). Se accede al escritorio sin credenciales.
@@ -33,7 +33,7 @@ while (($#)); do
 done
 
 lab_banner
-step "salto 5 · M4 (${M4}, SYSTEM) → M5 (${M5}, cliente)"
+step "salto 5 · M5 (${M5}) · VNC sin autenticación (no requiere M4)"
 cat <<EOF
 Vulnerabilidad: VNC sin autenticación (TightVNC 2.8.90, CWE-306).
 

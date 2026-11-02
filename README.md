@@ -1,13 +1,19 @@
 # IS-1023 · Lab PHP2Shell
 
 Trabajo Final de la Unidad I de **IS-1023 Seguridad de la Información** (UNAM/EPISI).
-Un solo vector de entrada —**PHP2Shell** en M1— y una cadena de cinco saltos hasta M5.
+Un solo vector de entrada —**PHP2Shell** en M1— y una cadena de cuatro saltos
+hasta M5. M4 (PrintNightmare) es un salto **opcional** y requiere la cuenta
+limitada `soporte` como precondición.
 
 ```
-M6 ──php2shell──> M1 (www-data) ──wp-config──> M2 (DB)
-                                   └─SSH──> M2 ──llave──> M3 (backups)
-                                              M3 ──credenciales──> M4 (DNS)
-                                              M4 ──credenciales──> M5 (cliente)
+M6 ──php2shell──> M1 (www-data)
+                     │ Redis sin auth, como root
+                     ▼
+                  M2 (root) ──NFS+cron──> M3 (root)
+                                              │
+                                              └──VNC sin auth──> M5 (cliente)
+
+M4 (PrintNightmare, opcional; requiere cuenta `soporte`) ──> SYSTEM
 ```
 
 - Arquitectura, red, credenciales y contrato de instalación: [`lab/README.md`](./lab/README.md)

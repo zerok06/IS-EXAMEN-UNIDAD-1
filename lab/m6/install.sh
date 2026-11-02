@@ -9,7 +9,9 @@
 #    2. copia el repo a /srv/lab  (rsync -a --exclude .git ./ /srv/lab/)
 #    3. empaqueta el despliegue: /srv/lab.tar.gz y /srv/lab.zip
 #    4. publica bootstrap.sh / bootstrap.ps1 y /srv/artifacts en la raíz HTTP
-#    5. añade los nombres de uni.lab a /etc/hosts
+#    5. aplica la red de M6: eth1 en 10.10.10.20/24 sin gateway y DNS partido
+#       (*.uni.lab -> M4, resto -> NAT). Con LAB_HOSTS=1 añade además /etc/hosts
+#       como plan B (por defecto NO: taparía al DNS de M4)
 #    6. deja lab/m6/serve.sh listo (y, con --service, una unidad systemd)
 #
 #  Uso:
@@ -278,17 +280,39 @@ else
   ok "empaquetado omitido (--no-tar)"
 fi
 
+# --------------------------------------------------------------- red y DNS
+# M6 tiene dos NIC: NAT (Internet + ruta por defecto) y bridge (10.10.10.0/24).
+# El DNS de uni.lab es M4 (10.10.10.14), que se instala sin reenviadores, así que
+# se usa un resolvedor partido en 127.0.0.1 (lab/m6/net.sh) en lugar de poner a
+# M4 como resolver global. Todo eso lo aplica net.sh.
+if [[ -x "$HERE/net.sh" || -f "$HERE/net.sh" ]]; then
+  step "red y DNS partido (m6/net.sh)"
+  if bash "$HERE/net.sh"; then
+    ok "eth1 en $M6 y uni.lab resuelto vía M4 ($M4)"
+  else
+    warn "net.sh falló; revisa la NIC del bridge y vuelve a ejecutarlo"
+  fi
+fi
+
 # --------------------------------------------------------------- /etc/hosts
-step "/etc/hosts del laboratorio"
-HOSTS=/etc/hosts
-ensure_line "$HOSTS" "10.10.10.11 app.uni.lab"
-ensure_line "$HOSTS" "10.10.10.11 wp.uni.lab"
-ensure_line "$HOSTS" "10.10.10.11 moodle.uni.lab"
-ensure_line "$HOSTS" "10.10.10.12 db.uni.lab"
-ensure_line "$HOSTS" "10.10.10.13 bkp.uni.lab"
-ensure_line "$HOSTS" "10.10.10.14 srvold.uni.lab"
-ensure_line "$HOSTS" "10.10.10.15 pc-est01.uni.lab"
-ok "nombres de $LAB_DOMAIN añadidos"
+# Solo plan B: un registro en /etc/hosts gana sobre el DNS (nsswitch: files dns)
+# y taparía a M4, que es la fuente de verdad de la zona. Se activa con
+# LAB_HOSTS=1 para trabajar con el laboratorio apagado.
+if [[ "${LAB_HOSTS:-0}" == "1" ]]; then
+  step "/etc/hosts del laboratorio (plan B, LAB_HOSTS=1)"
+  HOSTS=/etc/hosts
+  ensure_line "$HOSTS" "10.10.10.11 app.uni.lab"
+  ensure_line "$HOSTS" "10.10.10.11 wp.uni.lab"
+  ensure_line "$HOSTS" "10.10.10.11 moodle.uni.lab"
+  ensure_line "$HOSTS" "10.10.10.12 db.uni.lab"
+  ensure_line "$HOSTS" "10.10.10.13 bkp.uni.lab"
+  ensure_line "$HOSTS" "10.10.10.14 srvold.uni.lab"
+  ensure_line "$HOSTS" "10.10.10.15 pc-est01.uni.lab"
+  ok "nombres de $LAB_DOMAIN añadidos (plan B)"
+else
+  step "/etc/hosts del laboratorio"
+  ok "sin entradas: uni.lab se resuelve por M4 (usa LAB_HOSTS=1 para el plan B)"
+fi
 
 # --------------------------------------------------------------- servicio
 if (( WITH_SERVICE )); then
